@@ -1,0 +1,38 @@
+import { type NextFunction, type Request, type Response } from 'express';
+import { ZodError } from 'zod';
+
+type PgLikeError = Error & {
+  code?: string;
+  constraint?: string;
+  detail?: string;
+};
+
+export function errorHandler(error: unknown, _request: Request, response: Response, _next: NextFunction) {
+  if (error instanceof ZodError) {
+    return response.status(400).json({
+      success: false,
+      message: error.issues[0]?.message ?? 'Datos inválidos.',
+    });
+  }
+
+  const pgError = error as PgLikeError;
+
+  if (pgError.code === '23505') {
+    if (pgError.constraint?.includes('edu_institutions_slug')) {
+      return response.status(409).json({ success: false, message: 'Ya existe una institución con ese slug.' });
+    }
+
+    if (pgError.constraint?.includes('edu_users_email')) {
+      return response.status(409).json({ success: false, message: 'Ya existe un usuario con ese correo.' });
+    }
+
+    return response.status(409).json({ success: false, message: 'Ya existe un registro con esos datos.' });
+  }
+
+  if (pgError.code === '23503') {
+    return response.status(400).json({ success: false, message: 'La relación seleccionada no existe o ya no está disponible.' });
+  }
+
+  console.error(error);
+  return response.status(500).json({ success: false, message: 'Error interno del servidor.' });
+}

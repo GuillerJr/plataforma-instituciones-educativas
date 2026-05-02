@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { env } from './config/env.js';
+import { errorHandler } from './middleware/error-handler.js';
 import systemRoutes from './routes/system.routes.js';
 import institutionsRoutes from './routes/institutions.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -20,6 +21,7 @@ export function createApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/institutions', institutionsRoutes);
   app.use('/api/users', usersRoutes);
+  app.use(errorHandler);
 
   return app;
 }

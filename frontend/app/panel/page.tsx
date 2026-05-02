@@ -1,8 +1,7 @@
 import Link from 'next/link';
+import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 
 export const dynamic = 'force-dynamic';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type DashboardPayload = {
   metrics: {
@@ -27,35 +26,16 @@ type DashboardPayload = {
 };
 
 async function loadDashboard() {
-  const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'admin@educa.local', password: 'Educa2026!' }),
-    cache: 'no-store',
-  });
+  try {
+    const dashboard = await fetchDemoApi<DashboardPayload>('/system/dashboard');
+    return { dashboard, error: null };
+  } catch (error) {
+    if (error instanceof DemoApiError) {
+      return { dashboard: null as DashboardPayload | null, error: error.message };
+    }
 
-  if (!loginResponse.ok) {
-    return { dashboard: null as DashboardPayload | null, error: 'No fue posible autenticar el panel demo.' };
-  }
-
-  const loginPayload = (await loginResponse.json()) as { data?: { accessToken?: string } };
-  const accessToken = loginPayload.data?.accessToken;
-
-  if (!accessToken) {
-    return { dashboard: null as DashboardPayload | null, error: 'No se recibió token de acceso.' };
-  }
-
-  const dashboardResponse = await fetch(`${API_BASE_URL}/system/dashboard`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: 'no-store',
-  });
-
-  if (!dashboardResponse.ok) {
     return { dashboard: null as DashboardPayload | null, error: 'No fue posible cargar el dashboard.' };
   }
-
-  const payload = (await dashboardResponse.json()) as { data?: DashboardPayload };
-  return { dashboard: payload.data ?? null, error: null };
 }
 
 export default async function PanelPage() {
