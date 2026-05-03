@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 
 export const dynamic = 'force-dynamic';
@@ -44,30 +43,30 @@ export default async function PanelPage() {
   const institutionCoverage = dashboard?.institutions.length ?? 0;
 
   return (
-    <main className="space-y-8 pb-10">
-      <section className="glass-panel px-6 py-8 sm:px-8 lg:px-10">
-        <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
-          <div className="space-y-5">
+    <main className="space-y-6 pb-8">
+      <section className="glass-panel px-6 py-7 sm:px-8 lg:px-8">
+        <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr] xl:items-end">
+          <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
               <p className="eyebrow">Panel administrativo</p>
               <span className="info-chip">Operación del día</span>
             </div>
-            <h1 className="section-title">Centro operativo con lectura inmediata de instituciones, accesos y actividad reciente</h1>
+            <h1 className="section-title">Lectura inmediata de operaci\u00f3n, accesos y actividad reciente</h1>
             <p className="section-copy max-w-3xl">
-              El panel reorganiza la información clave en métricas grandes, listas limpias y bloques de seguimiento para facilitar decisiones rápidas desde rectorado, coordinación y administración.
+              El panel prioriza el seguimiento diario del colegio con indicadores compactos, listados claros y menos bloques decorativos para acelerar decisiones.
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="dark-metric-card">
-              <p className="text-sm font-medium text-slate-300">Cobertura institucional</p>
-              <p className="mt-4 text-4xl font-semibold tracking-tight">{institutionCoverage}</p>
-              <p className="mt-3 text-sm text-slate-300">Instituciones visibles en el tablero actual.</p>
+          <div className="summary-strip">
+            <div className="summary-item">
+              <p className="summary-label">Sedes o registros</p>
+              <p className="summary-value">{institutionCoverage}</p>
+              <p className="mt-1 text-sm text-slate-500">Estructura institucional visible.</p>
             </div>
-            <div className="section-grid-card">
-              <p className="text-sm font-semibold text-slate-900">Actividad reciente</p>
-              <p className="mt-4 text-4xl font-semibold tracking-tight text-slate-950">{trackedUsers}</p>
-              <p className="mt-3 text-sm text-slate-500">Usuarios recientes monitoreados por el panel.</p>
+            <div className="summary-item">
+              <p className="summary-label">Actividad reciente</p>
+              <p className="summary-value">{trackedUsers}</p>
+              <p className="mt-1 text-sm text-slate-500">Altas recientes monitoreadas.</p>
             </div>
           </div>
         </div>
@@ -77,93 +76,109 @@ export default async function PanelPage() {
         <div className="surface-panel px-5 py-4 text-sm text-rose-700">{error ?? 'No hay datos del panel.'}</div>
       ) : (
         <>
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Instituciones" value={dashboard.metrics.institutions} helper="Unidades activas en la plataforma" />
+          <section className="summary-strip">
+            <MetricCard label="Registros institucionales" value={dashboard.metrics.institutions} helper="Sedes o registros cargados" />
             <MetricCard label="Usuarios" value={dashboard.metrics.users} helper="Cuentas registradas" />
-            <MetricCard label="Usuarios activos" value={dashboard.metrics.activeUsers} helper="Accesos operativos habilitados" />
-            <MetricCard label="Roles" value={dashboard.metrics.roles} helper="Perfiles de gobierno disponibles" />
+            <MetricCard label="Usuarios activos" value={dashboard.metrics.activeUsers} helper="Accesos habilitados" />
+            <MetricCard label="Roles" value={dashboard.metrics.roles} helper="Perfiles disponibles" />
           </section>
 
-          <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="section-grid-card">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="eyebrow">Cursos y rendimiento</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-slate-950">Panorama pedagógico simulado para lectura ejecutiva</h2>
+                  <h2 className="mt-2 text-xl font-semibold text-slate-950">Panorama pedagógico resumido</h2>
                 </div>
                 <span className="info-chip">Actualizado hoy</span>
               </div>
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
                 <div className="surface-muted p-4">
                   <p className="text-sm text-slate-500">Cursos monitoreados</p>
                   <p className="mt-2 text-2xl font-semibold text-slate-950">36</p>
-                  <p className="mt-2 text-sm text-slate-600">Distribuidos entre básica, bachillerato y trayectos complementarios.</p>
+                  <p className="mt-2 text-sm text-slate-600">Distribuidos entre niveles y secciones.</p>
                 </div>
                 <div className="surface-muted p-4">
                   <p className="text-sm text-slate-500">Promedio de evaluaciones</p>
                   <p className="mt-2 text-2xl font-semibold text-slate-950">8.9/10</p>
-                  <p className="mt-2 text-sm text-slate-600">Resultado consolidado para seguimiento de rendimiento.</p>
+                  <p className="mt-2 text-sm text-slate-600">Resultado consolidado del periodo vigente.</p>
                 </div>
                 <div className="surface-muted p-4 md:col-span-2">
                   <p className="text-sm text-slate-500">Actividades priorizadas</p>
-                  <p className="mt-2 text-lg font-semibold text-slate-950">Apertura de periodo, revisión de accesos y validación institucional</p>
+                  <p className="mt-2 text-base font-semibold text-slate-950">Apertura de periodo, revisi\u00f3n de accesos y validaci\u00f3n acad\u00e9mica</p>
                 </div>
               </div>
             </div>
 
             <div className="table-shell">
-              <div className="soft-divider flex items-center justify-between px-6 py-5">
+              <div className="table-toolbar soft-divider">
                 <div>
-                  <p className="eyebrow">Instituciones recientes</p>
-                  <p className="mt-2 text-sm text-slate-500">Lectura rápida de las unidades institucionales activas.</p>
+                  <p className="eyebrow">Sedes o registros</p>
+                  <h2 className="table-title">Estructura institucional reciente</h2>
+                  <p className="table-subtitle">Registros visibles para la operaci\u00f3n actual del colegio.</p>
                 </div>
                 <span className="info-chip">{dashboard.institutions.length} visibles</span>
               </div>
-              <div className="table-header-row grid-cols-[minmax(0,1.2fr)_180px]">
-                <span>Institución</span>
-                <span>Ciclo activo</span>
-              </div>
-              <div>
-                {dashboard.institutions.map((institution) => (
-                  <article key={institution.id} className="table-data-row grid-cols-[minmax(0,1.2fr)_180px]">
-                    <div>
-                      <div>
-                        <h3 className="text-base font-semibold text-slate-950">{institution.name}</h3>
-                        <p className="mt-1 text-sm text-slate-500">{institution.slug}</p>
-                      </div>
-                    </div>
-                    <span className="info-chip h-fit">{institution.activeSchoolYearLabel ?? 'Año por definir'}</span>
-                  </article>
-                ))}
+              <div className="table-scroller">
+                <table className="data-table min-w-[520px]">
+                  <thead>
+                    <tr>
+                      <th>Registro</th>
+                      <th>Ciclo activo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboard.institutions.map((institution) => (
+                      <tr key={institution.id}>
+                        <td>
+                          <p className="font-semibold text-slate-950">{institution.name}</p>
+                          <p className="mt-1 text-sm text-slate-500">{institution.slug}</p>
+                        </td>
+                        <td>
+                          <span className="info-chip h-fit">{institution.activeSchoolYearLabel ?? 'Año por definir'}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
 
             <div className="table-shell lg:col-span-2">
-              <div className="soft-divider flex items-center justify-between px-6 py-5">
+              <div className="table-toolbar soft-divider">
                 <div>
                   <p className="eyebrow">Usuarios recientes</p>
-                  <p className="mt-2 text-sm text-slate-500">Personas con acceso creadas recientemente.</p>
+                  <h2 className="table-title">Accesos creados recientemente</h2>
+                  <p className="table-subtitle">Personas habilitadas para la operaci\u00f3n institucional.</p>
                 </div>
                 <span className="info-chip">{dashboard.recentUsers.length} visibles</span>
               </div>
-              <div className="table-header-row grid-cols-[minmax(0,1fr)_220px_160px]">
-                <span>Usuario</span>
-                <span>Institución</span>
-                <span>Estado</span>
-              </div>
-              <div>
-                {dashboard.recentUsers.map((user) => (
-                  <article key={user.id} className="table-data-row grid-cols-[minmax(0,1fr)_220px_160px]">
-                    <div>
-                      <div>
-                        <h3 className="text-base font-semibold text-slate-950">{user.fullName}</h3>
-                        <p className="mt-1 text-sm text-slate-500">{user.email}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-slate-600">{user.institutionName ?? 'Acceso global sin institución'}</p>
-                    <span className="info-chip h-fit">{translateUserStatus(user.status)}</span>
-                  </article>
-                ))}
+              <div className="table-scroller">
+                <table className="data-table min-w-[760px]">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Sede o registro</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboard.recentUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td>
+                          <p className="font-semibold text-slate-950">{user.fullName}</p>
+                          <p className="mt-1 text-sm text-slate-500">{user.email}</p>
+                        </td>
+                        <td>
+                          <p className="text-sm text-slate-600">{user.institutionName ?? 'Sin sede asignada'}</p>
+                        </td>
+                        <td>
+                          <span className="info-chip h-fit">{translateUserStatus(user.status)}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>
@@ -182,10 +197,10 @@ function translateUserStatus(status: string) {
 
 function MetricCard({ label, value, helper }: { label: string; value: number; helper: string }) {
   return (
-    <div className="metric-card">
-      <p className="eyebrow">{label}</p>
-      <p className="stat-value mt-3">{value}</p>
-      <p className="mt-3 text-sm text-slate-500">{helper}</p>
+    <div className="summary-item">
+      <p className="summary-label">{label}</p>
+      <p className="summary-value">{value}</p>
+      <p className="mt-1 text-sm text-slate-500">{helper}</p>
     </div>
   );
 }

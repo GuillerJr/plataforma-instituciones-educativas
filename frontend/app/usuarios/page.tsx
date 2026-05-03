@@ -64,26 +64,26 @@ export default async function UsersPage() {
   const blockedUsers = users.filter((user) => user.status === 'blocked').length;
 
   return (
-    <main className="space-y-8 pb-10">
-      <section className="glass-panel px-6 py-8 sm:px-8 lg:px-10">
+    <main className="space-y-6 pb-8">
+      <section className="glass-panel px-6 py-7 sm:px-8 lg:px-8">
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
           <div>
             <p className="eyebrow">Usuarios y roles</p>
-            <h1 className="section-title mt-3">Gobernanza de acceso con foco en perfiles, estados y asignación institucional</h1>
+            <h1 className="section-title mt-3">Gobernanza de acceso con foco en perfiles, estados y permisos</h1>
             <p className="section-copy mt-4 max-w-3xl">
-              El rediseño organiza altas, catálogo de roles y listado de usuarios en superficies más claras, manteniendo intacto el flujo real sobre la API protegida.
+              La vista de usuarios se simplifica para el trabajo diario del colegio: listados compactos, roles visibles y acciones concentradas en modales sin tocar el backend actual.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="metric-card">
-              <p className="eyebrow">Usuarios activos</p>
-              <p className="stat-value mt-3">{activeUsers}</p>
-              <p className="mt-3 text-sm text-slate-500">Accesos operativos habilitados actualmente.</p>
+          <div className="summary-strip">
+            <div className="summary-item">
+              <p className="summary-label">Usuarios activos</p>
+              <p className="summary-value">{activeUsers}</p>
+              <p className="mt-1 text-sm text-slate-500">Accesos operativos habilitados.</p>
             </div>
-            <div className="dark-metric-card">
-              <p className="text-sm font-medium text-slate-300">Riesgo controlado</p>
-              <p className="mt-4 text-2xl font-semibold">{blockedUsers} bloqueados</p>
-              <p className="mt-3 text-sm text-slate-300">Cuentas suspendidas para seguimiento y soporte.</p>
+            <div className="summary-item">
+              <p className="summary-label">Bloqueados</p>
+              <p className="summary-value">{blockedUsers}</p>
+              <p className="mt-1 text-sm text-slate-500">Cuentas suspendidas para seguimiento.</p>
             </div>
           </div>
         </div>

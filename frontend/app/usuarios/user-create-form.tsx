@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
 import { getDemoAccessToken } from '../lib/demo-api';
@@ -44,6 +45,7 @@ type UserFormModalProps = UserCreateFormProps & {
 };
 
 export function UserFormModal({ institutions, roles, open, mode, onClose, initialValues }: UserFormModalProps) {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
 
@@ -97,7 +99,8 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       }
 
       setState({ success: true, message: 'Usuario creado correctamente.' });
-      window.location.reload();
+      onClose();
+      router.refresh();
     } catch (error) {
       setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear el usuario.' });
     } finally {
@@ -139,9 +142,9 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
         </div>
 
         <label className="block">
-          <span className="text-sm font-medium text-slate-700">Institución</span>
+          <span className="text-sm font-medium text-slate-700">Sede o registro institucional</span>
           <select name="institutionId" defaultValue={initialValues?.institutionId ?? ''} className="form-field">
-            <option value="">Acceso global sin institución</option>
+            <option value="">Sin sede asignada</option>
             {institutions.map((institution) => (
               <option key={institution.id} value={institution.id}>{institution.name}</option>
             ))}
@@ -170,22 +173,29 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
         </fieldset>
 
         {mode === 'edit' ? (
-          <p className="text-sm text-slate-500">
-            La edición visual ya está disponible en este modal. El guardado real se activará cuando exista soporte de actualización en backend.
-          </p>
+          <div className="rounded-[24px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-4 text-sm text-slate-700">
+            <p className="font-semibold text-slate-950">Próxima fase</p>
+            <p className="mt-2 leading-6">
+              La edición visual del usuario ya quedó integrada en este modal. El guardado real se activará cuando exista el endpoint de actualización en backend.
+            </p>
+          </div>
         ) : null}
 
         {state.message ? <p className={`text-sm ${state.success ? 'status-good' : 'status-bad'}`}>{state.message}</p> : null}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">
-            Cancelar
+            {mode === 'create' ? 'Cancelar' : 'Cerrar'}
           </button>
-          <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-            {mode === 'create'
-              ? pending ? 'Creando usuario...' : 'Crear usuario'
-              : pending ? 'Preparando edición...' : 'Guardar cambios'}
-          </button>
+          {mode === 'create' ? (
+            <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
+              {pending ? 'Creando usuario...' : 'Crear usuario'}
+            </button>
+          ) : (
+            <button type="button" disabled className="primary-button cursor-not-allowed opacity-60">
+              Disponible en próxima fase
+            </button>
+          )}
         </div>
       </form>
     </ModalShell>

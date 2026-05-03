@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
 import { getDemoAccessToken } from '../lib/demo-api';
@@ -30,6 +31,7 @@ type InstitutionFormModalProps = {
 };
 
 export function InstitutionFormModal({ open, mode, onClose, initialValues }: InstitutionFormModalProps) {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
 
@@ -84,7 +86,8 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
       }
 
       setState({ success: true, message: 'Institución creada correctamente.' });
-      window.location.reload();
+      onClose();
+      router.refresh();
     } catch (error) {
       setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear la institución.' });
     } finally {
@@ -96,10 +99,10 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
     <ModalShell
       open={open}
       onClose={onClose}
-      title={mode === 'create' ? 'Registrar institución' : 'Editar institución'}
+      title={mode === 'create' ? 'Registrar sede o dato institucional' : 'Editar registro institucional'}
       description={mode === 'create'
-        ? 'Completa los datos principales para crear una institución real en la API protegida y verla de inmediato en el registro actual.'
-        : 'La interfaz de edición ya quedó preparada dentro del modal para activarse apenas exista actualización de instituciones en la API.'}
+        ? 'Completa los datos principales para crear un registro institucional real en la API protegida y verlo de inmediato en la tabla actual.'
+        : 'La interfaz de edición ya quedó preparada dentro del modal para activarse apenas exista actualización de registros institucionales en la API.'}
     >
       <form action={handleSubmit} className="space-y-5">
         <div className="grid gap-4 md:grid-cols-2">
@@ -138,22 +141,29 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
         </label>
 
         {mode === 'edit' ? (
-          <p className="text-sm text-slate-500">
-            Los datos se muestran listos para edición. La acción de guardar se activará cuando exista soporte de actualización en backend.
-          </p>
+          <div className="rounded-[24px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-4 text-sm text-slate-700">
+            <p className="font-semibold text-slate-950">Próxima fase</p>
+            <p className="mt-2 leading-6">
+              Este modal ya deja visible la edición con datos precargados. El guardado real se conectará cuando la API exponga el endpoint de actualización.
+            </p>
+          </div>
         ) : null}
 
         {state.message ? <p className={`text-sm ${state.success ? 'status-good' : 'status-bad'}`}>{state.message}</p> : null}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">
-            Cancelar
+            {mode === 'create' ? 'Cancelar' : 'Cerrar'}
           </button>
-          <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-            {mode === 'create'
-              ? pending ? 'Creando institución...' : 'Crear institución'
-              : pending ? 'Preparando edición...' : 'Guardar cambios'}
-          </button>
+          {mode === 'create' ? (
+            <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
+              {pending ? 'Creando institución...' : 'Crear institución'}
+            </button>
+          ) : (
+            <button type="button" disabled className="primary-button cursor-not-allowed opacity-60">
+              Disponible en próxima fase
+            </button>
+          )}
         </div>
       </form>
     </ModalShell>

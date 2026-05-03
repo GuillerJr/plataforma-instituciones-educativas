@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PaginationControls } from '../../components/pagination-controls';
 import { UserFormModal, UserFormValues } from './user-create-form';
 
 type EduUser = UserFormValues & {
@@ -30,30 +31,34 @@ type UsersWorkspaceProps = {
 export function UsersWorkspace({ users, roles, institutions, error }: UsersWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<EduUser | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(users.length / pageSize));
+  const paginatedUsers = users.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <>
-      <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-        <div className="space-y-6">
-          <aside className="section-grid-card sm:p-7">
-            <div className="flex flex-col gap-5">
+      <div className="space-y-5">
+        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+          <aside className="section-grid-card">
+            <div className="flex flex-col gap-4">
               <div>
                 <p className="eyebrow">Acciones de usuario</p>
-                <h2 className="mt-3 text-2xl font-semibold text-slate-950">Altas y edición desde modal</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  La creación se abre en modal para mantener la vista despejada. Cada fila ya incorpora la entrada de edición preparada dentro del mismo patrón visual.
+                <h2 className="mt-2 text-xl font-semibold text-slate-950">Altas y edici\u00f3n desde una vista compacta</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  La creaci\u00f3n se resuelve en modal y la futura edici\u00f3n ya est\u00e1 preparada desde cada fila, evitando formularios largos dentro de la pantalla principal.
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-3">
                 <button type="button" className="primary-button" onClick={() => setCreateOpen(true)}>
-                  Nuevo usuario
+                  Crear usuario
                 </button>
                 <span className="info-chip">{users.length} registrados</span>
               </div>
 
               <div className="surface-muted p-4 text-sm text-slate-600">
-                El flujo actual de creación sigue operativo sobre la API protegida. La edición queda lista en interfaz sin modificar backend.
+                El flujo actual de creaci\u00f3n sigue operativo sobre la API protegida. La edici\u00f3n queda lista en interfaz sin modificar backend.
               </div>
             </div>
           </aside>
@@ -62,7 +67,7 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="eyebrow">Catálogo de roles</p>
-                <p className="mt-2 text-sm text-slate-500">Perfiles disponibles en la gobernanza inicial del sistema.</p>
+                <p className="mt-2 text-sm text-slate-500">Perfiles disponibles para el trabajo institucional actual.</p>
               </div>
               <span className="info-chip">{roles.length} roles</span>
             </div>
@@ -83,48 +88,71 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
         </div>
 
         <section className="table-shell overflow-hidden">
-          <div className="soft-divider flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="table-toolbar soft-divider">
             <div>
               <p className="eyebrow">Usuarios registrados</p>
-              <p className="mt-2 text-sm text-slate-500">Lectura de accesos institucionales y globales.</p>
+              <h2 className="table-title">Accesos y perfiles del colegio</h2>
+              <p className="table-subtitle">Tabla responsiva para revisar responsables, sede asignada, roles y estado.</p>
             </div>
             <div className="flex items-center gap-3">
               <span className="info-chip">{users.length} usuarios</span>
               <button type="button" className="compact-button" onClick={() => setCreateOpen(true)}>
-                Nuevo
+                Crear
               </button>
             </div>
           </div>
 
           {error ? (
-            <div className="px-6 py-6 text-sm text-rose-700">{error}</div>
+            <div className="table-empty text-rose-700">{error}</div>
           ) : users.length === 0 ? (
-            <div className="px-6 py-6 text-sm text-slate-500">Todavía no hay usuarios registrados.</div>
+            <div className="table-empty">Todav\u00eda no hay usuarios registrados.</div>
           ) : (
             <>
-              <div className="table-header-row grid-cols-[minmax(0,1fr)_220px_220px_180px_112px]">
-                <span>Usuario</span>
-                <span>Institución</span>
-                <span>Roles</span>
-                <span>Estado</span>
-                <span>Acciones</span>
+              <div className="table-scroller">
+                <table className="data-table min-w-[1080px]">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Sede o registro</th>
+                      <th>Roles</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td>
+                          <p className="font-semibold text-slate-950">{user.fullName}</p>
+                          <p className="mt-1 text-sm text-slate-500">{user.email}</p>
+                        </td>
+                        <td>
+                          <p className="text-sm text-slate-600">{user.institutionName ?? 'Sin sede asignada'}</p>
+                        </td>
+                        <td>
+                          <p className="text-sm text-slate-600">{user.roleCodes.join(', ')}</p>
+                        </td>
+                        <td>
+                          <span className="info-chip h-fit">{translateUserStatus(user.status)}</span>
+                        </td>
+                        <td>
+                          <button type="button" className="compact-button" onClick={() => setEditingUser(user)}>
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div>
-                {users.map((user) => (
-                  <article key={user.id} className="table-data-row grid-cols-[minmax(0,1fr)_220px_220px_180px_112px] items-start">
-                    <div>
-                      <h3 className="text-base font-semibold text-slate-950">{user.fullName}</h3>
-                      <p className="mt-1 text-sm text-slate-500">{user.email}</p>
-                    </div>
-                    <p className="text-sm text-slate-600">{user.institutionName ?? 'Acceso global sin institución'}</p>
-                    <p className="text-sm text-slate-600">{user.roleCodes.join(', ')}</p>
-                    <span className="info-chip h-fit">{translateUserStatus(user.status)}</span>
-                    <button type="button" className="compact-button" onClick={() => setEditingUser(user)}>
-                      Editar
-                    </button>
-                  </article>
-                ))}
-              </div>
+              <PaginationControls
+                page={page}
+                totalPages={totalPages}
+                pageSize={pageSize}
+                totalItems={users.length}
+                itemLabel="usuarios"
+                onPageChange={setPage}
+              />
             </>
           )}
         </section>

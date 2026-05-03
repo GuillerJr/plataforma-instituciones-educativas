@@ -33,26 +33,26 @@ export default async function InstitutionsPage() {
   const privateCount = institutions.length - publicCount;
 
   return (
-    <main className="space-y-8 pb-10">
-      <section className="glass-panel px-6 py-8 sm:px-8 lg:px-10">
+    <main className="space-y-6 pb-8">
+      <section className="glass-panel px-6 py-7 sm:px-8 lg:px-8">
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
           <div>
-            <p className="eyebrow">Instituciones</p>
-            <h1 className="section-title mt-3">Gestión institucional con catálogo visible, limpio y listo para operación</h1>
+            <p className="eyebrow">Instituci\u00f3n y sedes</p>
+            <h1 className="section-title mt-3">Datos institucionales visibles, compactos y listos para operaci\u00f3n</h1>
             <p className="section-copy mt-4 max-w-3xl">
-              Este módulo presenta una experiencia más ejecutiva para registrar instituciones, leer capacidad instalada y consultar datos operativos con mejor jerarquía visual.
+              Esta vista deja de presentar el sistema como multiinstituci\u00f3n. Ahora concentra los registros internos de la instituci\u00f3n, sus sedes y sus datos operativos en una lectura m\u00e1s limpia.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="metric-card">
-              <p className="eyebrow">Instituciones</p>
-              <p className="stat-value mt-3">{institutions.length}</p>
-              <p className="mt-3 text-sm text-slate-500">Unidades educativas cargadas en la plataforma.</p>
+          <div className="summary-strip">
+            <div className="summary-item">
+              <p className="summary-label">Registros</p>
+              <p className="summary-value">{institutions.length}</p>
+              <p className="mt-1 text-sm text-slate-500">Sedes o registros cargados.</p>
             </div>
-            <div className="dark-metric-card">
-              <p className="text-sm font-medium text-slate-300">Balance actual</p>
-              <p className="mt-4 text-2xl font-semibold">{publicCount} públicas / {privateCount} privadas</p>
-              <p className="mt-3 text-sm text-slate-300">Distribución del portafolio institucional activo.</p>
+            <div className="summary-item">
+              <p className="summary-label">Distribuci\u00f3n</p>
+              <p className="summary-value text-lg sm:text-xl">{publicCount} p\u00fablicas / {privateCount} privadas</p>
+              <p className="mt-1 text-sm text-slate-500">Clasificaci\u00f3n visible en backend actual.</p>
             </div>
           </div>
         </div>

@@ -22,33 +22,33 @@ async function getAuthBootstrap(): Promise<AuthBootstrap | null> {
 const quickModules = [
   {
     href: '/panel',
-    title: 'Panel ejecutivo',
-    description: 'Lectura inmediata del estado institucional, usuarios y operación general.',
+    title: 'Panel diario',
+    description: 'Resumen de operaci\u00f3n, accesos y actividad reciente del colegio.',
   },
   {
     href: '/instituciones',
-    title: 'Instituciones',
-    description: 'Registro institucional, datos principales y seguimiento del año lectivo activo.',
+    title: 'Instituci\u00f3n y sedes',
+    description: 'Datos institucionales, a\u00f1o lectivo y sedes registradas en el sistema.',
   },
   {
     href: '/usuarios',
     title: 'Usuarios y roles',
-    description: 'Accesos, estados, asignación institucional y perfiles operativos.',
+    description: 'Accesos, estados, permisos y responsables operativos.',
   },
 ];
 
 const highlights = [
   {
     title: 'Autoridades',
-    description: 'Indicadores visibles, contexto ejecutivo y acceso rápido a los módulos más usados.',
+    description: 'Indicadores claros para rectorado y coordinaci\u00f3n sin sobrecargar la pantalla.',
   },
   {
     title: 'Gestión diaria',
-    description: 'Procesos de alta y consulta con menos ruido visual y mejor legibilidad.',
+    description: 'Procesos de alta, consulta y seguimiento en vistas m\u00e1s compactas.',
   },
   {
-    title: 'Comunidad educativa',
-    description: 'Una base visual profesional para seguir creciendo hacia servicios estudiantiles.',
+    title: 'Equipo institucional',
+    description: 'Una base visual consistente para administraci\u00f3n, soporte y seguimiento acad\u00e9mico.',
   },
 ];
 
@@ -56,51 +56,55 @@ export default async function HomePage() {
   const authBootstrap = await getAuthBootstrap();
 
   return (
-    <main className="space-y-8 pb-10">
-      <section className="glass-panel px-6 py-8 sm:px-8 lg:px-10">
-        <div className="grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
-          <div className="space-y-6">
+    <main className="space-y-6 pb-8">
+      <section className="glass-panel px-6 py-7 sm:px-8 lg:px-8">
+        <div className="grid gap-6 xl:grid-cols-[1.45fr_0.55fr]">
+          <div className="space-y-5">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="eyebrow">Software educativo institucional</span>
-              <span className="info-chip">Frontend rediseñado</span>
+              <span className="eyebrow">Software institucional</span>
+              <span className="info-chip">UX compacta</span>
             </div>
-            <div className="space-y-4">
-              <h1 className="section-title max-w-5xl">
-                Un dashboard educativo claro, ejecutivo y contundente para dirigir instituciones con mejor lectura visual.
+            <div className="space-y-3">
+              <h1 className="section-title max-w-4xl">
+                Un sistema m\u00e1s claro para operar una sola instituci\u00f3n educativa.
               </h1>
               <p className="section-copy max-w-3xl">
-                Educa reorganiza cursos, estudiantes, evaluaciones, actividad diaria y administración en un entorno blanco, sobrio y profesional,
-                pensado tanto para autoridades como para equipos operativos y comunidad estudiantil.
+                El nuevo frente visual concentra la lectura diaria del colegio en vistas compactas, tablas responsivas y acciones directas para rectorado, coordinaci\u00f3n y administraci\u00f3n.
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="summary-strip">
               <div className="dark-metric-card">
-                <p className="text-sm font-medium text-slate-300">Retención académica</p>
-                <p className="mt-4 text-5xl font-semibold tracking-tight">94%</p>
-                <p className="mt-3 text-sm text-slate-300">Seguimiento consolidado de asistencia, continuidad y soporte.</p>
+                <p className="text-sm font-medium text-slate-300">Retenci\u00f3n acad\u00e9mica</p>
+                <p className="mt-3 text-4xl font-semibold tracking-tight">94%</p>
+                <p className="mt-2 text-sm text-slate-300">Continuidad estudiantil del periodo actual.</p>
               </div>
-              <div className="metric-card">
-                <p className="eyebrow">Cursos</p>
-                <p className="stat-value mt-3">128</p>
-                <p className="mt-3 text-sm text-slate-500">Oferta académica visible por nivel, coordinación y periodo.</p>
+              <div className="summary-item">
+                <p className="summary-label">Cursos</p>
+                <p className="summary-value">128</p>
+                <p className="mt-1 text-sm text-slate-500">Oferta activa por nivel.</p>
               </div>
-              <div className="metric-card">
-                <p className="eyebrow">Estudiantes</p>
-                <p className="stat-value mt-3">2.4k</p>
-                <p className="mt-3 text-sm text-slate-500">Lectura institucional clara para crecimiento y carga operativa.</p>
+              <div className="summary-item">
+                <p className="summary-label">Estudiantes</p>
+                <p className="summary-value">2.4k</p>
+                <p className="mt-1 text-sm text-slate-500">Matr\u00edcula consolidada.</p>
+              </div>
+              <div className="summary-item">
+                <p className="summary-label">Soporte</p>
+                <p className="summary-value">18</p>
+                <p className="mt-1 text-sm text-slate-500">Pendientes operativos hoy.</p>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
               <Link href="/panel" className="primary-button">
-                Entrar al panel principal
+                Abrir panel diario
               </Link>
               <Link href="/instituciones" className="secondary-button">
-                Administrar instituciones
+                Revisar instituci\u00f3n
               </Link>
               <Link href="/usuarios" className="secondary-button">
-                Gestionar usuarios
+                Gestionar accesos
               </Link>
             </div>
           </div>
@@ -108,8 +112,8 @@ export default async function HomePage() {
           <aside className="section-grid-card">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="eyebrow">Acceso de demostración</p>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-950">Operación lista para pruebas</h2>
+                <p className="eyebrow">Acceso de demostraci\u00f3n</p>
+                <h2 className="mt-2 text-xl font-semibold text-slate-950">Operaci\u00f3n lista para pruebas</h2>
               </div>
               <span className="info-chip">Base activa</span>
             </div>
@@ -134,57 +138,80 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-3">
-        {quickModules.map((module) => (
-          <Link key={module.href} href={module.href} className="section-grid-card transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-[0_20px_46px_rgba(14,165,233,0.08)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="eyebrow">Módulo principal</p>
-                <h3 className="mt-3 text-2xl font-semibold text-slate-950">{module.title}</h3>
-              </div>
-              <span className="rounded-2xl bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700">Activo</span>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-slate-600">{module.description}</p>
-            <span className="mt-8 inline-flex text-sm font-semibold text-slate-950">Abrir módulo</span>
-          </Link>
-        ))}
+      <section className="table-shell">
+        <div className="table-toolbar soft-divider">
+          <div>
+            <p className="eyebrow">M\u00f3dulos principales</p>
+            <h2 className="table-title">Navegaci\u00f3n r\u00e1pida del sistema</h2>
+            <p className="table-subtitle">Accede a las vistas operativas m\u00e1s usadas sin depender de bloques extensos.</p>
+          </div>
+          <span className="info-chip">3 m\u00f3dulos activos</span>
+        </div>
+        <div className="table-scroller">
+          <table className="data-table min-w-[720px]">
+            <thead>
+              <tr>
+                <th>M\u00f3dulo</th>
+                <th>Uso principal</th>
+                <th>Acci\u00f3n</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quickModules.map((module) => (
+                <tr key={module.href}>
+                  <td>
+                    <p className="font-semibold text-slate-950">{module.title}</p>
+                  </td>
+                  <td>
+                    <p className="text-sm text-slate-600">{module.description}</p>
+                  </td>
+                  <td>
+                    <Link href={module.href} className="compact-button">
+                      Abrir
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="section-grid-card">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="eyebrow">Bloques educativos</p>
-              <h3 className="mt-2 text-2xl font-semibold text-slate-950">Cursos, evaluaciones y actividad en una sola vista</h3>
+              <p className="eyebrow">Bloques operativos</p>
+              <h3 className="mt-2 text-xl font-semibold text-slate-950">Lectura acad\u00e9mica y administrativa en la misma vista</h3>
             </div>
             <span className="info-chip">Lectivo 2026-2027</span>
           </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
             <div className="surface-muted p-4">
               <p className="text-sm text-slate-500">Cursos</p>
-              <p className="mt-2 text-lg font-semibold text-slate-950">Planificación por nivel y sección</p>
+              <p className="mt-2 text-base font-semibold text-slate-950">Planificaci\u00f3n por nivel y secci\u00f3n</p>
             </div>
             <div className="surface-muted p-4">
               <p className="text-sm text-slate-500">Estudiantes</p>
-              <p className="mt-2 text-lg font-semibold text-slate-950">Seguimiento de matrícula y permanencia</p>
+              <p className="mt-2 text-base font-semibold text-slate-950">Seguimiento de matr\u00edcula y permanencia</p>
             </div>
             <div className="surface-muted p-4">
               <p className="text-sm text-slate-500">Evaluaciones</p>
-              <p className="mt-2 text-lg font-semibold text-slate-950">Resultados visibles para coordinación y rectorado</p>
+              <p className="mt-2 text-base font-semibold text-slate-950">Resultados visibles para coordinaci\u00f3n</p>
             </div>
             <div className="surface-muted p-4">
               <p className="text-sm text-slate-500">Actividades</p>
-              <p className="mt-2 text-lg font-semibold text-slate-950">Agenda operativa y acciones pendientes</p>
+              <p className="mt-2 text-base font-semibold text-slate-950">Agenda operativa y pendientes</p>
             </div>
           </div>
         </div>
 
         <div className="section-grid-card">
-          <p className="eyebrow">Rendimiento institucional</p>
-          <h3 className="mt-2 text-2xl font-semibold text-slate-950">Resumen ejecutivo de la operación educativa</h3>
-          <div className="mt-6 space-y-4">
+          <p className="eyebrow">Experiencia institucional</p>
+          <h3 className="mt-2 text-xl font-semibold text-slate-950">Resumen ejecutivo de la nueva experiencia</h3>
+          <div className="mt-5 space-y-3">
             {highlights.map((item) => (
-              <div key={item.title} className="flex items-start gap-4 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+              <div key={item.title} className="flex items-start gap-4 rounded-[18px] border border-slate-200 bg-slate-50 p-4">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-sky-500" />
                 <div>
                   <p className="font-semibold text-slate-950">{item.title}</p>

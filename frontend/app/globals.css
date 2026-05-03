@@ -65,11 +65,11 @@ a {
 
 @layer components {
   .app-sidebar {
-    @apply rounded-[32px] border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.07)];
+    @apply rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)];
   }
 
   .app-sidebar-link {
-    @apply flex items-center gap-3 rounded-[22px] border border-transparent px-3 py-3 text-sm font-medium text-slate-600 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950;
+    @apply flex items-center gap-3 rounded-[18px] border border-transparent px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950;
   }
 
   .app-sidebar-link-active {
@@ -77,19 +77,19 @@ a {
   }
 
   .topbar-panel {
-    @apply rounded-[28px] border border-slate-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.06)];
+    @apply rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.05)];
   }
 
   .glass-panel {
-    @apply rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_44px_rgba(15,23,42,0.06)];
+    @apply rounded-[28px] border border-slate-200 bg-white shadow-[0_16px_38px_rgba(15,23,42,0.05)];
   }
 
   .surface-panel {
-    @apply rounded-[28px] border border-slate-200 bg-white shadow-[0_16px_36px_rgba(15,23,42,0.06)];
+    @apply rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.05)];
   }
 
   .surface-muted {
-    @apply rounded-[24px] border border-slate-200 bg-slate-50;
+    @apply rounded-[18px] border border-slate-200 bg-slate-50;
   }
 
   .eyebrow {
@@ -97,11 +97,11 @@ a {
   }
 
   .section-title {
-    @apply text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl;
+    @apply text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl;
   }
 
   .section-copy {
-    @apply text-sm leading-7 text-slate-600 sm:text-base;
+    @apply text-sm leading-6 text-slate-600 sm:text-[15px];
   }
 
   .nav-link {
@@ -109,7 +109,7 @@ a {
   }
 
   .primary-button {
-    @apply inline-flex items-center justify-center rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(15,23,42,0.14)] transition hover:bg-slate-800;
+    @apply inline-flex items-center justify-center rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(15,23,42,0.12)] transition hover:bg-slate-800;
   }
 
   .secondary-button {
@@ -121,7 +121,7 @@ a {
   }
 
   .metric-card {
-    @apply surface-panel p-5 sm:p-6;
+    @apply surface-panel p-4 sm:p-5;
   }
 
   .info-chip {
@@ -129,7 +129,7 @@ a {
   }
 
   .form-field {
-    @apply mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-100;
+    @apply mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-100;
   }
 
   .status-good {
@@ -145,7 +145,7 @@ a {
   }
 
   .stat-value {
-    @apply text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl;
+    @apply text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl;
   }
 
   .soft-divider {
@@ -153,7 +153,7 @@ a {
   }
 
   .header-search {
-    @apply flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3;
+    @apply flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5;
   }
 
   .header-search input {
@@ -161,7 +161,7 @@ a {
   }
 
   .icon-button {
-    @apply relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white transition hover:border-sky-200 hover:bg-sky-50;
+    @apply relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white transition hover:border-sky-200 hover:bg-sky-50;
   }
 
   .mobile-sidebar-backdrop {
@@ -174,23 +174,71 @@ a {
   }
 
   .table-shell {
-    @apply overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_16px_36px_rgba(15,23,42,0.06)];
+    @apply overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.05)];
   }
 
-  .table-header-row {
-    @apply grid gap-4 px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500;
+  .table-toolbar {
+    @apply flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between;
   }
 
-  .table-data-row {
-    @apply grid gap-4 border-t border-slate-200 px-6 py-5 text-sm text-slate-700;
+  .table-scroller {
+    @apply w-full overflow-x-auto;
+  }
+
+  .data-table {
+    @apply min-w-full border-collapse text-left text-sm text-slate-700;
+  }
+
+  .data-table thead th {
+    @apply whitespace-nowrap border-b border-slate-200 bg-slate-50 px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500;
+  }
+
+  .data-table tbody td {
+    @apply border-b border-slate-200 px-5 py-3 align-top;
+  }
+
+  .data-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .table-title {
+    @apply text-lg font-semibold text-slate-950;
+  }
+
+  .table-subtitle {
+    @apply mt-1 text-sm text-slate-500;
+  }
+
+  .table-empty {
+    @apply px-5 py-5 text-sm text-slate-500;
+  }
+
+  .pagination-bar {
+    @apply flex flex-col gap-3 border-t border-slate-200 px-5 py-4 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .summary-strip {
+    @apply grid gap-3 md:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .summary-item {
+    @apply rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-3;
+  }
+
+  .summary-label {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-slate-500;
+  }
+
+  .summary-value {
+    @apply mt-2 text-2xl font-semibold tracking-tight text-slate-950;
   }
 
   .dark-metric-card {
-    @apply rounded-[28px] bg-slate-950 p-6 text-white shadow-[0_20px_50px_rgba(15,23,42,0.18)];
+    @apply rounded-[24px] bg-slate-950 p-5 text-white shadow-[0_18px_42px_rgba(15,23,42,0.16)];
   }
 
   .section-grid-card {
-    @apply rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_16px_36px_rgba(15,23,42,0.06)];
+    @apply rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_14px_32px_rgba(15,23,42,0.05)];
   }
 
   .modal-backdrop {
@@ -198,7 +246,7 @@ a {
   }
 
   .modal-panel {
-    @apply surface-panel relative max-h-[90vh] w-full max-w-3xl overflow-y-auto p-6 sm:p-7;
+    @apply surface-panel relative max-h-[90vh] w-full max-w-3xl overflow-y-auto p-5 sm:p-6;
   }
 
   .modal-close {
