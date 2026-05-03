@@ -62,14 +62,18 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
       {mobileSidebarOpen ? (
         <div className="mobile-sidebar-overlay lg:hidden" onClick={() => setMobileSidebarOpen(false)}>
           <aside className="mobile-sidebar-panel" onClick={(event) => event.stopPropagation()}>
-            <SidebarContent pathname={pathname ?? '/'} onNavigate={() => setMobileSidebarOpen(false)} />
+            <div className="sidebar-scroll flex h-full min-h-0 flex-col">
+              <SidebarContent pathname={pathname ?? '/'} onNavigate={() => setMobileSidebarOpen(false)} />
+            </div>
           </aside>
         </div>
       ) : null}
 
       <div className="mx-auto flex min-h-screen w-full max-w-[1580px] gap-4 px-4 py-3 sm:px-6 lg:gap-5 lg:px-8 lg:py-4">
         <aside className="app-sidebar hidden w-[292px] shrink-0 lg:sticky lg:top-4 lg:flex lg:h-[calc(100vh-2rem)] lg:flex-col lg:p-4">
-          <SidebarContent pathname={pathname ?? '/'} />
+          <div className="sidebar-scroll flex h-full min-h-0 flex-col">
+            <SidebarContent pathname={pathname ?? '/'} />
+          </div>
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -129,7 +133,7 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
                   <input aria-label="Buscar" placeholder="Buscar usuario, vista o registro" />
                 </label>
 
-                <div className="flex items-center justify-between gap-2 sm:justify-end xl:shrink-0 xl:justify-start">
+                <div className="flex flex-wrap items-stretch justify-between gap-2 sm:justify-end xl:shrink-0 xl:justify-start">
                   <button type="button" className="icon-button" aria-label="Notificaciones">
                     <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-sky-500" />
                     <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 text-slate-600">
@@ -142,7 +146,7 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
                     <p className="mt-1 text-xs font-medium text-slate-700">Alta y consulta de usuarios</p>
                   </div>
 
-                  <Link href="/usuarios" className="primary-button h-8.5 whitespace-nowrap rounded-xl px-3 py-0 text-xs">
+                  <Link href="/usuarios" className="primary-button min-h-10 w-full rounded-xl px-3.5 py-2 text-xs sm:w-auto sm:text-sm">
                     Nuevo usuario
                   </Link>
                 </div>
