@@ -14,6 +14,7 @@ const navigationItems = [
   { href: '/matriculas', label: 'Matrículas', shortLabel: 'MT', description: 'Inscripciones por estudiante y sección' },
   { href: '/materias', label: 'Materias', shortLabel: 'MA', description: 'Oferta curricular y carga base' },
   { href: '/asignaciones-academicas', label: 'Asignaciones', shortLabel: 'AA', description: 'Docente + materia + estructura' },
+  { href: '/evaluaciones', label: 'Evaluaciones', shortLabel: 'EV', description: 'Instrumentos y calificaciones' },
   { href: '/usuarios', label: 'Usuarios', shortLabel: 'US', description: 'Accesos y perfiles' },
 ];
 
@@ -53,6 +54,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/asignaciones-academicas': {
     title: 'Asignaciones académicas',
     subtitle: 'Vínculo operativo entre docente, materia, nivel, curso y sección.',
+  },
+  '/evaluaciones': {
+    title: 'Evaluaciones y calificaciones',
+    subtitle: 'Seguimiento por materia, docente, evaluación y estudiante matriculado.',
   },
   '/usuarios': {
     title: 'Usuarios y gobierno de acceso',

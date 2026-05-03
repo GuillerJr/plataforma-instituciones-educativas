@@ -65,6 +65,11 @@ const quickModules = [
     title: 'Asignaciones académicas',
     description: 'Carga docente enlazada con materia, nivel, curso y sección.',
   },
+  {
+    href: '/evaluaciones',
+    title: 'Evaluaciones y calificaciones',
+    description: 'Instrumentos, notas y seguimiento académico por estudiante matriculado.',
+  },
 ];
 
 const highlights = [
@@ -154,6 +159,9 @@ export default async function HomePage() {
               <Link href="/asignaciones-academicas" className="secondary-button w-full sm:w-auto">
                 Gestionar asignaciones
               </Link>
+              <Link href="/evaluaciones" className="secondary-button w-full sm:w-auto">
+                Gestionar evaluaciones
+              </Link>
             </div>
           </div>
 
@@ -197,7 +205,7 @@ export default async function HomePage() {
             <h2 className="mt-2 text-xl font-semibold text-slate-950">Navegación rápida del sistema</h2>
             <p className="mt-2 text-sm text-slate-500">Accesos más directos y legibles para los flujos que más se usan.</p>
           </div>
-          <span className="info-chip">9 módulos activos</span>
+          <span className="info-chip">10 módulos activos</span>
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
           {quickModules.map((module) => (

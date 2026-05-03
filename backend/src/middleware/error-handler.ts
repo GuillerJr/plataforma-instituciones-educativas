@@ -58,6 +58,10 @@ export function errorHandler(error: unknown, _request: Request, response: Respon
       return response.status(409).json({ success: false, message: 'Ya existe una materia con ese nombre en la institución actual.' });
     }
 
+    if (pgError.constraint?.includes('edu_evaluation_grades_evaluation_id_student_id')) {
+      return response.status(409).json({ success: false, message: 'El estudiante ya tiene una calificación registrada para esa evaluación.' });
+    }
+
     return response.status(409).json({ success: false, message: 'Ya existe un registro con esos datos.' });
   }
 

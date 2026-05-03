@@ -17,6 +17,8 @@ type DashboardPayload = {
     enrollments: number;
     subjects: number;
     academicAssignments: number;
+    evaluations: number;
+    evaluationGrades: number;
   };
   institutions: Array<{
     id: string;
@@ -103,6 +105,8 @@ export default async function PanelPage() {
             <MetricCard label="Matrículas" value={dashboard.metrics.enrollments} helper="Inscripciones del periodo activo" />
             <MetricCard label="Materias" value={dashboard.metrics.subjects} helper="Oferta curricular activa" />
             <MetricCard label="Asignaciones" value={dashboard.metrics.academicAssignments} helper="Carga académica enlazada" />
+            <MetricCard label="Evaluaciones" value={dashboard.metrics.evaluations} helper="Instrumentos creados" />
+            <MetricCard label="Calificaciones" value={dashboard.metrics.evaluationGrades} helper="Notas registradas" />
           </section>
 
           <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -135,6 +139,7 @@ export default async function PanelPage() {
                     <Link href="/matriculas" className="compact-button w-full sm:w-fit">Gestionar matrículas</Link>
                     <Link href="/materias" className="compact-button w-full sm:w-fit">Gestionar materias</Link>
                     <Link href="/asignaciones-academicas" className="compact-button w-full sm:w-fit">Gestionar asignaciones</Link>
+                    <Link href="/evaluaciones" className="compact-button w-full sm:w-fit">Gestionar evaluaciones</Link>
                   </div>
                 </div>
               </div>

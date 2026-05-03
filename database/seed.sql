@@ -293,6 +293,17 @@ VALUES
     NULL,
     3,
     'Cobertura artística para Inicial 2 en sus paralelos activos.'
+  ),
+  (
+    '37000000-0000-0000-0000-000000000004',
+    '10000000-0000-0000-0000-000000000001',
+    '33000000-0000-0000-0000-000000000002',
+    '36000000-0000-0000-0000-000000000001',
+    '30000000-0000-0000-0000-000000000002',
+    '31000000-0000-0000-0000-000000000003',
+    NULL,
+    6,
+    'Matemática general para Primero de EGB en sus paralelos activos.'
   )
 ON CONFLICT (id) DO NOTHING;
 
@@ -336,5 +347,93 @@ VALUES
     DATE '2026-09-04',
     'withdrawn',
     'Retiro registrado luego de cambio de institución durante el primer quimestre.'
+  )
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO edu_evaluations (
+  id,
+  institution_id,
+  academic_assignment_id,
+  school_year_label,
+  title,
+  evaluation_type,
+  period_label,
+  due_date,
+  max_score,
+  weight_percentage,
+  description
+)
+VALUES
+  (
+    '39000000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000001',
+    '37000000-0000-0000-0000-000000000004',
+    '2026-2027',
+    'Diagnóstico inicial de Matemática',
+    'diagnostica',
+    'Primer parcial',
+    DATE '2026-09-15',
+    10,
+    10,
+    'Punto de partida para medir comprensión numérica de Primero de EGB.'
+  ),
+  (
+    '39000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000001',
+    '37000000-0000-0000-0000-000000000002',
+    '2026-2027',
+    'Ensayo de lectura crítica',
+    'taller',
+    'Primer quimestre',
+    DATE '2026-10-03',
+    10,
+    15,
+    'Actividad escrita para Lengua y Literatura en Séptimo de EGB A.'
+  ),
+  (
+    '39000000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000001',
+    '37000000-0000-0000-0000-000000000001',
+    '2026-2027',
+    'Prueba corta de funciones',
+    'prueba',
+    'Primer parcial',
+    DATE '2026-09-28',
+    20,
+    20,
+    'Verificación rápida sobre funciones y expresiones algebraicas en BGU.'
+  )
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO edu_evaluation_grades (
+  id,
+  institution_id,
+  evaluation_id,
+  student_id,
+  enrollment_id,
+  score,
+  feedback,
+  graded_at
+)
+VALUES
+  (
+    '39500000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000001',
+    '39000000-0000-0000-0000-000000000001',
+    '35000000-0000-0000-0000-000000000001',
+    '38000000-0000-0000-0000-000000000001',
+    8.75,
+    'Buen dominio de secuencias y conteo. Reforzar problemas verbales.',
+    DATE '2026-09-16'
+  ),
+  (
+    '39500000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000001',
+    '39000000-0000-0000-0000-000000000001',
+    '35000000-0000-0000-0000-000000000002',
+    '38000000-0000-0000-0000-000000000002',
+    9.2,
+    'Participación sólida y resolución correcta en la mayoría de ejercicios.',
+    DATE '2026-09-16'
   )
 ON CONFLICT (id) DO NOTHING;

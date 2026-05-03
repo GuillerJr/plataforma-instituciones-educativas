@@ -172,3 +172,33 @@ CREATE TABLE IF NOT EXISTS edu_enrollments (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (student_id, school_year_label)
  );
+
+CREATE TABLE IF NOT EXISTS edu_evaluations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  academic_assignment_id UUID NOT NULL REFERENCES edu_academic_assignments(id) ON DELETE CASCADE,
+  school_year_label VARCHAR(80) NOT NULL,
+  title VARCHAR(180) NOT NULL,
+  evaluation_type VARCHAR(30) NOT NULL CHECK (evaluation_type IN ('diagnostica', 'tarea', 'taller', 'prueba', 'proyecto', 'examen', 'quimestre')),
+  period_label VARCHAR(80) NOT NULL,
+  due_date DATE,
+  max_score NUMERIC(5,2) NOT NULL CHECK (max_score > 0 AND max_score <= 100),
+  weight_percentage NUMERIC(5,2) CHECK (weight_percentage IS NULL OR (weight_percentage >= 0 AND weight_percentage <= 100)),
+  description TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS edu_evaluation_grades (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  evaluation_id UUID NOT NULL REFERENCES edu_evaluations(id) ON DELETE CASCADE,
+  student_id UUID NOT NULL REFERENCES edu_students(id) ON DELETE CASCADE,
+  enrollment_id UUID NOT NULL REFERENCES edu_enrollments(id) ON DELETE RESTRICT,
+  score NUMERIC(5,2) NOT NULL CHECK (score >= 0 AND score <= 100),
+  feedback TEXT,
+  graded_at DATE NOT NULL DEFAULT CURRENT_DATE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (evaluation_id, student_id)
+);
