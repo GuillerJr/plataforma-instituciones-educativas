@@ -37,3 +37,43 @@ CREATE TABLE IF NOT EXISTS edu_user_roles (
   role_id UUID NOT NULL REFERENCES edu_roles(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, role_id)
 );
+
+CREATE TABLE IF NOT EXISTS edu_academic_levels (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  name VARCHAR(120) NOT NULL,
+  code VARCHAR(40) NOT NULL,
+  educational_stage VARCHAR(30) NOT NULL CHECK (educational_stage IN ('inicial', 'basica', 'bachillerato')),
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (institution_id, code),
+  UNIQUE (institution_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS edu_academic_grades (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  level_id UUID NOT NULL REFERENCES edu_academic_levels(id) ON DELETE CASCADE,
+  name VARCHAR(120) NOT NULL,
+  code VARCHAR(40) NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (institution_id, code),
+  UNIQUE (level_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS edu_academic_sections (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  grade_id UUID NOT NULL REFERENCES edu_academic_grades(id) ON DELETE CASCADE,
+  name VARCHAR(80) NOT NULL,
+  code VARCHAR(40) NOT NULL,
+  shift VARCHAR(30),
+  capacity INTEGER,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (institution_id, code),
+  UNIQUE (grade_id, name)
+);

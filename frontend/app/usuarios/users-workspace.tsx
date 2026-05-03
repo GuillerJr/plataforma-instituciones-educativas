@@ -51,8 +51,8 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <button type="button" className="primary-button" onClick={() => setCreateOpen(true)}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <button type="button" className="primary-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
                   Crear usuario
                 </button>
                 <span className="info-chip">{users.length} registrados</span>
@@ -105,9 +105,9 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
               <h2 className="table-title">Accesos y perfiles del colegio</h2>
               <p className="table-subtitle">Tabla responsiva para revisar responsables, sede asignada, roles, estado y acciones rápidas.</p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{users.length} usuarios</span>
-              <button type="button" className="compact-button" onClick={() => setCreateOpen(true)}>
+              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
                 Crear
               </button>
             </div>

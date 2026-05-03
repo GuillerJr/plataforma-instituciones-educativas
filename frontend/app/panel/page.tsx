@@ -9,6 +9,9 @@ type DashboardPayload = {
     users: number;
     activeUsers: number;
     roles: number;
+    academicLevels: number;
+    academicGrades: number;
+    academicSections: number;
   };
   institutions: Array<{
     id: string;
@@ -87,6 +90,9 @@ export default async function PanelPage() {
             <MetricCard label="Usuarios" value={dashboard.metrics.users} helper="Cuentas registradas" />
             <MetricCard label="Usuarios activos" value={dashboard.metrics.activeUsers} helper="Accesos habilitados" />
             <MetricCard label="Roles" value={dashboard.metrics.roles} helper="Perfiles disponibles" />
+            <MetricCard label="Niveles" value={dashboard.metrics.academicLevels} helper="Etapas académicas reales" />
+            <MetricCard label="Cursos o grados" value={dashboard.metrics.academicGrades} helper="Oferta base cargada" />
+            <MetricCard label="Secciones" value={dashboard.metrics.academicSections} helper="Paralelos visibles" />
           </section>
 
           <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -94,24 +100,25 @@ export default async function PanelPage() {
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="eyebrow">Cursos y rendimiento</p>
-                  <h2 className="mt-2 text-xl font-semibold text-slate-950">Panorama pedagógico resumido</h2>
+                  <h2 className="mt-2 text-xl font-semibold text-slate-950">Base académica real del periodo</h2>
                 </div>
-                <span className="info-chip">Actualizado hoy</span>
+                <span className="info-chip">Datos vivos</span>
               </div>
               <div className="mt-5 grid gap-3 md:grid-cols-2">
                 <div className="surface-muted p-4">
-                  <p className="text-sm text-slate-500">Cursos monitoreados</p>
-                  <p className="mt-2 text-2xl font-semibold text-slate-950">36</p>
-                  <p className="mt-2 text-sm text-slate-600">Distribuidos entre niveles y secciones.</p>
+                  <p className="text-sm text-slate-500">Niveles cargados</p>
+                  <p className="mt-2 text-2xl font-semibold text-slate-950">{dashboard.metrics.academicLevels}</p>
+                  <p className="mt-2 text-sm text-slate-600">Estructura troncal visible en la institución.</p>
                 </div>
                 <div className="surface-muted p-4">
-                  <p className="text-sm text-slate-500">Promedio de evaluaciones</p>
-                  <p className="mt-2 text-2xl font-semibold text-slate-950">8.9/10</p>
-                  <p className="mt-2 text-sm text-slate-600">Resultado consolidado del periodo vigente.</p>
+                  <p className="text-sm text-slate-500">Cursos o grados activos</p>
+                  <p className="mt-2 text-2xl font-semibold text-slate-950">{dashboard.metrics.academicGrades}</p>
+                  <p className="mt-2 text-sm text-slate-600">Base mínima real para la oferta académica.</p>
                 </div>
                 <div className="surface-muted p-4 md:col-span-2">
-                  <p className="text-sm text-slate-500">Actividades priorizadas</p>
-                  <p className="mt-2 text-base font-semibold text-slate-950">Apertura de periodo, revisión de accesos y validación académica</p>
+                  <p className="text-sm text-slate-500">Secciones operativas</p>
+                  <p className="mt-2 text-base font-semibold text-slate-950">{dashboard.metrics.academicSections} paralelos listos para organización, matrícula y seguimiento posterior</p>
+                  <Link href="/academico" className="compact-button mt-4 w-full sm:w-fit">Gestionar estructura académica</Link>
                 </div>
               </div>
             </div>

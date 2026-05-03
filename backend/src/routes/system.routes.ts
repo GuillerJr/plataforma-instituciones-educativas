@@ -31,11 +31,14 @@ router.get('/auth/bootstrap', (_request, response) => {
 });
 
 router.get('/dashboard', requireAuth, async (_request, response) => {
-  const [institutionsCount, usersCount, activeUsersCount, rolesCount, institutions, users] = await Promise.all([
+  const [institutionsCount, usersCount, activeUsersCount, rolesCount, levelsCount, gradesCount, sectionsCount, institutions, users] = await Promise.all([
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_institutions`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_users`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_users WHERE status = 'active'`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_roles`),
+    pool.query(`SELECT COUNT(*)::int AS total FROM edu_academic_levels`),
+    pool.query(`SELECT COUNT(*)::int AS total FROM edu_academic_grades`),
+    pool.query(`SELECT COUNT(*)::int AS total FROM edu_academic_sections`),
     pool.query(`SELECT id, name, slug, active_school_year_label AS "activeSchoolYearLabel" FROM edu_institutions ORDER BY created_at DESC LIMIT 5`),
     pool.query(`
       SELECT
@@ -57,6 +60,9 @@ router.get('/dashboard', requireAuth, async (_request, response) => {
       users: usersCount.rows[0]?.total ?? 0,
       activeUsers: activeUsersCount.rows[0]?.total ?? 0,
       roles: rolesCount.rows[0]?.total ?? 0,
+      academicLevels: levelsCount.rows[0]?.total ?? 0,
+      academicGrades: gradesCount.rows[0]?.total ?? 0,
+      academicSections: sectionsCount.rows[0]?.total ?? 0,
     },
     institutions: institutions.rows,
     recentUsers: users.rows,

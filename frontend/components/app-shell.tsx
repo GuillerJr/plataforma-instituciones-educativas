@@ -8,6 +8,7 @@ const navigationItems = [
   { href: '/', label: 'Inicio', shortLabel: 'IN', description: 'Resumen general' },
   { href: '/panel', label: 'Panel', shortLabel: 'PA', description: 'Centro operativo' },
   { href: '/instituciones', label: 'Institución', shortLabel: 'IE', description: 'Datos base y sedes' },
+  { href: '/academico', label: 'Académico', shortLabel: 'AC', description: 'Niveles, grados y secciones' },
   { href: '/usuarios', label: 'Usuarios', shortLabel: 'US', description: 'Accesos y perfiles' },
 ];
 
@@ -23,6 +24,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/instituciones': {
     title: 'Institución',
     subtitle: 'Datos base, sedes y contacto operativo en una sola vista.',
+  },
+  '/academico': {
+    title: 'Estructura académica',
+    subtitle: 'Niveles, cursos y secciones operativas para una sola institución.',
   },
   '/usuarios': {
     title: 'Usuarios y gobierno de acceso',

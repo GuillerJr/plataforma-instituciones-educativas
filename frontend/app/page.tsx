@@ -35,6 +35,11 @@ const quickModules = [
     title: 'Usuarios y roles',
     description: 'Accesos, estados, permisos y responsables operativos.',
   },
+  {
+    href: '/academico',
+    title: 'Estructura académica',
+    description: 'Niveles, cursos o grados y secciones reales para la institución actual.',
+  },
 ];
 
 const highlights = [
@@ -96,15 +101,18 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Link href="/panel" className="primary-button">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/panel" className="primary-button w-full sm:w-auto">
                 Abrir panel diario
               </Link>
-              <Link href="/instituciones" className="secondary-button">
+              <Link href="/instituciones" className="secondary-button w-full sm:w-auto">
                 Revisar institución
               </Link>
-              <Link href="/usuarios" className="secondary-button">
+              <Link href="/usuarios" className="secondary-button w-full sm:w-auto">
                 Gestionar accesos
+              </Link>
+              <Link href="/academico" className="secondary-button w-full sm:w-auto">
+                Abrir estructura académica
               </Link>
             </div>
           </div>
@@ -149,15 +157,15 @@ export default async function HomePage() {
             <h2 className="mt-2 text-xl font-semibold text-slate-950">Navegación rápida del sistema</h2>
             <p className="mt-2 text-sm text-slate-500">Accesos más directos y legibles para los flujos que más se usan.</p>
           </div>
-          <span className="info-chip">3 módulos activos</span>
+          <span className="info-chip">4 módulos activos</span>
         </div>
-        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+        <div className="mt-5 grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
           {quickModules.map((module) => (
             <article key={module.href} className="flex h-full flex-col rounded-[22px] border border-slate-200 bg-slate-50/80 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Módulo</p>
               <h3 className="mt-3 text-lg font-semibold text-slate-950">{module.title}</h3>
               <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{module.description}</p>
-              <Link href={module.href} className="compact-button mt-5 w-fit">
+              <Link href={module.href} className="compact-button mt-5 w-full sm:w-fit">
                 Abrir módulo
               </Link>
             </article>
