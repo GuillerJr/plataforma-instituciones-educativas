@@ -12,6 +12,7 @@ type DashboardPayload = {
     academicLevels: number;
     academicGrades: number;
     academicSections: number;
+    teachers: number;
   };
   institutions: Array<{
     id: string;
@@ -93,6 +94,7 @@ export default async function PanelPage() {
             <MetricCard label="Niveles" value={dashboard.metrics.academicLevels} helper="Etapas académicas reales" />
             <MetricCard label="Cursos o grados" value={dashboard.metrics.academicGrades} helper="Oferta base cargada" />
             <MetricCard label="Secciones" value={dashboard.metrics.academicSections} helper="Paralelos visibles" />
+            <MetricCard label="Docentes" value={dashboard.metrics.teachers} helper="Planta académica registrada" />
           </section>
 
           <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -118,7 +120,10 @@ export default async function PanelPage() {
                 <div className="surface-muted p-4 md:col-span-2">
                   <p className="text-sm text-slate-500">Secciones operativas</p>
                   <p className="mt-2 text-base font-semibold text-slate-950">{dashboard.metrics.academicSections} paralelos listos para organización, matrícula y seguimiento posterior</p>
-                  <Link href="/academico" className="compact-button mt-4 w-full sm:w-fit">Gestionar estructura académica</Link>
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <Link href="/academico" className="compact-button w-full sm:w-fit">Gestionar estructura académica</Link>
+                    <Link href="/docentes" className="compact-button w-full sm:w-fit">Gestionar docentes</Link>
+                  </div>
                 </div>
               </div>
             </div>

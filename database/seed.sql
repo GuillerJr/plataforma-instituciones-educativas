@@ -81,3 +81,62 @@ VALUES
   ('32000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000001', '31000000-0000-0000-0000-000000000005', 'B', 'BGU1-B', 'vespertina', 35),
   ('32000000-0000-0000-0000-000000000008', '10000000-0000-0000-0000-000000000001', '31000000-0000-0000-0000-000000000006', 'A', 'BGU3-A', 'matutina', 38)
 ON CONFLICT (institution_id, code) DO NOTHING;
+
+INSERT INTO edu_teachers (
+  id,
+  institution_id,
+  full_name,
+  identity_document,
+  email,
+  phone,
+  specialty,
+  status
+)
+VALUES
+  ('33000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'Mariana Pérez', 'DOC-001', 'mariana.perez@educa.demo', '+593111111111', 'Lengua y Literatura', 'active'),
+  ('33000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', 'Carlos Andrade', 'DOC-002', 'carlos.andrade@educa.demo', '+593222222222', 'Matemática', 'active'),
+  ('33000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001', 'Lucía Naranjo', 'DOC-003', 'lucia.naranjo@educa.demo', '+593333333333', 'Inicial', 'licencia')
+ON CONFLICT (institution_id, identity_document) DO NOTHING;
+
+INSERT INTO edu_teacher_assignments (
+  id,
+  institution_id,
+  teacher_id,
+  level_id,
+  grade_id,
+  section_id,
+  assignment_title,
+  notes
+)
+VALUES
+  (
+    '34000000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000001',
+    '33000000-0000-0000-0000-000000000001',
+    '30000000-0000-0000-0000-000000000002',
+    '31000000-0000-0000-0000-000000000004',
+    '32000000-0000-0000-0000-000000000005',
+    'Tutora de sección',
+    'Responsable del seguimiento académico y convivencia de Séptimo de EGB A.'
+  ),
+  (
+    '34000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000001',
+    '33000000-0000-0000-0000-000000000002',
+    '30000000-0000-0000-0000-000000000003',
+    '31000000-0000-0000-0000-000000000005',
+    NULL,
+    'Docente de área',
+    'Carga principal para Primero de BGU en jornada matutina y vespertina.'
+  ),
+  (
+    '34000000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000001',
+    '33000000-0000-0000-0000-000000000003',
+    '30000000-0000-0000-0000-000000000001',
+    NULL,
+    NULL,
+    'Coordinación de nivel',
+    'Acompañamiento académico del nivel Inicial.'
+  )
+ON CONFLICT (id) DO NOTHING;

@@ -26,6 +26,14 @@ export function errorHandler(error: unknown, _request: Request, response: Respon
       return response.status(409).json({ success: false, message: 'Ya existe un usuario con ese correo.' });
     }
 
+    if (pgError.constraint?.includes('edu_teachers_institution_id_identity_document')) {
+      return response.status(409).json({ success: false, message: 'Ya existe un docente con ese documento en la institución actual.' });
+    }
+
+    if (pgError.constraint?.includes('edu_teachers_institution_id_email')) {
+      return response.status(409).json({ success: false, message: 'Ya existe un docente con ese correo en la institución actual.' });
+    }
+
     return response.status(409).json({ success: false, message: 'Ya existe un registro con esos datos.' });
   }
 

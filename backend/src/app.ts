@@ -7,6 +7,7 @@ import institutionsRoutes from './routes/institutions.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import usersRoutes from './routes/users.routes.js';
 import academicStructureRoutes from './routes/academic-structure.routes.js';
+import teachersRoutes from './routes/teachers.routes.js';
 
 export function createApp() {
   const app = express();
@@ -23,6 +24,7 @@ export function createApp() {
   app.use('/api/institutions', institutionsRoutes);
   app.use('/api/users', usersRoutes);
   app.use('/api/academic-structure', academicStructureRoutes);
+  app.use('/api/teachers', teachersRoutes);
   app.use(errorHandler);
 
   return app;

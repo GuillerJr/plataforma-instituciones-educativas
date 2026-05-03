@@ -40,6 +40,11 @@ const quickModules = [
     title: 'Estructura académica',
     description: 'Niveles, cursos o grados y secciones reales para la institución actual.',
   },
+  {
+    href: '/docentes',
+    title: 'Docentes',
+    description: 'Planta docente y asignación académica visible sobre la estructura del colegio.',
+  },
 ];
 
 const highlights = [
@@ -114,6 +119,9 @@ export default async function HomePage() {
               <Link href="/academico" className="secondary-button w-full sm:w-auto">
                 Abrir estructura académica
               </Link>
+              <Link href="/docentes" className="secondary-button w-full sm:w-auto">
+                Gestionar docentes
+              </Link>
             </div>
           </div>
 
@@ -157,7 +165,7 @@ export default async function HomePage() {
             <h2 className="mt-2 text-xl font-semibold text-slate-950">Navegación rápida del sistema</h2>
             <p className="mt-2 text-sm text-slate-500">Accesos más directos y legibles para los flujos que más se usan.</p>
           </div>
-          <span className="info-chip">4 módulos activos</span>
+          <span className="info-chip">5 módulos activos</span>
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
           {quickModules.map((module) => (

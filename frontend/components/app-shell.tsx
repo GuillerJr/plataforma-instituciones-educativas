@@ -9,6 +9,7 @@ const navigationItems = [
   { href: '/panel', label: 'Panel', shortLabel: 'PA', description: 'Centro operativo' },
   { href: '/instituciones', label: 'Institución', shortLabel: 'IE', description: 'Datos base y sedes' },
   { href: '/academico', label: 'Académico', shortLabel: 'AC', description: 'Niveles, grados y secciones' },
+  { href: '/docentes', label: 'Docentes', shortLabel: 'DO', description: 'Planta y asignación académica' },
   { href: '/usuarios', label: 'Usuarios', shortLabel: 'US', description: 'Accesos y perfiles' },
 ];
 
@@ -28,6 +29,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/academico': {
     title: 'Estructura académica',
     subtitle: 'Niveles, cursos y secciones operativas para una sola institución.',
+  },
+  '/docentes': {
+    title: 'Docentes y carga académica',
+    subtitle: 'Planta docente con asignaciones visibles por nivel, curso o sección.',
   },
   '/usuarios': {
     title: 'Usuarios y gobierno de acceso',

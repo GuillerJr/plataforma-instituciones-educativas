@@ -77,3 +77,36 @@ CREATE TABLE IF NOT EXISTS edu_academic_sections (
   UNIQUE (institution_id, code),
   UNIQUE (grade_id, name)
 );
+
+CREATE TABLE IF NOT EXISTS edu_teachers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  full_name VARCHAR(180) NOT NULL,
+  identity_document VARCHAR(40) NOT NULL,
+  email VARCHAR(180),
+  phone VARCHAR(40),
+  specialty VARCHAR(140),
+  status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'licencia')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (institution_id, identity_document),
+  UNIQUE (institution_id, email)
+);
+
+CREATE TABLE IF NOT EXISTS edu_teacher_assignments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  teacher_id UUID NOT NULL REFERENCES edu_teachers(id) ON DELETE CASCADE,
+  level_id UUID REFERENCES edu_academic_levels(id) ON DELETE CASCADE,
+  grade_id UUID REFERENCES edu_academic_grades(id) ON DELETE CASCADE,
+  section_id UUID REFERENCES edu_academic_sections(id) ON DELETE CASCADE,
+  assignment_title VARCHAR(140) NOT NULL,
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CHECK (
+    level_id IS NOT NULL
+    OR grade_id IS NOT NULL
+    OR section_id IS NOT NULL
+  )
+);

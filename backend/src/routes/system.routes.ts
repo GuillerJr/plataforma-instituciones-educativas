@@ -16,9 +16,9 @@ router.get('/health', (_request, response) => {
 router.get('/bootstrap', (_request, response) => {
   return response.json(successResponse('Bootstrap snapshot loaded', {
     project: 'plataforma-instituciones-educativas',
-    phase: 'foundation',
+    phase: 'academic-2-docentes',
     publicUrl: 'https://educa.hacktrickstore.com',
-    modules: ['auth-base', 'instituciones', 'usuarios', 'roles', 'academico-base'],
+    modules: ['auth-base', 'instituciones', 'usuarios', 'roles', 'academico-base', 'docentes'],
   }));
 });
 
@@ -31,7 +31,7 @@ router.get('/auth/bootstrap', (_request, response) => {
 });
 
 router.get('/dashboard', requireAuth, async (_request, response) => {
-  const [institutionsCount, usersCount, activeUsersCount, rolesCount, levelsCount, gradesCount, sectionsCount, institutions, users] = await Promise.all([
+  const [institutionsCount, usersCount, activeUsersCount, rolesCount, levelsCount, gradesCount, sectionsCount, teachersCount, institutions, users] = await Promise.all([
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_institutions`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_users`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_users WHERE status = 'active'`),
@@ -39,6 +39,7 @@ router.get('/dashboard', requireAuth, async (_request, response) => {
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_academic_levels`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_academic_grades`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_academic_sections`),
+    pool.query(`SELECT COUNT(*)::int AS total FROM edu_teachers`),
     pool.query(`SELECT id, name, slug, active_school_year_label AS "activeSchoolYearLabel" FROM edu_institutions ORDER BY created_at DESC LIMIT 5`),
     pool.query(`
       SELECT
@@ -63,6 +64,7 @@ router.get('/dashboard', requireAuth, async (_request, response) => {
       academicLevels: levelsCount.rows[0]?.total ?? 0,
       academicGrades: gradesCount.rows[0]?.total ?? 0,
       academicSections: sectionsCount.rows[0]?.total ?? 0,
+      teachers: teachersCount.rows[0]?.total ?? 0,
     },
     institutions: institutions.rows,
     recentUsers: users.rows,
