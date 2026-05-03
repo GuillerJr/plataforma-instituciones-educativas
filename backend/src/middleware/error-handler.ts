@@ -62,6 +62,10 @@ export function errorHandler(error: unknown, _request: Request, response: Respon
       return response.status(409).json({ success: false, message: 'El estudiante ya tiene una calificación registrada para esa evaluación.' });
     }
 
+    if (pgError.constraint?.includes('edu_attendance_records_enrollment_id_attendance_date')) {
+      return response.status(409).json({ success: false, message: 'La matrícula ya tiene asistencia registrada para esa fecha.' });
+    }
+
     return response.status(409).json({ success: false, message: 'Ya existe un registro con esos datos.' });
   }
 

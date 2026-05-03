@@ -19,6 +19,7 @@ type DashboardPayload = {
     academicAssignments: number;
     evaluations: number;
     evaluationGrades: number;
+    attendanceRecords: number;
   };
   institutions: Array<{
     id: string;
@@ -107,6 +108,7 @@ export default async function PanelPage() {
             <MetricCard label="Asignaciones" value={dashboard.metrics.academicAssignments} helper="Carga académica enlazada" />
             <MetricCard label="Evaluaciones" value={dashboard.metrics.evaluations} helper="Instrumentos creados" />
             <MetricCard label="Calificaciones" value={dashboard.metrics.evaluationGrades} helper="Notas registradas" />
+            <MetricCard label="Asistencias" value={dashboard.metrics.attendanceRecords} helper="Control diario registrado" />
           </section>
 
           <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
@@ -139,9 +141,10 @@ export default async function PanelPage() {
                     <Link href="/matriculas" className="compact-button w-full sm:w-fit">Gestionar matrículas</Link>
                     <Link href="/materias" className="compact-button w-full sm:w-fit">Gestionar materias</Link>
                     <Link href="/asignaciones-academicas" className="compact-button w-full sm:w-fit">Gestionar asignaciones</Link>
-                    <Link href="/evaluaciones" className="compact-button w-full sm:w-fit">Gestionar evaluaciones</Link>
-                  </div>
-                </div>
+                     <Link href="/evaluaciones" className="compact-button w-full sm:w-fit">Gestionar evaluaciones</Link>
+                     <Link href="/asistencia" className="compact-button w-full sm:w-fit">Gestionar asistencia</Link>
+                   </div>
+                 </div>
               </div>
             </div>
 

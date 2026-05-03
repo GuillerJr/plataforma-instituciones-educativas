@@ -70,6 +70,11 @@ const quickModules = [
     title: 'Evaluaciones y calificaciones',
     description: 'Instrumentos, notas y seguimiento académico por estudiante matriculado.',
   },
+  {
+    href: '/asistencia',
+    title: 'Asistencia',
+    description: 'Control diario por fecha y sección enlazado con matrículas reales del periodo activo.',
+  },
 ];
 
 const highlights = [
@@ -162,6 +167,9 @@ export default async function HomePage() {
               <Link href="/evaluaciones" className="secondary-button w-full sm:w-auto">
                 Gestionar evaluaciones
               </Link>
+              <Link href="/asistencia" className="secondary-button w-full sm:w-auto">
+                Gestionar asistencia
+              </Link>
             </div>
           </div>
 
@@ -205,7 +213,7 @@ export default async function HomePage() {
             <h2 className="mt-2 text-xl font-semibold text-slate-950">Navegación rápida del sistema</h2>
             <p className="mt-2 text-sm text-slate-500">Accesos más directos y legibles para los flujos que más se usan.</p>
           </div>
-          <span className="info-chip">10 módulos activos</span>
+          <span className="info-chip">11 módulos activos</span>
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
           {quickModules.map((module) => (
@@ -244,11 +252,11 @@ export default async function HomePage() {
               <p className="mt-2 text-base font-semibold text-slate-950">Resultados visibles para coordinación</p>
             </div>
             <div className="surface-muted p-4">
-              <p className="text-sm text-slate-500">Actividades</p>
-              <p className="mt-2 text-base font-semibold text-slate-950">Agenda operativa y pendientes</p>
-            </div>
-          </div>
-        </div>
+               <p className="text-sm text-slate-500">Asistencia</p>
+               <p className="mt-2 text-base font-semibold text-slate-950">Seguimiento diario por sección y estudiante</p>
+             </div>
+           </div>
+         </div>
 
         <div className="section-grid-card">
           <p className="eyebrow">Experiencia institucional</p>

@@ -437,3 +437,50 @@ VALUES
     DATE '2026-09-16'
   )
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO edu_attendance_records (
+  id,
+  institution_id,
+  enrollment_id,
+  student_id,
+  section_id,
+  school_year_label,
+  attendance_date,
+  attendance_status,
+  notes
+)
+VALUES
+  (
+    '39600000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000001',
+    '38000000-0000-0000-0000-000000000001',
+    '35000000-0000-0000-0000-000000000001',
+    '32000000-0000-0000-0000-000000000003',
+    '2026-2027',
+    DATE '2026-09-17',
+    'present',
+    'Ingreso puntual y participación activa en la primera hora.'
+  ),
+  (
+    '39600000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000001',
+    '38000000-0000-0000-0000-000000000002',
+    '35000000-0000-0000-0000-000000000002',
+    '32000000-0000-0000-0000-000000000004',
+    '2026-2027',
+    DATE '2026-09-17',
+    'late',
+    'Llegada con diez minutos de retraso por transporte escolar.'
+  ),
+  (
+    '39600000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000001',
+    '38000000-0000-0000-0000-000000000001',
+    '35000000-0000-0000-0000-000000000001',
+    '32000000-0000-0000-0000-000000000003',
+    '2026-2027',
+    DATE '2026-09-18',
+    'justified',
+    'Permiso médico informado por representante y validado por coordinación.'
+  )
+ON CONFLICT (id) DO NOTHING;

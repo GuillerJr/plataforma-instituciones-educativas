@@ -202,3 +202,18 @@ CREATE TABLE IF NOT EXISTS edu_evaluation_grades (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (evaluation_id, student_id)
 );
+
+CREATE TABLE IF NOT EXISTS edu_attendance_records (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  enrollment_id UUID NOT NULL REFERENCES edu_enrollments(id) ON DELETE CASCADE,
+  student_id UUID NOT NULL REFERENCES edu_students(id) ON DELETE CASCADE,
+  section_id UUID NOT NULL REFERENCES edu_academic_sections(id) ON DELETE RESTRICT,
+  school_year_label VARCHAR(80) NOT NULL,
+  attendance_date DATE NOT NULL,
+  attendance_status VARCHAR(20) NOT NULL CHECK (attendance_status IN ('present', 'absent', 'late', 'justified')),
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (enrollment_id, attendance_date)
+);
