@@ -88,7 +88,7 @@ export default async function UsersPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="eyebrow">Catálogo de roles</p>
-                <p className="mt-2 text-sm text-slate-400">Perfiles disponibles en la gobernanza inicial del sistema.</p>
+                <p className="mt-2 text-sm text-slate-500">Perfiles disponibles en la gobernanza inicial del sistema.</p>
               </div>
               <span className="info-chip">{roles.length} roles</span>
             </div>
@@ -97,7 +97,7 @@ export default async function UsersPage() {
                 <div key={role.id} className="surface-muted p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-medium text-white">{role.name}</p>
+                      <p className="font-medium text-slate-950">{role.name}</p>
                       <p className="mt-1 text-xs text-slate-500">{role.code}</p>
                     </div>
                     <span className="info-chip">{role.isSystem ? 'Sistema' : 'Editable'}</span>
@@ -109,34 +109,34 @@ export default async function UsersPage() {
         </div>
 
         <section className="surface-panel overflow-hidden">
-          <div className="flex flex-col gap-4 border-b border-white/10 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="soft-divider flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="eyebrow">Usuarios registrados</p>
-              <p className="mt-2 text-sm text-slate-400">Lectura de accesos institucionales y globales.</p>
+              <p className="mt-2 text-sm text-slate-500">Lectura de accesos institucionales y globales.</p>
             </div>
             <span className="info-chip">{users.length} usuarios</span>
           </div>
 
           {error ? (
-            <div className="px-6 py-6 text-sm text-rose-300">{error}</div>
+            <div className="px-6 py-6 text-sm text-rose-700">{error}</div>
           ) : users.length === 0 ? (
-            <div className="px-6 py-6 text-sm text-slate-400">Todavía no hay usuarios registrados.</div>
+            <div className="px-6 py-6 text-sm text-slate-500">Todavía no hay usuarios registrados.</div>
           ) : (
             <div className="space-y-3 p-4">
               {users.map((user) => (
-                <article key={user.id} className="surface-muted p-4">
+                <article key={user.id} className="table-row-card">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-lg font-semibold text-white">{user.fullName}</h3>
+                        <h3 className="text-lg font-semibold text-slate-950">{user.fullName}</h3>
                         <span className="info-chip">{translateUserStatus(user.status)}</span>
                       </div>
                       <p className="text-sm text-slate-500">{user.email}</p>
-                      <p className="text-sm text-slate-300">{user.institutionName ?? 'Acceso global sin institución'}</p>
+                      <p className="text-sm text-slate-600">{user.institutionName ?? 'Acceso global sin institución'}</p>
                     </div>
                     <div className="space-y-2 lg:max-w-xs lg:text-right">
                       <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Roles asignados</p>
-                      <p className="text-sm text-slate-300">{user.roleCodes.join(', ')}</p>
+                      <p className="text-sm text-slate-600">{user.roleCodes.join(', ')}</p>
                     </div>
                   </div>
                 </article>

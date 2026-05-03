@@ -44,23 +44,30 @@ export default async function PanelPage() {
   return (
     <main className="space-y-8 pb-10">
       <section className="glass-panel px-6 py-8 sm:px-8 lg:px-10">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <p className="eyebrow">Panel administrativo</p>
             <h1 className="section-title mt-3">Vista central de operación institucional</h1>
             <p className="section-copy mt-4 max-w-3xl">
-              Un panel ejecutivo más limpio para leer el estado actual de instituciones, usuarios y gobierno operativo sin perder foco.
+              Un panel ejecutivo claro para leer el estado de instituciones, usuarios y gobernanza operativa sin perder foco ni contexto.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/instituciones" className="secondary-button">Instituciones</Link>
-            <Link href="/usuarios" className="secondary-button">Usuarios y roles</Link>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link href="/instituciones" className="surface-muted p-4 transition hover:border-sky-200">
+              <p className="text-sm font-semibold text-slate-900">Instituciones</p>
+              <p className="mt-2 text-sm text-slate-600">Registro, consulta y control del ciclo lectivo.</p>
+            </Link>
+            <Link href="/usuarios" className="surface-muted p-4 transition hover:border-sky-200">
+              <p className="text-sm font-semibold text-slate-900">Usuarios y roles</p>
+              <p className="mt-2 text-sm text-slate-600">Accesos, estados y perfiles de trabajo.</p>
+            </Link>
           </div>
         </div>
       </section>
 
       {error || !dashboard ? (
-        <div className="surface-panel px-5 py-4 text-sm text-rose-200">{error ?? 'No hay datos del dashboard.'}</div>
+        <div className="surface-panel px-5 py-4 text-sm text-rose-700">{error ?? 'No hay datos del panel.'}</div>
       ) : (
         <>
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -72,19 +79,19 @@ export default async function PanelPage() {
 
           <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="surface-panel overflow-hidden">
-              <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div className="soft-divider flex items-center justify-between px-6 py-5">
                 <div>
                   <p className="eyebrow">Instituciones recientes</p>
-                  <p className="mt-2 text-sm text-slate-400">Lectura rápida de las unidades institucionales activas.</p>
+                  <p className="mt-2 text-sm text-slate-500">Lectura rápida de las unidades institucionales activas.</p>
                 </div>
                 <span className="info-chip">{dashboard.institutions.length} visibles</span>
               </div>
               <div className="space-y-3 p-4">
                 {dashboard.institutions.map((institution) => (
-                  <article key={institution.id} className="surface-muted p-4">
+                  <article key={institution.id} className="table-row-card">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">{institution.name}</h3>
+                        <h3 className="text-lg font-semibold text-slate-950">{institution.name}</h3>
                         <p className="mt-1 text-sm text-slate-500">{institution.slug}</p>
                       </div>
                       <span className="info-chip">{institution.activeSchoolYearLabel ?? 'Año por definir'}</span>
@@ -95,21 +102,21 @@ export default async function PanelPage() {
             </div>
 
             <div className="surface-panel overflow-hidden">
-              <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <div className="soft-divider flex items-center justify-between px-6 py-5">
                 <div>
                   <p className="eyebrow">Usuarios recientes</p>
-                  <p className="mt-2 text-sm text-slate-400">Personas con acceso creadas recientemente.</p>
+                  <p className="mt-2 text-sm text-slate-500">Personas con acceso creadas recientemente.</p>
                 </div>
                 <span className="info-chip">{dashboard.recentUsers.length} visibles</span>
               </div>
               <div className="space-y-3 p-4">
                 {dashboard.recentUsers.map((user) => (
-                  <article key={user.id} className="surface-muted p-4">
+                  <article key={user.id} className="table-row-card">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">{user.fullName}</h3>
+                        <h3 className="text-lg font-semibold text-slate-950">{user.fullName}</h3>
                         <p className="mt-1 text-sm text-slate-500">{user.email}</p>
-                        <p className="mt-3 text-sm text-slate-300">{user.institutionName ?? 'Acceso global sin institucion'}</p>
+                        <p className="mt-3 text-sm text-slate-600">{user.institutionName ?? 'Acceso global sin institución'}</p>
                       </div>
                       <span className="info-chip">{translateUserStatus(user.status)}</span>
                     </div>
@@ -135,8 +142,8 @@ function MetricCard({ label, value, helper }: { label: string; value: number; he
   return (
     <div className="metric-card">
       <p className="eyebrow">{label}</p>
-      <p className="mt-3 text-4xl font-semibold text-white">{value}</p>
-      <p className="mt-3 text-sm text-slate-400">{helper}</p>
+      <p className="stat-value mt-3">{value}</p>
+      <p className="mt-3 text-sm text-slate-500">{helper}</p>
     </div>
   );
 }

@@ -53,32 +53,32 @@ export default async function InstitutionsPage() {
         <InstitutionCreateForm />
 
         <section className="surface-panel overflow-hidden">
-          <div className="flex flex-col gap-4 border-b border-white/10 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="soft-divider flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="eyebrow">Registro institucional</p>
-              <p className="mt-2 text-sm text-slate-400">Instituciones disponibles en la operación actual.</p>
+              <p className="mt-2 text-sm text-slate-500">Instituciones disponibles en la operación actual.</p>
             </div>
             <span className="info-chip">{institutions.length} instituciones</span>
           </div>
 
           {error ? (
-            <div className="px-6 py-6 text-sm text-rose-300">{error}</div>
+            <div className="px-6 py-6 text-sm text-rose-700">{error}</div>
           ) : institutions.length === 0 ? (
-            <div className="px-6 py-6 text-sm text-slate-400">Todavía no hay instituciones registradas.</div>
+            <div className="px-6 py-6 text-sm text-slate-500">Todavía no hay instituciones registradas.</div>
           ) : (
             <div className="space-y-3 p-4">
               {institutions.map((institution) => (
-                <article key={institution.id} className="surface-muted p-4">
+                <article key={institution.id} className="table-row-card">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="space-y-2">
-                      <h3 className="text-lg font-semibold text-white">{institution.name}</h3>
+                      <h3 className="text-lg font-semibold text-slate-950">{institution.name}</h3>
                       <p className="text-sm text-slate-500">{institution.slug}</p>
                       <div className="flex flex-wrap gap-2 pt-1">
                         <span className="info-chip">{translateInstitutionType(institution.institutionType)}</span>
                         <span className="info-chip">{institution.activeSchoolYearLabel ?? 'Año por definir'}</span>
                       </div>
                     </div>
-                    <div className="space-y-2 text-sm text-slate-300 lg:max-w-xs lg:text-right">
+                    <div className="space-y-2 text-sm text-slate-600 lg:max-w-xs lg:text-right">
                       <p>{institution.contactEmail ?? 'Sin correo'}</p>
                       <p>{institution.contactPhone ?? 'Sin teléfono'}</p>
                       <p className="text-slate-500">{institution.address ?? 'Dirección por definir'}</p>
@@ -95,6 +95,6 @@ export default async function InstitutionsPage() {
 }
 
 function translateInstitutionType(type: Institution['institutionType']) {
-  if (type === 'publica') return 'Publica';
+  if (type === 'publica') return 'Pública';
   return 'Privada';
 }

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -18,9 +18,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    linear-gradient(180deg, rgba(8, 15, 28, 0.96), rgba(9, 16, 28, 1)),
-    #08101c;
-  color: #f5f7fb;
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.1), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.08), transparent 24%),
+    #f3f7fc;
+  color: #10213a;
   font-family: Inter, system-ui, sans-serif;
 }
 
@@ -51,45 +52,62 @@ a {
   }
 
   ::selection {
-    background: rgba(56, 189, 248, 0.25);
+    background: rgba(59, 130, 246, 0.2);
   }
 }
 
 @layer components {
+  .app-sidebar {
+    @apply rounded-[32px] border border-slate-200 bg-white shadow-[0_22px_60px_rgba(15,23,42,0.08)];
+  }
+
+  .app-sidebar-link {
+    @apply flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950;
+  }
+
+  .app-sidebar-link-active {
+    @apply bg-sky-50 text-sky-700 shadow-[inset_0_0_0_1px_rgba(14,165,233,0.18)];
+  }
+
+  .topbar-panel {
+    @apply rounded-[28px] border border-white/70 bg-white/90 shadow-[0_18px_46px_rgba(15,23,42,0.08)] backdrop-blur;
+  }
+
   .glass-panel {
-    @apply rounded-[28px] border border-white/10 bg-slate-950/55 backdrop-blur-xl shadow-[0_20px_80px_rgba(2,8,23,0.45)];
+    @apply rounded-[32px] border border-white shadow-[0_26px_70px_rgba(15,23,42,0.09)] backdrop-blur;
+    background-color: rgba(255, 255, 255, 0.92);
   }
 
   .surface-panel {
-    @apply rounded-[28px] border border-white/10 bg-white/[0.045] shadow-[0_16px_50px_rgba(2,8,23,0.28)];
+    @apply rounded-[28px] border border-slate-200/80 bg-white shadow-[0_18px_46px_rgba(15,23,42,0.08)];
   }
 
   .surface-muted {
-    @apply rounded-3xl border border-white/10 bg-slate-950/45;
+    @apply rounded-3xl border border-slate-200 bg-slate-50/85;
   }
 
   .eyebrow {
-    @apply text-xs font-medium uppercase tracking-[0.28em] text-sky-200/80;
+    @apply text-xs font-semibold uppercase tracking-[0.24em] text-sky-700;
   }
 
   .section-title {
-    @apply text-3xl font-semibold tracking-tight text-white sm:text-4xl;
+    @apply text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl;
   }
 
   .section-copy {
-    @apply text-sm leading-7 text-slate-300 sm:text-base;
+    @apply text-sm leading-7 text-slate-600 sm:text-base;
   }
 
   .nav-link {
-    @apply inline-flex items-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-sky-300/30 hover:bg-sky-300/10 hover:text-white;
+    @apply inline-flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700;
   }
 
   .primary-button {
-    @apply inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-sky-400 via-blue-500 to-cyan-300 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_14px_35px_rgba(56,189,248,0.3)] transition hover:brightness-110;
+    @apply inline-flex items-center justify-center rounded-2xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(2,132,199,0.22)] transition hover:bg-sky-700;
   }
 
   .secondary-button {
-    @apply inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/[0.09];
+    @apply inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50;
   }
 
   .metric-card {
@@ -97,18 +115,30 @@ a {
   }
 
   .info-chip {
-    @apply inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-300;
+    @apply inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600;
   }
 
   .form-field {
-    @apply mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/55 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-sky-300/50 focus:bg-slate-950/70;
+    @apply mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-4 focus:ring-sky-100;
   }
 
   .status-good {
-    @apply text-emerald-300;
+    @apply text-emerald-700;
   }
 
   .status-bad {
-    @apply text-rose-300;
+    @apply text-rose-700;
+  }
+
+  .table-row-card {
+    @apply rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_10px_26px_rgba(15,23,42,0.05)];
+  }
+
+  .stat-value {
+    @apply text-4xl font-semibold tracking-tight text-slate-950;
+  }
+
+  .soft-divider {
+    @apply border-b border-slate-200;
   }
 }
