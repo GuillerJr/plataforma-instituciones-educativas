@@ -67,15 +67,15 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
         </div>
       ) : null}
 
-      <div className="mx-auto flex min-h-screen w-full max-w-[1600px] gap-5 px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1600px] gap-5 px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
         <aside className="app-sidebar hidden w-[284px] shrink-0 lg:flex lg:flex-col lg:p-4">
           <SidebarContent pathname={pathname ?? '/'} />
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="topbar-panel sticky top-4 z-20 mb-5 px-4 py-3.5 sm:px-5 lg:px-5">
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-              <div className="space-y-2">
+          <header className="topbar-panel sticky top-3 z-20 mb-4 px-3 py-2.5 sm:px-4">
+            <div className="flex flex-col gap-2.5 xl:flex-row xl:items-center xl:justify-between">
+              <div className="min-w-0 space-y-2">
                 <div className="flex items-center gap-3 lg:hidden">
                   <button type="button" className="icon-button" aria-label="Abrir navegación" onClick={() => setMobileSidebarOpen(true)}>
                     <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 text-slate-700">
@@ -83,40 +83,66 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
                     </svg>
                   </button>
 
-                  <Link href="/" className="inline-flex items-center gap-3 text-slate-950 transition hover:text-sky-700">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white">
+                  <Link href="/" className="inline-flex min-w-0 items-center gap-2.5 text-slate-950 transition hover:text-sky-700">
+                    <span className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-[11px] font-semibold text-white shadow-[0_10px_24px_rgba(15,23,42,0.16)]">
                       ED
                     </span>
-                    <span>
-                      <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Gestión escolar</span>
-                      <span className="block text-lg font-semibold tracking-tight">Campus Central</span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">Gestión escolar</span>
+                      <span className="block truncate text-base font-semibold tracking-tight">Campus Central</span>
                     </span>
                   </Link>
                 </div>
 
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Sistema institucional</p>
-                  <h1 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl">{activePage.title}</h1>
-                  <p className="mt-1 hidden text-sm text-slate-500 lg:block">{activePage.subtitle}</p>
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    <span className="rounded-full border border-sky-100 bg-sky-50 px-2.5 py-0.5 text-sky-700">Sistema institucional</span>
+                    <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:inline-flex" />
+                    <span className="hidden sm:inline">Campus Central</span>
+                    <span className="ml-auto inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-emerald-700 sm:ml-0">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      Operación activa
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-1 lg:flex-row lg:items-end lg:justify-between lg:gap-4">
+                    <div className="min-w-0">
+                      <h1 className="text-base font-semibold tracking-tight text-slate-950 sm:text-[1.4rem]">{activePage.title}</h1>
+                      <p className="hidden max-w-3xl text-[13px] leading-5 text-slate-500 md:block">{activePage.subtitle}</p>
+                    </div>
+
+                    <div className="hidden items-center gap-2.5 xl:flex xl:shrink-0">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-right">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Vista actual</p>
+                        <p className="mt-1 text-xs font-semibold text-slate-950">Control diario y acceso inmediato</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 xl:min-w-[520px] xl:max-w-[680px] xl:flex-row xl:items-center xl:justify-end">
-                <label className="header-search xl:flex-1">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center xl:min-w-[560px] xl:max-w-[680px] xl:justify-end">
+                <label className="header-search sm:flex-1 xl:max-w-[320px]">
                   <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 text-slate-400">
                     <path d="M10.5 4a6.5 6.5 0 1 0 4.03 11.6l4.43 4.43 1.06-1.06-4.43-4.43A6.5 6.5 0 0 0 10.5 4Zm0 1.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z" fill="currentColor" />
                   </svg>
-                  <input aria-label="Buscar" placeholder="Buscar sede, usuario o vista" />
+                  <input aria-label="Buscar" placeholder="Buscar usuario, vista o registro" />
                 </label>
 
-                <div className="flex items-center gap-3 xl:shrink-0">
+                <div className="flex items-center justify-between gap-2 xl:shrink-0 xl:justify-start">
                   <button type="button" className="icon-button" aria-label="Notificaciones">
                     <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-sky-500" />
                     <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 text-slate-600">
                       <path d="M12 3.75a4.25 4.25 0 0 0-4.25 4.25v1.02c0 .64-.2 1.26-.57 1.78L5.8 12.77A1.75 1.75 0 0 0 7.23 15.5h9.54a1.75 1.75 0 0 0 1.43-2.73l-1.38-1.97a3.23 3.23 0 0 1-.57-1.78V8A4.25 4.25 0 0 0 12 3.75Zm0 16.5a2.24 2.24 0 0 0 2.12-1.5H9.88A2.24 2.24 0 0 0 12 20.25Z" fill="currentColor" />
                     </svg>
                   </button>
-                  <Link href="/usuarios" className="primary-button whitespace-nowrap">
+
+                  <div className="hidden rounded-2xl border border-slate-200 bg-white px-3 py-1.5 text-right lg:block">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Acceso rápido</p>
+                    <p className="mt-1 text-xs font-medium text-slate-700">Alta y consulta de usuarios</p>
+                  </div>
+
+                  <Link href="/usuarios" className="primary-button h-8.5 whitespace-nowrap rounded-xl px-3 py-0 text-xs">
                     Nuevo usuario
                   </Link>
                 </div>
