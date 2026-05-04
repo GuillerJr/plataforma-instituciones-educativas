@@ -9,12 +9,31 @@ import { successResponse } from '../utils/api.js';
 const router = Router();
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().optional(),
+  identifier: z.string().min(1).optional(),
   password: z.string().min(6),
+}).superRefine((value, ctx) => {
+  if (!value.email && !value.identifier) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['email'],
+      message: 'Ingresa tu usuario o correo institucional.',
+    });
+  }
 });
+
+function buildInstitutionalEmail(identifier: string) {
+  const normalized = identifier.trim().toLowerCase();
+
+  if (!normalized) return '';
+  if (normalized.includes('@')) return normalized;
+
+  return `${normalized}@educa.local`;
+}
 
 router.post('/login', async (request, response) => {
   const payload = loginSchema.parse(request.body);
+  const email = payload.email?.trim().toLowerCase() || buildInstitutionalEmail(payload.identifier ?? '');
 
   const query = await pool.query(
     `
@@ -33,7 +52,7 @@ router.post('/login', async (request, response) => {
       GROUP BY u.id
       LIMIT 1
     `,
-    [payload.email, payload.password],
+    [email, payload.password],
   );
 
   const user = query.rows[0] as {
