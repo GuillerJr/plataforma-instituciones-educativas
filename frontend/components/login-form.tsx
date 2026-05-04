@@ -12,6 +12,7 @@ type FormState = {
 export function LoginForm() {
   const router = useRouter();
   const [state, setState] = useState<FormState>({ pending: false, error: null });
+  const recoveryHref = '/registro?requestType=acceso&context=recuperacion';
 
   async function handleSubmit(formData: FormData) {
     setState({ pending: true, error: null });
@@ -54,12 +55,12 @@ export function LoginForm() {
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white">ED</span>
         <div>
           <p className="eyebrow">Acceso institucional</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">Ingresa al sistema académico</h1>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">Ingresa al sistema institucional</h1>
         </div>
       </div>
 
       <p className="mt-4 text-sm leading-6 text-slate-600">
-        Accede con tu usuario institucional o con tu correo. Si escribes solo el usuario, se completará con el dominio interno del colegio.
+        Accede con tu usuario institucional o con tu correo. Si escribes solo el usuario, el sistema completará el dominio interno del colegio.
       </p>
 
       <form action={handleSubmit} className="mt-6 space-y-4">
@@ -73,6 +74,12 @@ export function LoginForm() {
           <input name="password" type="password" required minLength={6} className="form-field" placeholder="Ingresa tu contraseña" autoComplete="current-password" />
         </label>
 
+        <div className="flex items-center justify-end">
+          <Link href={recoveryHref} className="text-sm font-semibold text-sky-700 transition hover:text-sky-800 hover:underline">
+            Olvidé mi contraseña
+          </Link>
+        </div>
+
         {state.error ? <p className="text-sm status-bad">{state.error}</p> : null}
 
         <button type="submit" disabled={state.pending} className="primary-button w-full disabled:cursor-not-allowed disabled:opacity-60">
@@ -82,9 +89,9 @@ export function LoginForm() {
 
       <div className="mt-6 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">
         <p className="font-semibold text-slate-950">¿Necesitas acceso?</p>
-        <p className="mt-2 leading-6">Si todav\u00eda no tienes credenciales, registra tu solicitud y el equipo institucional la validará antes de habilitar el ingreso.</p>
+        <p className="mt-2 leading-6">Si todavía no tienes credenciales o necesitas recuperar el acceso, registra tu solicitud y el equipo institucional la validará antes de habilitar el ingreso.</p>
         <Link href="/registro" className="secondary-button mt-4 w-full sm:w-auto">
-          Solicitar registro
+          Solicitar acceso
         </Link>
       </div>
     </section>

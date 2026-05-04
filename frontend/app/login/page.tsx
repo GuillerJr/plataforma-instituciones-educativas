@@ -8,9 +8,9 @@ export default function LoginPage() {
         <section className="hidden lg:block">
           <div className="glass-panel p-8 xl:p-10">
             <p className="eyebrow">Plataforma institucional</p>
-            <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">Una entrada pública clara y un sistema interno protegido para la operación escolar.</h2>
+            <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">Una entrada clara para el equipo institucional y un sistema interno protegido para la operación escolar.</h2>
             <p className="mt-5 max-w-2xl text-[15px] leading-7 text-slate-600">
-              Educa separa la presencia institucional, la comunicación con familias y el acceso operativo del equipo académico para mantener orden, confianza y control.
+              Educa separa la presencia institucional, la comunicación con familias y el acceso operativo del equipo académico para mantener orden, confianza y control en una sola experiencia coherente.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <div className="surface-muted p-4">
@@ -23,7 +23,7 @@ export default function LoginPage() {
               </div>
               <div className="surface-muted p-4">
                 <p className="text-sm text-slate-500">Acceso</p>
-                <p className="mt-2 font-semibold text-slate-950">Seguro y separado del sitio público</p>
+                <p className="mt-2 font-semibold text-slate-950">Seguro, trazable y separado del sitio público</p>
               </div>
             </div>
             <Link href="/" className="secondary-button mt-8 w-full sm:w-auto">
