@@ -2,8 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Educa | Presencia institucional y acceso académico',
-  description: 'Presencia institucional pública y acceso privado al sistema académico de una institución educativa.',
+  title: 'Entorno Horizonte | Presencia institucional y admisiones',
+  description: 'Landing pública en español para una institución educativa premium con admisiones visibles y acceso privado al sistema.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
