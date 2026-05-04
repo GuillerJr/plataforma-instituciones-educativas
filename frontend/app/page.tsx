@@ -1,77 +1,114 @@
 import Link from 'next/link';
 
 const navigation = [
-  { label: 'Modelo educativo', href: '#modelo-educativo' },
-  { label: 'Ventajas', href: '#ventajas' },
-  { label: 'Experiencia institucional', href: '#experiencia' },
+  { label: 'Propuesta educativa', href: '#propuesta' },
+  { label: 'Vida institucional', href: '#vida-institucional' },
+  { label: 'Oferta académica', href: '#oferta-academica' },
   { label: 'Admisiones', href: '#admisiones' },
 ];
 
-const highlights = [
-  {
-    value: '360°',
-    label: 'Seguimiento integral',
-    description: 'Académico, convivencia, familias y operación en una sola experiencia institucional.',
-  },
-  {
-    value: '3 niveles',
-    label: 'Trayectoria continua',
-    description: 'Inicial, primaria y secundaria con una propuesta coherente de largo plazo.',
-  },
-  {
-    value: '1 acceso',
-    label: 'Sistema protegido',
-    description: 'El entorno interno permanece separado de la portada pública y del proceso comercial.',
-  },
+const trustSignals = [
+  'Acompañamiento académico, formativo y familiar en un mismo recorrido.',
+  'Comunicación clara para familias y acceso protegido para el equipo interno.',
+  'Una presencia pública sobria, actual y pensada para instituciones serias.',
 ];
 
-const benefits = [
-  {
-    title: 'Relación institucional más clara',
-    description:
-      'La información esencial, el proceso de contacto y el acceso interno conviven con jerarquía y sin fricciones visuales.',
-  },
-  {
-    title: 'Presencia premium y confiable',
-    description:
-      'La marca se presenta con sobriedad, mejor ritmo editorial y un lenguaje visual que inspira orden y seriedad.',
-  },
-  {
-    title: 'Decisiones académicas mejor comunicadas',
-    description:
-      'Oferta, enfoque, acompañamiento y vida escolar se explican con estructura, contexto y foco en valor institucional.',
-  },
+const heroMetrics = [
+  { value: '360°', label: 'acompañamiento del estudiante' },
+  { value: '3 niveles', label: 'integrados en una sola visión pedagógica' },
+  { value: '24/7', label: 'acceso institucional protegido para el equipo' },
+  { value: '1 ruta', label: 'de admisión clara, visible y profesional' },
 ];
 
 const pillars = [
   {
-    title: 'Proyecto educativo con criterio',
+    title: 'Formación exigente con acompañamiento cercano',
     description:
-      'Una narrativa pública que resalta exigencia académica, acompañamiento cercano y formación con visión de futuro.',
+      'La propuesta comunica rigor académico, seguimiento humano y expectativas altas desde el primer vistazo.',
   },
   {
-    title: 'Canales visibles para familias',
+    title: 'Comunicación institucional con criterio',
     description:
-      'Los llamados a la acción priorizan orientación, admisiones y contacto, sin mezclar procesos internos con la fachada pública.',
+      'Cada bloque ordena la información clave para que familias y aspirantes entiendan qué distingue a la institución.',
   },
   {
-    title: 'Operación interna resguardada',
+    title: 'Operación interna visible solo cuando corresponde',
     description:
-      'El botón de inicio de sesión permanece visible para el equipo autorizado, pero el sistema ya no domina la primera impresión.',
+      'El acceso al sistema permanece presente, pero sin interferir con la narrativa pública ni con la experiencia de admisiones.',
   },
 ];
 
-const admissionsSteps = [
-  'Conversación inicial para conocer a la familia, el estudiante y sus expectativas.',
-  'Presentación de propuesta formativa, recorrido institucional y orientación de admisiones.',
-  'Revisión documental, definición de cupo y acompañamiento personalizado en el ingreso.',
+const educationalExperience = [
+  {
+    eyebrow: 'Trayectoria escolar',
+    title: 'Inicial, primaria y secundaria articuladas con continuidad pedagógica.',
+    description:
+      'La landing presenta un recorrido formativo coherente para que la familia perciba proyecto, no solo oferta.',
+  },
+  {
+    eyebrow: 'Relación con las familias',
+    title: 'Información accesible, tono profesional y orientación clara en cada punto de contacto.',
+    description:
+      'La fachada pública prioriza confianza, cercanía y claridad antes de llevar al siguiente paso del proceso.',
+  },
+  {
+    eyebrow: 'Gobernanza institucional',
+    title: 'Vida académica y operación protegida detrás de un acceso reservado para el equipo autorizado.',
+    description:
+      'Se separa de forma explícita la experiencia comercial e institucional del entorno operativo interno.',
+  },
+];
+
+const academicOffer = [
+  {
+    stage: 'Educación inicial',
+    focus: 'Primeros vínculos, autonomía, lenguaje y desarrollo socioemocional.',
+  },
+  {
+    stage: 'Educación primaria',
+    focus: 'Bases sólidas en lectura, pensamiento lógico, convivencia y hábitos de estudio.',
+  },
+  {
+    stage: 'Educación secundaria',
+    focus: 'Profundización académica, criterio personal y proyección hacia estudios superiores.',
+  },
+];
+
+const differentiators = [
+  'Jerarquía visual más madura y menos apariencia de producto demo.',
+  'Mayor ritmo editorial con bloques amplios, aire y contraste medido.',
+  'CTA mejor ubicados para admisiones, orientación y acceso institucional.',
+  'Secciones posteriores con más sustancia: propuesta, métricas, oferta y proceso.',
+];
+
+const admissionsJourney = [
+  {
+    step: '01',
+    title: 'Primer contacto y orientación',
+    description:
+      'La familia encuentra de inmediato cómo solicitar información, agendar conversación o iniciar su acercamiento.',
+  },
+  {
+    step: '02',
+    title: 'Presentación institucional',
+    description:
+      'La propuesta educativa, la vida escolar y la estructura académica se entienden con rapidez y sin saturación.',
+  },
+  {
+    step: '03',
+    title: 'Ingreso acompañado',
+    description:
+      'La continuidad entre landing pública y sistema protegido permite sostener un proceso ordenado y profesional.',
+  },
 ];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top,#f8fbff_0%,#eef3f8_34%,#e4ebf3_100%)] text-slate-950">
-      <div className="relative isolate">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[42rem] bg-[radial-gradient(circle_at_top_right,rgba(14,165,233,0.16),transparent_36%),radial-gradient(circle_at_left,rgba(15,23,42,0.11),transparent_34%)]" />
+    <main className="min-h-screen overflow-x-hidden bg-[linear-gradient(180deg,#f7f8fb_0%,#edf2f7_24%,#f5f8fc_100%)] text-slate-950">
+      <div className="relative isolate overflow-hidden">
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(15,23,42,0.1),transparent_26%),radial-gradient(circle_at_top_right,rgba(14,165,233,0.12),transparent_24%),linear-gradient(180deg,#f7f8fb_0%,#edf2f7_24%,#f5f8fc_100%)]" />
+        <div className="absolute left-[-10rem] top-20 -z-10 h-[28rem] w-[28rem] rounded-full bg-sky-200/30 blur-3xl" />
+        <div className="absolute right-[-8rem] top-[-4rem] -z-10 h-[30rem] w-[30rem] rounded-full bg-slate-300/30 blur-3xl" />
 
         <header className="mx-auto max-w-7xl px-6 pt-6 sm:px-8 lg:px-10 lg:pt-8">
           <div className="topbar-panel flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
@@ -108,155 +145,145 @@ export default function HomePage() {
           </div>
         </header>
 
-        <section className="mx-auto max-w-7xl px-6 pb-14 pt-8 sm:px-8 lg:px-10 lg:pb-20 lg:pt-10">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)] lg:items-center">
+        <section className="mx-auto max-w-7xl px-6 pb-16 pt-8 sm:px-8 lg:px-10 lg:pb-24 lg:pt-10">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(340px,0.92fr)] xl:gap-12">
             <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-sky-800 shadow-[0_10px_25px_rgba(15,23,42,0.06)] backdrop-blur">
-                Nueva presencia digital para instituciones educativas
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/85 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur">
+                Admisiones, confianza institucional y acceso protegido
               </div>
 
-              <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-7xl">
-                Una landing pública con presencia premium, orden institucional y foco real en admisiones.
+              <h1 className="mt-7 max-w-5xl text-5xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl xl:text-[5.3rem] xl:leading-[0.96]">
+                La primera impresión de una institución también educa.
               </h1>
 
               <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                Rediseñada desde cero para comunicar propuesta educativa, transmitir confianza y separar con claridad la experiencia pública del sistema académico interno.
+                Un landing público con lenguaje editorial, presencia premium y estructura clara para presentar proyecto educativo, generar confianza en las familias y conducir mejor el proceso de admisiones.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/registro" className="primary-button w-full sm:w-auto">
-                  Solicitar una asesoría institucional
+                  Solicitar acompañamiento de admisiones
                 </Link>
-                <Link href="#modelo-educativo" className="secondary-button w-full sm:w-auto">
-                  Conocer la propuesta
+                <Link href="#propuesta" className="secondary-button w-full sm:w-auto">
+                  Explorar la propuesta institucional
                 </Link>
               </div>
 
-              <div className="relative mt-10 rounded-[30px] border border-white/70 bg-white/88 p-4 shadow-[0_24px_60px_rgba(15,23,42,0.08)] backdrop-blur sm:p-5">
-                <div className="grid gap-4 md:grid-cols-3">
-                  {highlights.map((item) => (
-                    <article key={item.label} className="rounded-[24px] border border-slate-200/80 bg-slate-50/80 p-4">
-                      <p className="text-3xl font-semibold tracking-tight text-slate-950">{item.value}</p>
-                      <p className="mt-2 text-sm font-semibold text-slate-800">{item.label}</p>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                    </article>
-                  ))}
-                </div>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {trustSignals.map((item) => (
+                  <article
+                    key={item}
+                    className="rounded-[26px] border border-white/80 bg-white/82 p-5 shadow-[0_18px_44px_rgba(15,23,42,0.06)] backdrop-blur"
+                  >
+                    <div className="h-1.5 w-12 rounded-full bg-slate-950" />
+                    <p className="mt-4 text-sm leading-7 text-slate-700">{item}</p>
+                  </article>
+                ))}
               </div>
             </div>
 
-            <div className="relative lg:pl-6">
-              <div className="relative mx-auto aspect-[0.92] w-full max-w-[34rem] overflow-hidden rounded-[36px] border border-white/70 bg-[linear-gradient(160deg,#0f172a_8%,#152847_42%,#1f4f78_100%)] p-6 shadow-[0_36px_80px_rgba(15,23,42,0.18)] sm:p-8">
-                <div className="absolute left-1/2 top-1/2 h-[25rem] w-[25rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.95)_0%,rgba(186,230,253,0.55)_32%,rgba(56,189,248,0.16)_58%,transparent_74%)]" />
-                <div className="absolute right-10 top-10 h-20 w-20 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm" />
-                <div className="absolute bottom-16 left-8 h-12 w-12 rounded-full border border-white/15 bg-sky-300/20" />
+            <div className="relative lg:pt-6">
+              <div className="relative overflow-hidden rounded-[40px] border border-white/70 bg-[linear-gradient(155deg,#07111f_0%,#10213c_34%,#163b5b_68%,#1b5c87_100%)] p-6 shadow-[0_36px_100px_rgba(15,23,42,0.22)] sm:p-8">
+                <div className="absolute inset-x-8 top-8 h-px bg-white/15" />
+                <div className="absolute left-1/2 top-[18%] h-44 w-44 -translate-x-1/2 rounded-full bg-sky-100/20 blur-3xl" />
+                <div className="absolute right-[-2rem] top-20 h-40 w-40 rounded-full border border-white/10 bg-white/5" />
+                <div className="absolute bottom-10 left-[-2rem] h-36 w-36 rounded-full border border-white/10 bg-sky-300/10" />
 
-                <div className="relative flex h-full flex-col justify-between">
+                <div className="relative flex h-full flex-col gap-8">
                   <div className="flex items-start justify-between gap-4 text-white">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.26em] text-sky-100">
-                        Experiencia pública
+                      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-100/90">
+                        Fachada institucional
                       </p>
-                      <h2 className="mt-3 max-w-xs text-3xl font-semibold tracking-tight">
-                        Una fachada digital sobria para una institución que inspira confianza.
+                      <h2 className="mt-4 max-w-sm text-3xl font-semibold tracking-tight sm:text-[2.15rem] sm:leading-tight">
+                        Una presencia pública hecha para inspirar seriedad, orden y futuro.
                       </h2>
                     </div>
-                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white/90">
-                      Acceso interno protegido
+                    <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-white/90">
+                      Login visible
                     </span>
                   </div>
 
-                  <div className="grid gap-4">
-                    <div className="ml-auto w-full max-w-sm rounded-[28px] border border-white/15 bg-white/12 p-5 backdrop-blur-md">
-                      <p className="text-sm font-medium text-sky-100">Resumen visible</p>
-                      <p className="mt-3 text-2xl font-semibold text-white">Admisiones, propuesta y acceso al sistema en una sola composición clara.</p>
-                    </div>
+                  <div className="grid gap-4 sm:grid-cols-[1.08fr_0.92fr]">
+                    <article className="rounded-[30px] border border-white/15 bg-white/10 p-5 backdrop-blur-md">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-100">Propuesta central</p>
+                      <p className="mt-4 text-2xl font-semibold leading-tight text-white">
+                        Contenido mejor distribuido, más intención editorial y menos sensación de sistema administrativo.
+                      </p>
+                      <p className="mt-4 text-sm leading-7 text-white/75">
+                        El visitante entiende qué ofrece la institución, cómo se vive su proyecto y cuál es el siguiente paso.
+                      </p>
+                    </article>
 
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div className="rounded-[24px] border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-100">Narrativa</p>
-                        <p className="mt-2 text-sm leading-6 text-white/90">
-                          Jerarquía editorial, espaciado amplio y mensajes enfocados en valor institucional.
-                        </p>
+                    <article className="rounded-[30px] border border-white/15 bg-slate-950/25 p-5 backdrop-blur-md">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-100">Acceso institucional</p>
+                      <p className="mt-4 text-lg font-semibold text-white">Separado, protegido y visible para el equipo.</p>
+                      <div className="mt-5 space-y-3 text-sm text-white/78">
+                        <p className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">Admisiones hacia afuera.</p>
+                        <p className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">Gestión académica hacia adentro.</p>
                       </div>
-                      <div className="rounded-[24px] border border-white/15 bg-slate-950/25 p-4 backdrop-blur-md">
-                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-100">Composición</p>
-                        <p className="mt-2 text-sm leading-6 text-white/90">
-                          Hero dominante, foco visual circular y bloque flotante como pieza de síntesis.
-                        </p>
-                      </div>
+                    </article>
+                  </div>
+
+                  <div className="rounded-[30px] border border-white/15 bg-white/10 p-5 backdrop-blur-md">
+                    <div className="grid gap-4 sm:grid-cols-4">
+                      {heroMetrics.map((metric) => (
+                        <div key={metric.label} className="rounded-[24px] border border-white/10 bg-slate-950/20 px-4 py-4">
+                          <p className="text-2xl font-semibold tracking-tight text-white">{metric.value}</p>
+                          <p className="mt-2 text-xs leading-5 text-white/72">{metric.label}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="surface-panel absolute -bottom-8 left-4 right-4 mx-auto max-w-md p-5 sm:left-auto sm:right-0 sm:w-[22rem]">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Síntesis institucional</p>
-                <p className="mt-3 text-lg font-semibold tracking-tight text-slate-950">
-                  Portada pública renovada para convertir mejor y presentar la institución con mayor categoría.
+              <div className="surface-panel mt-5 ml-auto max-w-md p-5 sm:p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Lectura estratégica</p>
+                <p className="mt-3 text-xl font-semibold tracking-tight text-slate-950">
+                  El landing deja de parecer un acceso técnico y pasa a comportarse como una portada institucional de alto nivel.
                 </p>
-                <div className="mt-4 grid grid-cols-3 gap-3 text-center">
-                  <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                    <p className="text-lg font-semibold text-slate-950">01</p>
-                    <p className="mt-1 text-xs text-slate-500">Hero con foco visual</p>
-                  </div>
-                  <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                    <p className="text-lg font-semibold text-slate-950">02</p>
-                    <p className="mt-1 text-xs text-slate-500">CTA claros</p>
-                  </div>
-                  <div className="rounded-[20px] bg-slate-50 px-3 py-3">
-                    <p className="text-lg font-semibold text-slate-950">03</p>
-                    <p className="mt-1 text-xs text-slate-500">Sistema separado</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </section>
       </div>
 
-      <section id="modelo-educativo" className="mx-auto max-w-7xl px-6 py-10 sm:px-8 lg:px-10 lg:py-14">
-        <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-          <article className="rounded-[32px] border border-slate-200/90 bg-white p-7 shadow-[0_18px_48px_rgba(15,23,42,0.06)] sm:p-8">
-            <p className="eyebrow">Modelo educativo</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Una institución se presenta mejor cuando comunica con la misma calidad con la que forma.
+      <section className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:px-10">
+        <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <article className="rounded-[34px] border border-slate-200/90 bg-slate-950 p-8 text-white shadow-[0_30px_80px_rgba(15,23,42,0.15)] lg:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-sky-200">Confianza institucional</p>
+            <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+              Una narrativa pública más madura para una institución que necesita verse tan sólida como opera.
             </h2>
-            <p className="mt-5 text-[15px] leading-8 text-slate-600">
-              El nuevo landing abandona el aspecto funcional o genérico y adopta una lectura más editorial: mensaje principal contundente, piezas de apoyo precisas y una experiencia visual que transmite criterio, estabilidad y cuidado por los detalles.
-            </p>
           </article>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            {benefits.map((item, index) => (
-              <article
-                key={item.title}
-                className="rounded-[28px] border border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f7fafc_100%)] p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)]"
-              >
+          <div className="grid gap-4 sm:grid-cols-2">
+            {differentiators.map((item, index) => (
+              <article key={item} className="rounded-[28px] border border-slate-200/90 bg-white p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
                 <p className="text-sm font-semibold text-sky-700">0{index + 1}</p>
-                <h3 className="mt-4 text-xl font-semibold tracking-tight text-slate-950">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+                <p className="mt-3 text-base leading-7 text-slate-700">{item}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="ventajas" className="mx-auto max-w-7xl px-6 py-4 sm:px-8 lg:px-10 lg:py-6">
-        <div className="grid gap-6 lg:grid-cols-[1.04fr_0.96fr]">
-          <div className="rounded-[32px] border border-slate-200/90 bg-slate-950 p-7 text-white shadow-[0_24px_60px_rgba(15,23,42,0.14)] sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-200">Ventajas del rediseño</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Más claridad para el visitante. Más presencia para la marca. Más orden para la institución.
+      <section id="propuesta" className="mx-auto max-w-7xl px-6 py-10 sm:px-8 lg:px-10 lg:py-16">
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <article className="rounded-[34px] border border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f7fafe_100%)] p-8 shadow-[0_22px_56px_rgba(15,23,42,0.06)] sm:p-9">
+            <p className="eyebrow">Propuesta institucional</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              La institución se explica mejor cuando el contenido se organiza como proyecto y no como listado.
             </h2>
-            <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300">
-              La portada se convierte en una pieza comercial e institucional, mientras que el ecosistema privado conserva su función operativa sin contaminar la experiencia pública.
+            <p className="mt-5 text-[15px] leading-8 text-slate-600">
+              La nueva composición trabaja con bloques de distinto peso, contraste y respiración visual para construir una historia más convincente: qué se propone, cómo acompaña, qué niveles articula y cómo iniciar el contacto.
             </p>
-          </div>
+          </article>
 
           <div className="grid gap-4">
             {pillars.map((item) => (
-              <article key={item.title} className="rounded-[28px] border border-slate-200/90 bg-white p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
+              <article key={item.title} className="rounded-[30px] border border-slate-200/90 bg-white p-6 shadow-[0_16px_38px_rgba(15,23,42,0.05)] sm:p-7">
                 <h3 className="text-xl font-semibold tracking-tight text-slate-950">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
               </article>
@@ -265,79 +292,137 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="experiencia" className="mx-auto max-w-7xl px-6 py-10 sm:px-8 lg:px-10 lg:py-14">
-        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <article className="rounded-[32px] border border-slate-200/90 bg-white p-7 shadow-[0_18px_48px_rgba(15,23,42,0.06)] sm:p-8">
-            <p className="eyebrow">Experiencia institucional</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Una estructura liviana, elegante y hecha para sostener una primera impresión de alto nivel.
-            </h2>
-            <p className="mt-5 text-[15px] leading-8 text-slate-600">
-              La composición prioriza aire, contraste medido y piezas con bordes suaves para evitar una sensación de demo. El contenido se apoya en bloques concretos, sin ruido, y con una lectura natural en desktop y móvil.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/registro" className="primary-button w-full sm:w-auto">
-                Hablar con admisiones
-              </Link>
-              <Link href="/login" className="secondary-button w-full sm:w-auto">
-                Iniciar sesión
-              </Link>
-            </div>
-          </article>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <article className="rounded-[28px] border border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fd_100%)] p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)] md:col-span-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">Jerarquía de contenido</p>
-              <p className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
-                Hero principal, bloque resumen flotante y secciones posteriores con peso visual controlado.
-              </p>
-            </article>
-            <article className="rounded-[28px] border border-slate-200/90 bg-white p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
-              <p className="text-sm font-semibold text-slate-500">Lectura pública</p>
-              <p className="mt-3 text-lg font-semibold text-slate-950">Más intención editorial y menos apariencia de sistema administrativo.</p>
-            </article>
-            <article className="rounded-[28px] border border-slate-200/90 bg-white p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)]">
-              <p className="text-sm font-semibold text-slate-500">Lenguaje visual</p>
-              <p className="mt-3 text-lg font-semibold text-slate-950">Sombras suaves, paleta sobria y superficies con profundidad sin perder limpieza.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="admisiones" className="mx-auto max-w-7xl px-6 pb-16 pt-4 sm:px-8 lg:px-10 lg:pb-24 lg:pt-6">
-        <div className="rounded-[36px] border border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f3f7fb_100%)] p-7 shadow-[0_24px_60px_rgba(15,23,42,0.07)] sm:p-8 lg:p-10">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <div>
-              <p className="eyebrow">Admisiones</p>
+      <section id="vida-institucional" className="mx-auto max-w-7xl px-6 py-2 sm:px-8 lg:px-10 lg:py-4">
+        <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid gap-4">
+            <article className="rounded-[34px] border border-slate-200/90 bg-white p-7 shadow-[0_18px_46px_rgba(15,23,42,0.05)] sm:p-8">
+              <p className="eyebrow">Vida institucional</p>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                Un proceso visible, acompañado y alineado con una imagen institucional sólida.
+                Una experiencia pública con mejor ritmo visual, más sustancia y señales claras de confianza.
               </h2>
-              <p className="mt-5 text-[15px] leading-8 text-slate-600">
-                La landing pública guía el primer contacto con un recorrido claro y profesional. El equipo interno continúa luego dentro del sistema protegido, sin sacrificar seguridad ni consistencia de marca.
-              </p>
-            </div>
+            </article>
 
-            <div className="grid gap-4">
-              {admissionsSteps.map((step, index) => (
-                <article key={step} className="flex gap-4 rounded-[28px] border border-slate-200/90 bg-white p-5 shadow-[0_14px_30px_rgba(15,23,42,0.04)]">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white">
-                    0{index + 1}
-                  </span>
-                  <p className="pt-1 text-sm leading-7 text-slate-700">{step}</p>
+            <div className="grid gap-4 md:grid-cols-3">
+              {educationalExperience.map((item) => (
+                <article
+                  key={item.title}
+                  className="rounded-[28px] border border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-6 shadow-[0_16px_36px_rgba(15,23,42,0.05)]"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">{item.eyebrow}</p>
+                  <h3 className="mt-4 text-xl font-semibold tracking-tight text-slate-950">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
                 </article>
               ))}
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-8 sm:flex-row">
-            <Link href="/registro" className="primary-button w-full sm:w-auto">
-              Solicitar información ahora
-            </Link>
-            <Link href="/login" className="secondary-button w-full sm:w-auto">
-              Iniciar sesión del equipo
-            </Link>
+          <article className="overflow-hidden rounded-[34px] border border-slate-200/90 bg-slate-950 p-8 text-white shadow-[0_28px_70px_rgba(15,23,42,0.16)] sm:p-9">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-200">Métricas y lectura</p>
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              {heroMetrics.map((metric) => (
+                <div key={metric.label} className="rounded-[26px] border border-white/10 bg-white/5 p-5">
+                  <p className="text-4xl font-semibold tracking-tight text-white">{metric.value}</p>
+                  <p className="mt-3 text-sm leading-6 text-white/72">{metric.label}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-8 text-sm leading-7 text-slate-300">
+              Las métricas funcionan como piezas de confianza y síntesis narrativa. No son decoración: condensan foco pedagógico, claridad operativa y separación entre experiencia pública y gestión interna.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="oferta-academica" className="mx-auto max-w-7xl px-6 py-10 sm:px-8 lg:px-10 lg:py-16">
+        <div className="rounded-[36px] border border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f3f7fb_100%)] p-8 shadow-[0_24px_60px_rgba(15,23,42,0.06)] sm:p-9 lg:p-10">
+          <div className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+            <div>
+              <p className="eyebrow">Oferta educativa</p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                Una oferta presentada con más jerarquía, contexto y continuidad formativa.
+              </h2>
+              <p className="mt-5 text-[15px] leading-8 text-slate-600">
+                En lugar de bloques sueltos, la sección organiza la experiencia por etapas y comunica cómo evoluciona el acompañamiento a lo largo de toda la trayectoria escolar.
+              </p>
+            </div>
+
+            <div className="grid gap-4">
+              {academicOffer.map((item) => (
+                <article key={item.stage} className="rounded-[28px] border border-slate-200/90 bg-white p-6 shadow-[0_14px_34px_rgba(15,23,42,0.05)] sm:p-7">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <h3 className="text-2xl font-semibold tracking-tight text-slate-950">{item.stage}</h3>
+                    <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Tramo formativo
+                    </span>
+                  </div>
+                  <p className="mt-4 text-sm leading-7 text-slate-600">{item.focus}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
+      </section>
+
+      <section id="admisiones" className="mx-auto max-w-7xl px-6 pb-8 pt-2 sm:px-8 lg:px-10 lg:pb-10">
+        <div className="grid gap-6 lg:grid-cols-[1.04fr_0.96fr]">
+          <article className="rounded-[36px] border border-slate-200/90 bg-slate-950 p-8 text-white shadow-[0_28px_74px_rgba(15,23,42,0.16)] sm:p-9 lg:p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-200">CTA institucional</p>
+            <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+              Un cierre claro para familias interesadas y un acceso directo para el equipo institucional.
+            </h2>
+            <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300">
+              El nuevo landing termina con una llamada a la acción más sólida, coherente con el resto de la narrativa y preparada para convertir sin perder sobriedad.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/registro" className="primary-button w-full bg-white text-slate-950 shadow-none hover:bg-slate-100 sm:w-auto">
+                Solicitar información ahora
+              </Link>
+              <Link
+                href="/login"
+                className="secondary-button w-full border-white/15 bg-white/10 text-white hover:border-white/30 hover:bg-white/15 hover:text-white sm:w-auto"
+              >
+                Iniciar sesión del equipo
+              </Link>
+            </div>
+          </article>
+
+          <div className="grid gap-4">
+            {admissionsJourney.map((item) => (
+              <article key={item.step} className="rounded-[30px] border border-slate-200/90 bg-white p-6 shadow-[0_16px_38px_rgba(15,23,42,0.05)] sm:p-7">
+                <div className="flex items-start gap-4">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white">
+                    {item.step}
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-tight text-slate-950">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-16 pt-6 sm:px-8 lg:px-10 lg:pb-24">
+        <footer className="rounded-[32px] border border-slate-200/90 bg-white/88 px-6 py-6 shadow-[0_16px_40px_rgba(15,23,42,0.05)] backdrop-blur sm:px-8 sm:py-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">Entorno Horizonte</p>
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                Plataforma institucional con presencia pública renovada, orientación de admisiones y acceso privado para la operación académica.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/registro" className="secondary-button w-full sm:w-auto">
+                Hablar con admisiones
+              </Link>
+              <Link href="/login" className="primary-button w-full sm:w-auto">
+                Iniciar sesión
+              </Link>
+            </div>
+          </div>
+        </footer>
       </section>
     </main>
   );
