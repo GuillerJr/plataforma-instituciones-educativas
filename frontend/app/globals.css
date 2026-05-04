@@ -787,6 +787,7 @@ a {
 .landing-community-card,
 .landing-journey-card,
 .landing-footer,
+.landing-final-cta,
 .landing-offer-card,
 .landing-experience-shell,
 .landing-offer-shell {
@@ -811,6 +812,28 @@ a {
   border-radius: 34px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 249, 253, 0.92) 100%);
   padding: 1.5rem;
+}
+
+.landing-final-cta {
+  display: grid;
+  gap: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px;
+  background: linear-gradient(160deg, #07111f 0%, #0f223d 46%, #17395f 100%);
+  padding: 1.6rem;
+  box-shadow: 0 30px 82px rgba(15, 23, 42, 0.16);
+}
+
+.landing-final-cta::before {
+  content: '';
+  position: absolute;
+  inset: auto -4rem -4rem auto;
+  height: 12rem;
+  width: 12rem;
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.1);
+  filter: blur(18px);
 }
 
 .landing-soft-card-tall {
@@ -892,7 +915,8 @@ a {
   .landing-large-surface,
   .landing-experience-shell,
   .landing-offer-shell,
-  .landing-footer {
+  .landing-footer,
+  .landing-final-cta {
     padding: 2rem;
   }
 
@@ -968,6 +992,11 @@ a {
   .landing-cta-grid {
     grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
     gap: 1.5rem;
+  }
+
+  .landing-final-cta {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
   }
 
   .landing-experience-grid {
