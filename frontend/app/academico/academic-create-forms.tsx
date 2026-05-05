@@ -85,7 +85,7 @@ export function LevelFormModal({ open, onClose }: { open: boolean; onClose: () =
       description="Crea un nivel académico real para la institución actual y ordénalo dentro de la estructura base del colegio."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nombre del nivel</span>
             <input name="name" required minLength={3} maxLength={120} className="form-field" placeholder="Educación General Básica" />
@@ -161,7 +161,7 @@ export function GradeFormModal({ open, onClose, levels }: { open: boolean; onClo
       description="Asocia el registro a un nivel existente para dejar lista la jerarquía académica mínima del colegio."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nivel</span>
             <select name="levelId" defaultValue={levels[0]?.id ?? ''} className="form-field">
@@ -240,7 +240,7 @@ export function SectionFormModal({ open, onClose, grades }: { open: boolean; onC
       description="Agrega el paralelo operativo del curso o grado con jornada y capacidad referencial para el trabajo diario."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Curso o grado</span>
             <select name="gradeId" defaultValue={grades[0]?.id ?? ''} className="form-field">

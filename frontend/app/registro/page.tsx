@@ -12,10 +12,13 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const params = await searchParams;
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#ffffff_0%,_#f5f8fc_38%,_#e9eff6_100%)] px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_18%_14%,rgba(36,180,126,0.15),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(29,91,255,0.17),transparent_30%),linear-gradient(180deg,#f8fbff_0%,#eef5fc_52%,#e8eef6_100%)] px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-          <div className="glass-panel p-6 sm:p-8">
+          <div className="glass-panel relative overflow-hidden p-6 sm:p-8">
+            <div aria-hidden="true" className="absolute -right-20 -top-20 h-52 w-52 rounded-full bg-blue-100/70 blur-3xl" />
+            <div aria-hidden="true" className="absolute -bottom-24 left-12 h-52 w-52 rounded-full bg-emerald-100/60 blur-3xl" />
+            <div className="relative">
             <p className="eyebrow">Registro institucional</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Solicitud de acceso o acompañamiento institucional</h1>
             <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -34,6 +37,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             <Link href="/login" className="secondary-button mt-6 w-full sm:w-auto">
               Ya tengo credenciales
             </Link>
+            </div>
           </div>
 
           <RegisterInterestForm requestType={params?.requestType} context={params?.context} />

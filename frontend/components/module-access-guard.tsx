@@ -18,7 +18,7 @@ export function ModuleAccessGuard({
           <p className="table-subtitle">Se ocultan acciones operativas para mantener coherencia con el rol del usuario logueado.</p>
         </div>
       </div>
-      <div className="p-5 text-sm text-slate-600">{fallback}</div>
+      <div className="form-cluster m-5 text-sm text-slate-600">{fallback}</div>
     </section>
   );
 }

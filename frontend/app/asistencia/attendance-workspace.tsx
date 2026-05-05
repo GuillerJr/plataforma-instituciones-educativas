@@ -72,7 +72,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
     <>
       <div className="space-y-5">
         <div className="grid gap-5 xl:grid-cols-[0.92fr_1.08fr]">
-          <section className="table-shell overflow-hidden">
+          <section className="workspace-hero">
             <div className="table-toolbar soft-divider">
               <div>
                 <p className="eyebrow">Control diario</p>

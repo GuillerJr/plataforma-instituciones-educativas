@@ -42,7 +42,7 @@ export function TeachersWorkspace({ snapshot, error }: TeachersWorkspaceProps) {
     <>
       <div className="space-y-5">
         <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="table-shell overflow-hidden">
+          <section className="workspace-hero">
             <div className="table-toolbar soft-divider">
               <div>
                 <p className="eyebrow">Planta docente</p>

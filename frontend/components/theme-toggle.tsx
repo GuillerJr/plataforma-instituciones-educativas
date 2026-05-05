@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 const STORAGE_KEY = 'educa-theme';
 
@@ -40,7 +41,11 @@ export function ThemeToggle() {
       aria-label={ready ? `Activar modo ${theme === 'dark' ? 'claro' : 'oscuro'}` : 'Cambiar tema'}
       title={ready ? `Modo ${theme === 'dark' ? 'oscuro' : 'claro'} activo` : 'Cambiar tema'}
     >
-      <span className="text-base leading-none">{theme === 'dark' ? '☀️' : '🌙'}</span>
+      {theme === 'dark' ? (
+        <Sun aria-hidden="true" className="h-[18px] w-[18px]" />
+      ) : (
+        <Moon aria-hidden="true" className="h-[18px] w-[18px]" />
+      )}
     </button>
   );
 }

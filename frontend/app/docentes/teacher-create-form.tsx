@@ -152,7 +152,7 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
       description="Crea un docente real para la institución activa y, si ya corresponde, déjalo asignado a nivel, curso o sección dentro de la estructura académica disponible."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nombre completo</span>
             <input name="fullName" required minLength={3} maxLength={180} className="form-field" placeholder="Mariana Pérez" />
@@ -183,7 +183,7 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
           </label>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
+        <div className="form-cluster">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Asignación académica inicial</p>

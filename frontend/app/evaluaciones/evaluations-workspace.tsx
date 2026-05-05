@@ -76,7 +76,7 @@ export function EvaluationsWorkspace({
     <>
       <div className="space-y-5">
         <div className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-          <section className="table-shell overflow-hidden">
+          <section className="workspace-hero">
             <div className="table-toolbar soft-divider">
               <div>
                 <p className="eyebrow">Planeación evaluativa</p>

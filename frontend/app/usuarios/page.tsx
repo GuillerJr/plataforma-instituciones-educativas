@@ -68,7 +68,7 @@ export default async function UsersPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden rounded-[18px] border border-[#EEF1F5] bg-white p-5 shadow-soft lg:p-6">
+      <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
             <span className="badge badge-blue">Usuarios y roles</span>

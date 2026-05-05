@@ -103,7 +103,7 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
         : 'La interfaz de edición ya quedó preparada dentro del modal para activarse apenas exista actualización de la estructura institucional en la API.'}
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block">
             <span className="field-label">Nombre</span>
             <input name="name" required minLength={3} maxLength={180} defaultValue={initialValues?.name ?? ''} className="form-field" placeholder="Unidad Educativa Nueva Esperanza" />
@@ -135,7 +135,7 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
         </label>
 
         {mode === 'edit' ? (
-          <div className="rounded-[24px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-4 text-sm text-slate-700">
+          <div className="form-cluster border-dashed border-sky-200 text-sm text-slate-700">
             <p className="font-semibold text-slate-950">Próxima fase</p>
             <p className="mt-2 leading-6">
               Este modal ya deja visible la edición con datos precargados. El guardado real se conectará cuando la API exponga el endpoint de actualización.

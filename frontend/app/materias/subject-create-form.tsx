@@ -79,7 +79,7 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
       description="Crea una materia real para la institución activa y, si corresponde, relaciónala con un nivel para facilitar la asignación académica posterior."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nombre de la materia</span>
             <input name="name" required minLength={3} maxLength={140} className="form-field" placeholder="Matemática" />

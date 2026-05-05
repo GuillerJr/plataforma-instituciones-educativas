@@ -185,7 +185,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
         : 'La interacción de edición ya quedó preparada en modal para activarse apenas exista actualización de usuarios en la API.'}
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block">
             <span className="field-label">Nombre completo</span>
             <input name="fullName" required minLength={3} maxLength={180} defaultValue={initialValues?.fullName ?? ''} className="form-field" placeholder="Mariana Pérez" />
@@ -222,7 +222,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
           <legend className="field-label">Roles</legend>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {roles.map((role) => (
-              <label key={role.id} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-sky-300 hover:bg-sky-50/60">
+              <label key={role.id} className="choice-card">
                 <input
                   name="roleCodes"
                   type="checkbox"
@@ -240,7 +240,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
         </fieldset>
 
         {mode === 'create' ? (
-          <section className="space-y-4 rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+          <section className="form-cluster space-y-4">
             <div>
               <p className="text-sm font-semibold text-slate-950">Vinculación académica</p>
               <p className="mt-1 text-xs leading-5 text-slate-500">Usa estos campos cuando el usuario represente una identidad real dentro del colegio.</p>
@@ -275,7 +275,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
                 <legend className="field-label">Estudiantes asociados al representante</legend>
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
                   {profileOptions.students.map((student) => (
-                    <label key={student.id} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                    <label key={student.id} className="choice-card">
                       <input name="representativeStudentIds" type="checkbox" value={student.id} className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-sky-400" />
                       <span>
                         <span className="block font-medium text-slate-900">{student.fullName}</span>
@@ -290,7 +290,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
         ) : null}
 
         {mode === 'edit' ? (
-          <div className="rounded-[24px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-4 text-sm text-slate-700">
+          <div className="form-cluster border-dashed border-sky-200 text-sm text-slate-700">
             <p className="font-semibold text-slate-950">Próxima fase</p>
             <p className="mt-2 leading-6">
               La edición visual del usuario ya quedó integrada en este modal. El guardado real se activará cuando exista el endpoint de actualización en backend.

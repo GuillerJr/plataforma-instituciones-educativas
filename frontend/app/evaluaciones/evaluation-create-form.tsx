@@ -120,7 +120,7 @@ export function EvaluationFormModal({
           </select>
         </label>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
+        <div className="form-cluster">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Cobertura enlazada</p>
