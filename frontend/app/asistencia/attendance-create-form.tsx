@@ -166,7 +166,7 @@ export function AttendanceFormModal({ open, onClose, activeSchoolYearLabel, reco
       description="Selecciona una sección real y marca la asistencia diaria de estudiantes con matrícula activa en el periodo escolar vigente."
     >
       <div className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="form-cluster grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="block">
             <span className="field-label">Nivel</span>
             <select value={selectedLevelId} onChange={(event) => setSelectedLevelId(event.target.value)} className="form-field">
@@ -203,7 +203,7 @@ export function AttendanceFormModal({ open, onClose, activeSchoolYearLabel, reco
           </label>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
+        <div className="form-cluster">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Cobertura del registro</p>

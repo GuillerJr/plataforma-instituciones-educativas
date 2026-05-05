@@ -118,7 +118,7 @@ export function StudentFormModal({ open, onClose, levels, grades, sections }: St
       description="Crea un estudiante real para la institución activa y ubícalo de forma coherente dentro de nivel, curso y sección ya disponibles."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nombre completo</span>
             <input name="fullName" required minLength={3} maxLength={180} className="form-field" placeholder="Sofía Cárdenas" />
@@ -149,7 +149,7 @@ export function StudentFormModal({ open, onClose, levels, grades, sections }: St
           </label>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
+        <div className="form-cluster">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Ubicación académica</p>

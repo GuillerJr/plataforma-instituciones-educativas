@@ -47,7 +47,7 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
     <>
       <div className="space-y-5">
         <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
-          <section className="table-shell overflow-hidden">
+          <section className="workspace-hero">
             <div className="table-toolbar soft-divider">
               <div>
                 <p className="eyebrow">Gobierno de acceso</p>
@@ -77,7 +77,7 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
             </div>
             <div className="grid gap-3 p-5 md:grid-cols-2">
               {roles.map((role) => (
-                <div key={role.id} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                <div key={role.id} className="choice-card">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="font-medium text-slate-950">{role.name}</p>

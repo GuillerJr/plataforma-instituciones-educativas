@@ -17,17 +17,17 @@ export function PaginationControls({ page, totalPages, pageSize, totalItems, ite
 
   return (
     <div className="pagination-bar">
-      <p className="leading-6">
+      <p className="leading-6 text-slate-600">
         Mostrando {start}-{end} de {totalItems} {itemLabel}
       </p>
       <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
-        <button type="button" className="compact-button w-full disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+        <button type="button" className="compact-button w-full sm:w-auto" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
           Anterior
         </button>
-        <span className="info-chip">
+        <span className="info-chip justify-center">
           Página {page} de {totalPages}
         </span>
-        <button type="button" className="compact-button w-full disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
+        <button type="button" className="compact-button w-full sm:w-auto" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
           Siguiente
         </button>
       </div>

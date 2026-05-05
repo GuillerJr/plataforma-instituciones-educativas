@@ -43,7 +43,7 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
     <>
       <div className="space-y-5">
         <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <aside className="section-grid-card">
+          <aside className="workspace-hero p-5">
             <div className="flex flex-col gap-4">
               <div>
                 <p className="eyebrow">Matrícula estudiantil</p>

@@ -26,7 +26,7 @@ export function InstitutionsWorkspace({ institutions, error }: InstitutionsWorks
     <>
       <div className="space-y-5">
         <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-          <section className="table-shell overflow-hidden">
+          <section className="workspace-hero">
             <div className="table-toolbar soft-divider">
               <div>
                 <p className="eyebrow">Estructura institucional</p>

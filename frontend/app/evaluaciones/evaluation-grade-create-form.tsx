@@ -113,7 +113,7 @@ export function EvaluationGradeFormModal({
       description="Asigna una nota a un estudiante que sí pertenezca a la cobertura y al periodo escolar de la evaluación seleccionada."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Evaluación</span>
             <select name="evaluationId" value={selectedEvaluationId} onChange={(event) => setSelectedEvaluationId(event.target.value)} className="form-field">
@@ -135,7 +135,7 @@ export function EvaluationGradeFormModal({
           </label>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
+        <div className="form-cluster">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Control de registro</p>

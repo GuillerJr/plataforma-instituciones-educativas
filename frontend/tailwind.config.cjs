@@ -8,6 +8,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          50: '#EAF4FF',
+          100: '#D8ECFF',
+          200: '#B8D9FF',
+          300: '#85B9FF',
+          400: '#4F8DFF',
+          500: '#2563EB',
+          600: '#1D5BFF',
+          700: '#1748CC',
+          800: '#123A8F',
+          900: '#08233F',
+        },
+        ink: '#10213A',
+        muted: '#64748B',
+        line: '#E2E8F0',
         eduNavy: '#08233F',
         eduBlue: '#1D5BFF',
         eduSky: '#EAF4FF',

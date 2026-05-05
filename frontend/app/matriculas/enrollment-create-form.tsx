@@ -116,7 +116,7 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
       description="Registra la inscripción del periodo activo enlazando un estudiante existente con una sección real de la estructura académica."
     >
       <form action={handleSubmit} className="space-y-5">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Estudiante</span>
             <select name="studentId" className="form-field">
@@ -144,7 +144,7 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
           </label>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4">
+        <div className="form-cluster">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Sección de destino</p>

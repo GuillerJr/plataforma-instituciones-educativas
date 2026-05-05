@@ -25,7 +25,7 @@ export function RegisterInterestForm({ requestType: initialRequestType, context 
   }
 
   return (
-    <form action={handleSubmit} className="surface-panel w-full max-w-[760px] p-6 sm:p-8">
+    <form action={handleSubmit} className="surface-panel w-full max-w-[760px] p-6 shadow-[0_30px_80px_rgba(8,35,63,0.12)] sm:p-8">
       {isRecoveryRequest ? (
         <div className="mb-5 rounded-[20px] border border-sky-200 bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-900">
           Indica tus datos institucionales y describe que necesitas recuperar tu contraseña. Este flujo queda preparado para que el equipo administrativo gestione la solicitud en la siguiente fase.

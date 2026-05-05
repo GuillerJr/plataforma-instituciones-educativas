@@ -5,20 +5,46 @@ import type { CurrentUser } from "../lib/current-user";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import type { LucideIcon } from "lucide-react";
+import {
+  BarChart3,
+  Bell,
+  BookOpen,
+  CalendarDays,
+  CalendarRange,
+  CircleHelp,
+  ClipboardCheck,
+  GraduationCap,
+  Globe2,
+  Link2,
+  Menu,
+  MessageCircle,
+  School,
+  Search,
+  Settings,
+  UsersRound,
+  X,
+} from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 
 const navigationItems = [
-  { href: "/sistema/panel", label: "Dashboard", icon: "🏫", description: "Centro institucional", roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'] },
-  { href: "/sistema/estudiantes", label: "Estudiantes", icon: "🧑‍🎓", description: "Gestión y matrículas", roles: ['superadmin', 'admin_institucional', 'docente'] },
-  { href: "/sistema/docentes", label: "Docentes", icon: "👩‍🏫", description: "Planta académica", roles: ['superadmin', 'admin_institucional'] },
-  { href: "/sistema/materias", label: "Materias", icon: "📘", description: "Oferta curricular", roles: ['superadmin', 'admin_institucional', 'docente'] },
-  { href: "/sistema/academico", label: "Académico", icon: "🗓️", description: "Niveles, grados y secciones", roles: ['superadmin', 'admin_institucional', 'docente'] },
-  { href: "/sistema/evaluaciones", label: "Calificaciones", icon: "📝", description: "Evaluación continua", roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'] },
-  { href: "/sistema/asistencia", label: "Asistencia", icon: "📊", description: "Control diario", roles: ['superadmin', 'admin_institucional', 'docente', 'representante'] },
-  { href: "/sistema/matriculas", label: "Matrículas", icon: "📣", description: "Inscripciones activas", roles: ['superadmin', 'admin_institucional'] },
-  { href: "/sistema/asignaciones-academicas", label: "Asignaciones", icon: "🔗", description: "Docente, materia y curso", roles: ['superadmin', 'admin_institucional'] },
-  { href: "/sistema/usuarios", label: "Configuración", icon: "⚙️", description: "Usuarios y acceso", roles: ['superadmin', 'admin_institucional'] },
-] as const;
+  { href: "/sistema/panel", label: "Dashboard", Icon: School, description: "Centro institucional", roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'] },
+  { href: "/sistema/estudiantes", label: "Estudiantes", Icon: GraduationCap, description: "Gestión y matrículas", roles: ['superadmin', 'admin_institucional', 'docente'] },
+  { href: "/sistema/docentes", label: "Docentes", Icon: UsersRound, description: "Planta académica", roles: ['superadmin', 'admin_institucional'] },
+  { href: "/sistema/materias", label: "Materias", Icon: BookOpen, description: "Oferta curricular", roles: ['superadmin', 'admin_institucional', 'docente'] },
+  { href: "/sistema/academico", label: "Académico", Icon: CalendarRange, description: "Niveles, grados y secciones", roles: ['superadmin', 'admin_institucional', 'docente'] },
+  { href: "/sistema/evaluaciones", label: "Calificaciones", Icon: ClipboardCheck, description: "Evaluación continua", roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'] },
+  { href: "/sistema/asistencia", label: "Asistencia", Icon: BarChart3, description: "Control diario", roles: ['superadmin', 'admin_institucional', 'docente', 'representante'] },
+  { href: "/sistema/matriculas", label: "Matrículas", Icon: CalendarDays, description: "Inscripciones activas", roles: ['superadmin', 'admin_institucional'] },
+  { href: "/sistema/asignaciones-academicas", label: "Asignaciones", Icon: Link2, description: "Docente, materia y curso", roles: ['superadmin', 'admin_institucional'] },
+  { href: "/sistema/usuarios", label: "Configuración", Icon: Settings, description: "Usuarios y acceso", roles: ['superadmin', 'admin_institucional'] },
+] satisfies ReadonlyArray<{
+  href: string;
+  label: string;
+  Icon: LucideIcon;
+  description: string;
+  roles: readonly string[];
+}>;
 
 type PageMeta = {
   title: string;
@@ -183,7 +209,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
             onClick={() => setMobileSidebarOpen(false)}
             aria-label="Cerrar navegación"
           >
-            ✕
+            <X aria-hidden="true" className="h-4 w-4" />
           </button>
         </div>
 
@@ -200,6 +226,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
         <nav className="soft-scroll sidebar-scroll min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
           {allowedNavigationItems.map((item) => {
             const isActive = isActiveNavigationItem(pathname, item.href);
+            const Icon = item.Icon;
 
             return (
               <Link
@@ -210,7 +237,13 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                   isActive ? "bg-brand-600 text-white shadow-soft" : "text-gray-600 hover:bg-brand-50 hover:text-brand-700"
                 }`}
               >
-                <span className="shrink-0 text-base leading-none">{item.icon}</span>
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                    isActive ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
+                </span>
                 <span className="min-w-0">
                   <span className="block truncate">{item.label}</span>
                   <span className={`hidden truncate text-[11px] font-medium xl:block ${isActive ? "text-white/75" : "text-gray-400"}`}>
@@ -228,7 +261,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
             onClick={() => setMobileSidebarOpen(false)}
             className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-brand-50 hover:text-brand-700"
           >
-            <span>🌐</span>
+            <Globe2 aria-hidden="true" className="h-[18px] w-[18px]" />
             <span>Sitio público</span>
           </Link>
 
@@ -236,7 +269,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
             type="button"
             className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-brand-50 hover:text-brand-700"
           >
-            <span>❓</span>
+            <CircleHelp aria-hidden="true" className="h-[18px] w-[18px]" />
             <span>Ayuda</span>
           </button>
         </nav>
@@ -255,7 +288,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                 aria-controls="sidebar"
                 aria-expanded={mobileSidebarOpen}
               >
-                ☰
+                <Menu aria-hidden="true" className="h-5 w-5" />
               </button>
 
               <div className="min-w-0">
@@ -270,7 +303,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                   className="h-[42px] w-full rounded-xl border border-gray-200 bg-[#FAFBFC] pl-10 pr-4 text-sm outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
                   placeholder="Buscar estudiante, curso, docente..."
                 />
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔎</span>
+                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" />
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -286,14 +319,14 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                     className="icon-button flex h-[42px] w-[42px] items-center justify-center rounded-xl"
                     aria-label="Ver notificaciones"
                   >
-                    🔔
+                    <Bell aria-hidden="true" className="h-[18px] w-[18px]" />
                   </button>
                   <button
                     type="button"
                     className="icon-button flex h-[42px] w-[42px] items-center justify-center rounded-xl"
                     aria-label="Ver mensajes"
                   >
-                    💬
+                    <MessageCircle aria-hidden="true" className="h-[18px] w-[18px]" />
                   </button>
 
                   <div className="flex min-w-0 items-center gap-3 pl-1">

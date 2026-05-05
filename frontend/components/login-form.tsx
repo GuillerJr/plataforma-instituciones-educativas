@@ -50,9 +50,9 @@ export function LoginForm() {
   }
 
   return (
-    <section className="surface-panel w-full max-w-[520px] p-6 sm:p-8">
+    <section className="surface-panel w-full max-w-[520px] p-6 shadow-[0_30px_80px_rgba(8,35,63,0.12)] sm:p-8">
       <div className="flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-sm font-semibold text-white">ED</span>
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-900 text-sm font-semibold text-white shadow-glow">ED</span>
         <div>
           <p className="eyebrow">Acceso institucional</p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">Ingresa al sistema institucional</h1>
@@ -87,7 +87,7 @@ export function LoginForm() {
         </button>
       </form>
 
-      <div className="mt-6 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">
+      <div className="mt-6 rounded-[20px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] p-4 text-sm text-slate-600">
         <p className="font-semibold text-slate-950">¿Necesitas acceso?</p>
         <p className="mt-2 leading-6">Si todavía no tienes credenciales o necesitas recuperar el acceso, registra tu solicitud y el equipo institucional la validará antes de habilitar el ingreso.</p>
         <Link href="/registro" className="secondary-button mt-4 w-full sm:w-auto">
