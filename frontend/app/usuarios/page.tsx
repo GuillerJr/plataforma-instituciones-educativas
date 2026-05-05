@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageUsers } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { UsersWorkspace } from './users-workspace';
 
@@ -59,9 +61,10 @@ async function loginAndLoadUsers() {
 }
 
 export default async function UsersPage() {
-  const { users, roles, institutions, error } = await loginAndLoadUsers();
+  const [{ users, roles, institutions, error }, { user }] = await Promise.all([loginAndLoadUsers(), getCurrentUser()]);
   const activeUsers = users.filter((user) => user.status === 'active').length;
   const blockedUsers = users.filter((user) => user.status === 'blocked').length;
+  const canManage = canManageUsers(user);
 
   return (
     <main className="space-y-6">
@@ -98,7 +101,14 @@ export default async function UsersPage() {
         </div>
       </section>
 
-      <UsersWorkspace users={users} roles={roles} institutions={institutions} error={error} />
+      {canManage ? (
+        <UsersWorkspace users={users} roles={roles} institutions={institutions} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Este perfil no puede crear ni administrar usuarios. Si necesitas cambios de acceso, debe hacerlo administración institucional o superadministración."
+        />
+      )}
     </main>
   );
 }

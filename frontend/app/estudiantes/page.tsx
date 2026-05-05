@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { StudentsWorkspace } from './students-workspace';
 
@@ -83,8 +85,9 @@ async function loadStudentsModule() {
 }
 
 export default async function EstudiantesPage() {
-  const { snapshot, error } = await loadStudentsModule();
+  const [{ snapshot, error }, session] = await Promise.all([loadStudentsModule(), getCurrentUser()]);
   const inactiveStudents = Math.max(0, (snapshot?.summary.students ?? 0) - (snapshot?.summary.activeStudents ?? 0));
+  const canManage = canManageAcademic(session.user);
 
   return (
     <main className="space-y-6">
@@ -122,7 +125,13 @@ export default async function EstudiantesPage() {
         </div>
       </section>
 
-      <StudentsWorkspace snapshot={snapshot} error={error} />
+      <StudentsWorkspace snapshot={snapshot} error={error} canManage={canManage} />
+      {!canManage ? (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede consultar estudiantes, pero no crear ni ajustar matrícula base desde esta cuenta."
+        />
+      ) : null}
     </main>
   );
 }

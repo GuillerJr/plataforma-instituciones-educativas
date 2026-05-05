@@ -1,3 +1,5 @@
+import { getCurrentUser, canWorkOnEvaluations } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { EvaluationsWorkspace } from './evaluations-workspace';
 
@@ -177,7 +179,8 @@ async function loadEvaluationGradesModule() {
 }
 
 export default async function EvaluacionesPage() {
-  const [evaluationsModule, gradesModule] = await Promise.all([loadEvaluationsModule(), loadEvaluationGradesModule()]);
+  const [evaluationsModule, gradesModule, session] = await Promise.all([loadEvaluationsModule(), loadEvaluationGradesModule(), getCurrentUser()]);
+  const canManage = canWorkOnEvaluations(session.user);
 
   return (
     <main className="space-y-6">
@@ -214,12 +217,19 @@ export default async function EvaluacionesPage() {
         </div>
       </section>
 
-      <EvaluationsWorkspace
-        evaluationsSnapshot={evaluationsModule.snapshot}
-        evaluationsError={evaluationsModule.error}
-        gradesSnapshot={gradesModule.snapshot}
-        gradesError={gradesModule.error}
-      />
+      {canManage ? (
+        <EvaluationsWorkspace
+          evaluationsSnapshot={evaluationsModule.snapshot}
+          evaluationsError={evaluationsModule.error}
+          gradesSnapshot={gradesModule.snapshot}
+          gradesError={gradesModule.error}
+        />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Este perfil puede revisar resultados, pero no crear evaluaciones ni registrar calificaciones desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

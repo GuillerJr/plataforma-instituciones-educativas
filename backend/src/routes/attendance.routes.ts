@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canReadAcademic, canWorkOnAttendance } from '../utils/access-control.js';
+import { appendRepresentativeScope, appendStudentScope, appendTeacherAssignmentScope, resolveAcademicIdentityScope } from '../utils/profile-academic-filters.js';
 
 const router = Router();
 
@@ -52,7 +54,17 @@ async function resolveInstitutionId(preferredInstitutionId?: string | null) {
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canReadAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar asistencia.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const scope = await resolveAcademicIdentityScope(request.auth, institution.id);
+  const recordConditions = ['ar.institution_id = $1'];
+  const recordValues: Array<string | string[]> = [institution.id];
+
+  appendStudentScope(scope, recordConditions, recordValues, 'ar.student_id');
+  appendRepresentativeScope(scope, recordConditions, recordValues, 'ar.student_id');
 
   const [recordsResult, levelsResult, gradesResult, sectionsResult, enrollmentsResult] = await Promise.all([
     pool.query(
@@ -81,10 +93,10 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_sections s ON s.id = ar.section_id
         INNER JOIN edu_academic_grades g ON g.id = s.grade_id
         INNER JOIN edu_academic_levels l ON l.id = g.level_id
-        WHERE ar.institution_id = $1
+        WHERE ${recordConditions.join(' AND ')}
         ORDER BY ar.attendance_date DESC, l.sort_order ASC, g.sort_order ASC, s.name ASC, st.full_name ASC
       `,
-      [institution.id],
+      recordValues,
     ),
     pool.query(
       `
@@ -133,11 +145,13 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_grades g ON g.id = s.grade_id
         INNER JOIN edu_academic_levels l ON l.id = g.level_id
         LEFT JOIN edu_enrollments e ON e.section_id = s.id AND e.institution_id = s.institution_id
+        LEFT JOIN edu_academic_assignments aa ON aa.section_id = s.id
         WHERE s.institution_id = $1
+          AND ($3::boolean = FALSE OR aa.teacher_id = $4::uuid)
         GROUP BY s.id, g.level_id, l.name, g.name
         ORDER BY l.sort_order ASC, g.sort_order ASC, s.name ASC, s.created_at ASC
       `,
-      [institution.id, institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString()],
+      [institution.id, institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString(), scope.isTeacher && Boolean(scope.teacherId) && !scope.isGlobalScope, scope.teacherId ?? null],
     ),
     pool.query(
       `
@@ -160,12 +174,33 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_sections s ON s.id = e.section_id
         INNER JOIN edu_academic_grades g ON g.id = s.grade_id
         INNER JOIN edu_academic_levels l ON l.id = g.level_id
+        LEFT JOIN edu_academic_assignments aa ON aa.section_id = e.section_id
         WHERE e.institution_id = $1
           AND e.status = 'active'
           AND e.school_year_label = $2
+          AND (
+            $3::boolean = TRUE
+            OR ($4::boolean = TRUE AND aa.teacher_id = $5::uuid)
+            OR ($6::boolean = TRUE AND st.id = $7::uuid)
+            OR ($8::boolean = TRUE AND st.id = ANY($9::uuid[]))
+            OR ($10::boolean = FALSE AND $11::boolean = FALSE AND $12::boolean = FALSE)
+          )
         ORDER BY l.sort_order ASC, g.sort_order ASC, s.name ASC, st.full_name ASC
       `,
-      [institution.id, institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString()],
+      [
+        institution.id,
+        institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString(),
+        scope.isGlobalScope,
+        scope.isTeacher && Boolean(scope.teacherId),
+        scope.teacherId ?? null,
+        scope.isStudent && Boolean(scope.studentId),
+        scope.studentId ?? null,
+        scope.isRepresentative && scope.representativeStudentIds.length > 0,
+        scope.representativeStudentIds,
+        scope.isTeacher,
+        scope.isStudent,
+        scope.isRepresentative,
+      ],
     ),
   ]);
 
@@ -194,6 +229,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canWorkOnAttendance(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para registrar asistencia.' });
+  }
+
   const payload = attendanceBatchSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
   const schoolYearLabel = institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString();

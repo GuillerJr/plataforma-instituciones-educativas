@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canAccessGlobalInstitutionScope, resolveProfileScope } from '../utils/profile-scope.js';
 
 const router = Router();
 
@@ -33,12 +34,20 @@ router.get('/auth/bootstrap', (_request, response) => {
 router.get('/dashboard', requireAuth, async (request, response) => {
   const institutionId = request.auth?.institutionId ?? null;
   const userRoles = request.auth?.roleCodes ?? [];
-  const isSuperAdmin = userRoles.includes('superadmin');
+  const profileScope = await resolveProfileScope({
+    institutionId,
+    roleCodes: userRoles,
+    teacherId: request.auth?.teacherId,
+    studentId: request.auth?.studentId,
+    userId: request.auth?.sub,
+  });
+  const isGlobalScope = canAccessGlobalInstitutionScope(profileScope);
+  const isSuperAdmin = profileScope.isSuperAdmin;
 
-  const scopeClause = isSuperAdmin || !institutionId ? '' : ' WHERE institution_id = $1';
-  const scopeParams = isSuperAdmin || !institutionId ? [] : [institutionId];
+  const scopeClause = isGlobalScope || !institutionId ? '' : ' WHERE institution_id = $1';
+  const scopeParams = isGlobalScope || !institutionId ? [] : [institutionId];
 
-  const [institutionsCount, usersCount, activeUsersCount, rolesCount, levelsCount, gradesCount, sectionsCount, teachersCount, studentsCount, enrollmentsCount, activeEnrollmentsCount, subjectsCount, academicAssignmentsCount, evaluationsCount, evaluationGradesCount, attendanceRecordsCount, institutions, users, attendanceByStatus, studentsByStatus, teacherByStatus, evaluationAverage] = await Promise.all([
+  const [institutionsCount, usersCount, activeUsersCount, rolesCount, levelsCount, gradesCount, sectionsCount, teachersCount, studentsCount, enrollmentsCount, activeEnrollmentsCount, subjectsCount, academicAssignmentsCount, evaluationsCount, evaluationGradesCount, attendanceRecordsCount, institutions, users, attendanceByStatus, studentsByStatus, teacherByStatus, evaluationAverage, teacherAssignments, teacherEvaluations, studentPerformance, representativeStudents, studentAttendanceSummary] = await Promise.all([
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_institutions`),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_users${scopeClause}`, scopeParams),
     pool.query(`SELECT COUNT(*)::int AS total FROM edu_users${scopeClause ? `${scopeClause} AND status = 'active'` : ` WHERE status = 'active'`}`, scopeParams),
@@ -108,6 +117,94 @@ router.get('/dashboard', requireAuth, async (request, response) => {
        ${scopeClause}`,
       scopeParams,
     ),
+    profileScope.isTeacher && profileScope.teacherId && institutionId
+      ? pool.query(
+          `
+            SELECT
+              aa.id,
+              sub.name AS "subjectName",
+              sub.code AS "subjectCode",
+              g.name AS "gradeName",
+              s.name AS "sectionName",
+              COUNT(DISTINCT e.id)::int AS "evaluationsCount"
+            FROM edu_academic_assignments aa
+            INNER JOIN edu_subjects sub ON sub.id = aa.subject_id
+            INNER JOIN edu_academic_grades g ON g.id = aa.grade_id
+            LEFT JOIN edu_academic_sections s ON s.id = aa.section_id
+            LEFT JOIN edu_evaluations e ON e.academic_assignment_id = aa.id
+            WHERE aa.institution_id = $1
+              AND aa.teacher_id = $2
+            GROUP BY aa.id, sub.name, sub.code, g.name, s.name
+            ORDER BY sub.name ASC, g.name ASC, s.name ASC NULLS FIRST
+          `,
+          [institutionId, profileScope.teacherId],
+        )
+      : Promise.resolve({ rows: [] }),
+    profileScope.isTeacher && profileScope.teacherId && institutionId
+      ? pool.query(
+          `
+            SELECT COUNT(*)::int AS total
+            FROM edu_evaluations e
+            INNER JOIN edu_academic_assignments aa ON aa.id = e.academic_assignment_id
+            WHERE e.institution_id = $1
+              AND aa.teacher_id = $2
+          `,
+          [institutionId, profileScope.teacherId],
+        )
+      : Promise.resolve({ rows: [] }),
+    profileScope.isStudent && profileScope.studentId && institutionId
+      ? pool.query(
+          `
+            SELECT
+              COUNT(eg.id)::int AS "gradesCount",
+              COALESCE(ROUND(AVG(eg.score)::numeric, 2), 0)::float AS "averageScore",
+              COUNT(DISTINCT ar.id)::int AS "attendanceCount",
+              COUNT(DISTINCT CASE WHEN ar.attendance_status = 'absent' THEN ar.id END)::int AS "absences"
+            FROM edu_students st
+            LEFT JOIN edu_evaluation_grades eg ON eg.student_id = st.id AND eg.institution_id = st.institution_id
+            LEFT JOIN edu_attendance_records ar ON ar.student_id = st.id AND ar.institution_id = st.institution_id
+            WHERE st.institution_id = $1
+              AND st.id = $2
+            GROUP BY st.id
+          `,
+          [institutionId, profileScope.studentId],
+        )
+      : Promise.resolve({ rows: [] }),
+    profileScope.isRepresentative && institutionId && profileScope.representativeStudentIds.length > 0
+      ? pool.query(
+          `
+            SELECT
+              st.id,
+              st.full_name AS "fullName",
+              st.enrollment_code AS "enrollmentCode",
+              st.status,
+              g.name AS "gradeName",
+              s.name AS "sectionName"
+            FROM edu_students st
+            LEFT JOIN edu_academic_grades g ON g.id = st.grade_id
+            LEFT JOIN edu_academic_sections s ON s.id = st.section_id
+            WHERE st.institution_id = $1
+              AND st.id = ANY($2::uuid[])
+            ORDER BY st.full_name ASC
+          `,
+          [institutionId, profileScope.representativeStudentIds],
+        )
+      : Promise.resolve({ rows: [] }),
+    profileScope.isStudent && profileScope.studentId && institutionId
+      ? pool.query(
+          `
+            SELECT
+              COUNT(*) FILTER (WHERE attendance_status = 'present')::int AS present,
+              COUNT(*) FILTER (WHERE attendance_status = 'absent')::int AS absent,
+              COUNT(*) FILTER (WHERE attendance_status = 'late')::int AS late,
+              COUNT(*) FILTER (WHERE attendance_status = 'justified')::int AS justified
+            FROM edu_attendance_records
+            WHERE institution_id = $1
+              AND student_id = $2
+          `,
+          [institutionId, profileScope.studentId],
+        )
+      : Promise.resolve({ rows: [] }),
   ]);
 
   return response.json(successResponse('Dashboard administrativo cargado.', {
@@ -115,6 +212,13 @@ router.get('/dashboard', requireAuth, async (request, response) => {
       institutionId,
       userRoles,
       isSuperAdmin,
+      teacherId: profileScope.teacherId,
+      studentId: profileScope.studentId,
+      representativeStudentIds: profileScope.representativeStudentIds,
+      isInstitutionAdmin: profileScope.isInstitutionAdmin,
+      isTeacher: profileScope.isTeacher,
+      isStudent: profileScope.isStudent,
+      isRepresentative: profileScope.isRepresentative,
     },
     metrics: {
       institutions: institutionsCount.rows[0]?.total ?? 0,
@@ -142,6 +246,13 @@ router.get('/dashboard', requireAuth, async (request, response) => {
     },
     institutions: institutions.rows,
     recentUsers: users.rows,
+    profile: {
+      teacherAssignments: teacherAssignments.rows,
+      teacherEvaluations: teacherEvaluations.rows[0]?.total ?? 0,
+      studentPerformance: studentPerformance.rows[0] ?? null,
+      representativeStudents: representativeStudents.rows,
+      studentAttendanceSummary: studentAttendanceSummary.rows[0] ?? null,
+    },
   }));
 });
 

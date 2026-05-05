@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canReadAcademic, canWorkOnEvaluations } from '../utils/access-control.js';
+import { appendRepresentativeScope, appendStudentScope, appendTeacherAssignmentScope, resolveAcademicIdentityScope } from '../utils/profile-academic-filters.js';
 
 const router = Router();
 
@@ -112,7 +114,21 @@ async function resolveAssignment(client: Pick<typeof pool, 'query'>, institution
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canReadAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar evaluaciones.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const scope = await resolveAcademicIdentityScope(request.auth, institution.id);
+  const evaluationConditions = ['e.institution_id = $1'];
+  const evaluationValues: Array<string | string[]> = [institution.id];
+  const assignmentConditions = ['aa.institution_id = $1'];
+  const assignmentValues: Array<string | string[]> = [institution.id];
+
+  appendTeacherAssignmentScope(scope, evaluationConditions, evaluationValues, 'aa.teacher_id');
+  appendStudentScope(scope, evaluationConditions, evaluationValues, 'eg.student_id');
+  appendRepresentativeScope(scope, evaluationConditions, evaluationValues, 'eg.student_id');
+  appendTeacherAssignmentScope(scope, assignmentConditions, assignmentValues, 'aa.teacher_id');
 
   const [evaluationsResult, assignmentsResult] = await Promise.all([
     pool.query(
@@ -149,11 +165,11 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_grades g ON g.id = aa.grade_id
         LEFT JOIN edu_academic_sections s ON s.id = aa.section_id
         LEFT JOIN edu_evaluation_grades eg ON eg.evaluation_id = e.id
-        WHERE e.institution_id = $1
+        WHERE ${evaluationConditions.join(' AND ')}
         GROUP BY e.id, aa.id, t.id, sub.id, l.id, g.id, s.id
         ORDER BY COALESCE(e.due_date, CURRENT_DATE) DESC, e.created_at DESC
       `,
-      [institution.id],
+      evaluationValues,
     ),
     pool.query(
       `
@@ -180,10 +196,10 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_levels l ON l.id = aa.level_id
         INNER JOIN edu_academic_grades g ON g.id = aa.grade_id
         LEFT JOIN edu_academic_sections s ON s.id = aa.section_id
-        WHERE aa.institution_id = $1
+        WHERE ${assignmentConditions.join(' AND ')}
         ORDER BY t.full_name ASC, sub.name ASC, g.sort_order ASC, s.name ASC NULLS FIRST, aa.created_at DESC
       `,
-      [institution.id],
+      assignmentValues,
     ),
   ]);
 
@@ -203,6 +219,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canWorkOnEvaluations(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear evaluaciones.' });
+  }
+
   const payload = evaluationSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
   const schoolYearLabel = institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString();

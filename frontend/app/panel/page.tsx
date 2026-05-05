@@ -10,6 +10,13 @@ type DashboardPayload = {
     institutionId: string | null;
     userRoles: string[];
     isSuperAdmin: boolean;
+    teacherId?: string | null;
+    studentId?: string | null;
+    representativeStudentIds?: string[];
+    isInstitutionAdmin?: boolean;
+    isTeacher?: boolean;
+    isStudent?: boolean;
+    isRepresentative?: boolean;
   };
   metrics: {
     institutions: number;
@@ -48,6 +55,37 @@ type DashboardPayload = {
     institutionName?: string | null;
     roleCodes: string[];
   }>;
+  profile: {
+    teacherAssignments: Array<{
+      id: string;
+      subjectName: string;
+      subjectCode: string;
+      gradeName: string;
+      sectionName?: string | null;
+      evaluationsCount: number;
+    }>;
+    teacherEvaluations: number;
+    studentPerformance?: {
+      gradesCount: number;
+      averageScore: number;
+      attendanceCount: number;
+      absences: number;
+    } | null;
+    representativeStudents: Array<{
+      id: string;
+      fullName: string;
+      enrollmentCode: string;
+      status: string;
+      gradeName?: string | null;
+      sectionName?: string | null;
+    }>;
+    studentAttendanceSummary?: {
+      present: number;
+      absent: number;
+      late: number;
+      justified: number;
+    } | null;
+  };
 };
 
 async function loadDashboard() {
@@ -69,6 +107,9 @@ export default async function PanelPage() {
   const institutionCoverage = dashboard?.institutions.length ?? 0;
   const canManageUsers = hasSomeRole(user, ['superadmin', 'admin_institucional']);
   const canManageAcademic = hasSomeRole(user, ['superadmin', 'admin_institucional', 'docente']);
+  const isTeacherView = Boolean(dashboard?.scope.isTeacher && !dashboard.scope.isInstitutionAdmin && !dashboard.scope.isSuperAdmin);
+  const isStudentView = Boolean(dashboard?.scope.isStudent && !dashboard.scope.isInstitutionAdmin && !dashboard.scope.isSuperAdmin);
+  const isRepresentativeView = Boolean(dashboard?.scope.isRepresentative && !dashboard.scope.isInstitutionAdmin && !dashboard.scope.isSuperAdmin);
   const chartData = dashboard
     ? [
         { key: 'students', label: 'Estudiantes', value: dashboard.metrics.students, color: '#2563EB' },
@@ -116,6 +157,12 @@ export default async function PanelPage() {
 
       {error || !dashboard ? (
         <div className="surface-panel px-5 py-4 text-sm text-rose-700">{error ?? 'No hay datos del panel.'}</div>
+      ) : isTeacherView ? (
+        <TeacherPanel dashboard={dashboard} />
+      ) : isStudentView ? (
+        <StudentPanel dashboard={dashboard} />
+      ) : isRepresentativeView ? (
+        <RepresentativePanel dashboard={dashboard} />
       ) : (
         <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -264,10 +311,159 @@ export default async function PanelPage() {
   );
 }
 
+function TeacherPanel({ dashboard }: { dashboard: DashboardPayload }) {
+  return (
+    <section className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+      <div className="table-shell overflow-hidden">
+        <div className="table-toolbar soft-divider">
+          <div>
+            <p className="eyebrow">Vista docente</p>
+            <h2 className="table-title">Tus asignaciones y carga evaluativa</h2>
+            <p className="table-subtitle">Lectura directa de materias, cursos y evaluaciones bajo tu responsabilidad.</p>
+          </div>
+          <span className="info-chip">{dashboard.profile.teacherAssignments.length} asignaciones</span>
+        </div>
+        <div className="grid gap-3 p-5 sm:grid-cols-2">
+          <MiniMetric label="Asignaciones" value={String(dashboard.profile.teacherAssignments.length)} helper="Materias activas" />
+          <MiniMetric label="Evaluaciones creadas" value={String(dashboard.profile.teacherEvaluations)} helper="Cobertura propia" />
+        </div>
+        <div className="table-scroller">
+          <table className="data-table min-w-[760px]">
+            <thead>
+              <tr>
+                <th>Materia</th>
+                <th>Curso</th>
+                <th>Evaluaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dashboard.profile.teacherAssignments.map((assignment) => (
+                <tr key={assignment.id}>
+                  <td>
+                    <p className="font-semibold text-slate-950">{assignment.subjectName}</p>
+                    <p className="mt-1 text-sm text-slate-500">{assignment.subjectCode}</p>
+                  </td>
+                  <td>
+                    <p className="font-medium text-slate-950">{assignment.gradeName}{assignment.sectionName ? ` · ${assignment.sectionName}` : ''}</p>
+                  </td>
+                  <td>
+                    <span className="info-chip h-fit">{assignment.evaluationsCount} registradas</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="table-shell overflow-hidden">
+        <div className="table-toolbar soft-divider">
+          <div>
+            <p className="eyebrow">Acción rápida</p>
+            <h2 className="table-title">Módulos prioritarios</h2>
+            <p className="table-subtitle">Accesos útiles para trabajo diario docente.</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 p-5">
+          <Link href="/sistema/evaluaciones" className="compact-button">Evaluaciones</Link>
+          <Link href="/sistema/asistencia" className="compact-button">Asistencia</Link>
+          <Link href="/sistema/materias" className="compact-button">Materias</Link>
+          <Link href="/sistema/academico" className="compact-button">Académico</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StudentPanel({ dashboard }: { dashboard: DashboardPayload }) {
+  const performance = dashboard.profile.studentPerformance;
+  const attendance = dashboard.profile.studentAttendanceSummary;
+
+  return (
+    <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+      <div className="table-shell overflow-hidden">
+        <div className="table-toolbar soft-divider">
+          <div>
+            <p className="eyebrow">Vista estudiante</p>
+            <h2 className="table-title">Tu avance académico y asistencia</h2>
+            <p className="table-subtitle">Indicadores reales construidos sobre tus registros vinculados.</p>
+          </div>
+        </div>
+        <div className="grid gap-3 p-5 sm:grid-cols-2">
+          <MiniMetric label="Calificaciones" value={String(performance?.gradesCount ?? 0)} helper="Notas registradas" />
+          <MiniMetric label="Promedio" value={String(performance?.averageScore ?? 0)} helper="Rendimiento actual" />
+          <MiniMetric label="Asistencias" value={String(performance?.attendanceCount ?? 0)} helper="Tomas registradas" />
+          <MiniMetric label="Ausencias" value={String(performance?.absences ?? 0)} helper="Seguimiento actual" />
+        </div>
+      </div>
+      <div className="table-shell overflow-hidden">
+        <div className="table-toolbar soft-divider">
+          <div>
+            <p className="eyebrow">Detalle de asistencia</p>
+            <h2 className="table-title">Distribución personal</h2>
+            <p className="table-subtitle">Resumen de presentes, ausencias, atrasos y justificadas.</p>
+          </div>
+        </div>
+        <div className="grid gap-3 p-5 sm:grid-cols-2">
+          <MiniMetric label="Presentes" value={String(attendance?.present ?? 0)} helper="Días confirmados" />
+          <MiniMetric label="Ausentes" value={String(attendance?.absent ?? 0)} helper="Inasistencias" />
+          <MiniMetric label="Atrasos" value={String(attendance?.late ?? 0)} helper="Llegadas tarde" />
+          <MiniMetric label="Justificadas" value={String(attendance?.justified ?? 0)} helper="Soportes válidos" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RepresentativePanel({ dashboard }: { dashboard: DashboardPayload }) {
+  return (
+    <section className="table-shell overflow-hidden">
+      <div className="table-toolbar soft-divider">
+        <div>
+          <p className="eyebrow">Vista representante</p>
+          <h2 className="table-title">Estudiantes asociados a tu cuenta</h2>
+          <p className="table-subtitle">Seguimiento directo de los alumnos vinculados realmente por relación familiar.</p>
+        </div>
+        <span className="info-chip">{dashboard.profile.representativeStudents.length} vinculados</span>
+      </div>
+      <div className="table-scroller">
+        <table className="data-table min-w-[840px]">
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              <th>Matrícula</th>
+              <th>Ubicación</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dashboard.profile.representativeStudents.map((student) => (
+              <tr key={student.id}>
+                <td>
+                  <p className="font-semibold text-slate-950">{student.fullName}</p>
+                </td>
+                <td>
+                  <p className="font-medium text-slate-950">{student.enrollmentCode}</p>
+                </td>
+                <td>
+                  <p className="text-sm text-slate-600">{student.gradeName ?? 'Sin curso'}{student.sectionName ? ` · ${student.sectionName}` : ''}</p>
+                </td>
+                <td>
+                  <span className="info-chip h-fit">{translateUserStatus(student.status)}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 function translateUserStatus(status: string) {
   if (status === 'active') return 'Activo';
   if (status === 'pending') return 'Pendiente';
   if (status === 'blocked') return 'Bloqueado';
+  if (status === 'inactive') return 'Inactivo';
   return status;
 }
 

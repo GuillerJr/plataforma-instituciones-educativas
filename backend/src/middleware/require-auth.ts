@@ -2,11 +2,13 @@ import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 
-type AuthPayload = {
+export type AuthPayload = {
   sub: string;
   email: string;
   roleCodes: string[];
   institutionId: string | null;
+  teacherId?: string | null;
+  studentId?: string | null;
 };
 
 declare global {

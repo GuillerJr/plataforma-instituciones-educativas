@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageInstitution } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { InstitutionsWorkspace } from './institutions-workspace';
 
@@ -27,9 +29,10 @@ async function loginAndLoadInstitutions() {
 }
 
 export default async function InstitutionsPage() {
-  const { institutions, error } = await loginAndLoadInstitutions();
+  const [{ institutions, error }, session] = await Promise.all([loginAndLoadInstitutions(), getCurrentUser()]);
   const publicCount = institutions.filter((institution) => institution.institutionType === 'publica').length;
   const privateCount = institutions.length - publicCount;
+  const canManage = canManageInstitution(session.user);
 
   return (
     <main className="space-y-6">
@@ -67,7 +70,14 @@ export default async function InstitutionsPage() {
         </div>
       </section>
 
-      <InstitutionsWorkspace institutions={institutions} error={error} />
+      {canManage ? (
+        <InstitutionsWorkspace institutions={institutions} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede consultar la información institucional, pero no crear ni modificar estructura institucional desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

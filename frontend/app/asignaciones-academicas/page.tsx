@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { AcademicAssignmentsWorkspace } from './academic-assignments-workspace';
 
@@ -100,8 +102,9 @@ async function loadAcademicAssignmentsModule() {
 }
 
 export default async function AsignacionesAcademicasPage() {
-  const { snapshot, error } = await loadAcademicAssignmentsModule();
+  const [{ snapshot, error }, session] = await Promise.all([loadAcademicAssignmentsModule(), getCurrentUser()]);
   const courseWideAssignments = Math.max(0, (snapshot?.summary.assignments ?? 0) - (snapshot?.summary.withSection ?? 0));
+  const canManage = canManageAcademic(session.user);
 
   return (
     <main className="page-main">
@@ -135,7 +138,14 @@ export default async function AsignacionesAcademicasPage() {
         </div>
       </section>
 
-      <AcademicAssignmentsWorkspace snapshot={snapshot} error={error} />
+      {canManage ? (
+        <AcademicAssignmentsWorkspace snapshot={snapshot} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede revisar asignaciones académicas, pero no crear ni redistribuir carga docente desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

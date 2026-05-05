@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { EnrollmentsWorkspace } from './enrollments-workspace';
 
@@ -103,8 +105,9 @@ async function loadEnrollmentsModule() {
 }
 
 export default async function MatriculasPage() {
-  const { snapshot, error } = await loadEnrollmentsModule();
+  const [{ snapshot, error }, session] = await Promise.all([loadEnrollmentsModule(), getCurrentUser()]);
   const nonActiveEnrollments = Math.max(0, (snapshot?.summary.enrollments ?? 0) - (snapshot?.summary.activeEnrollments ?? 0));
+  const canManage = canManageAcademic(session.user);
 
   return (
     <main className="space-y-6">
@@ -141,7 +144,14 @@ export default async function MatriculasPage() {
         </div>
       </section>
 
-      <EnrollmentsWorkspace snapshot={snapshot} error={error} />
+      {canManage ? (
+        <EnrollmentsWorkspace snapshot={snapshot} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede consultar matrículas, pero no registrar ni modificar inscripciones desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

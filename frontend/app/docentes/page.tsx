@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageTeaching } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { TeachersWorkspace } from './teachers-workspace';
 
@@ -80,8 +82,9 @@ async function loadTeachersModule() {
 }
 
 export default async function DocentesPage() {
-  const { snapshot, error } = await loadTeachersModule();
+  const [{ snapshot, error }, { user }] = await Promise.all([loadTeachersModule(), getCurrentUser()]);
   const teachersWithoutAssignment = Math.max(0, (snapshot?.summary.teachers ?? 0) - (snapshot?.summary.assignedTeachers ?? 0));
+  const canManage = canManageTeaching(user);
 
   return (
     <main className="space-y-6">
@@ -118,7 +121,14 @@ export default async function DocentesPage() {
         </div>
       </section>
 
-      <TeachersWorkspace snapshot={snapshot} error={error} />
+      {canManage ? (
+        <TeachersWorkspace snapshot={snapshot} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede revisar información docente, pero no registrar ni reasignar docentes desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

@@ -7,6 +7,8 @@ export type CurrentUser = {
   status: 'pending' | 'active' | 'blocked';
   roleCodes: string[];
   institutionId: string | null;
+  teacherId?: string | null;
+  studentId?: string | null;
 };
 
 export async function getCurrentUser() {
@@ -37,4 +39,28 @@ export function getPrimaryRoleLabel(user: CurrentUser | null) {
   if (user.roleCodes.includes('representante')) return 'Representante';
 
   return user.roleCodes[0];
+}
+
+export function canManageUsers(user: CurrentUser | null) {
+  return hasSomeRole(user, ['superadmin', 'admin_institucional']);
+}
+
+export function canManageInstitution(user: CurrentUser | null) {
+  return hasSomeRole(user, ['superadmin', 'admin_institucional']);
+}
+
+export function canManageAcademic(user: CurrentUser | null) {
+  return hasSomeRole(user, ['superadmin', 'admin_institucional']);
+}
+
+export function canManageTeaching(user: CurrentUser | null) {
+  return hasSomeRole(user, ['superadmin', 'admin_institucional']);
+}
+
+export function canWorkOnEvaluations(user: CurrentUser | null) {
+  return hasSomeRole(user, ['superadmin', 'admin_institucional', 'docente']);
+}
+
+export function canWorkOnAttendance(user: CurrentUser | null) {
+  return hasSomeRole(user, ['superadmin', 'admin_institucional', 'docente']);
 }

@@ -6,6 +6,7 @@ import { StudentFormModal } from './student-create-form';
 import type { StudentAcademicGrade, StudentAcademicLevel, StudentAcademicSection, StudentRecord, StudentStatus } from './page';
 
 type StudentsWorkspaceProps = {
+  canManage: boolean;
   snapshot: {
     institution: {
       id: string;
@@ -26,7 +27,7 @@ type StudentsWorkspaceProps = {
   error: string | null;
 };
 
-export function StudentsWorkspace({ snapshot, error }: StudentsWorkspaceProps) {
+export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -53,9 +54,11 @@ export function StudentsWorkspace({ snapshot, error }: StudentsWorkspaceProps) {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="primary-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Nuevo estudiante
-                </button>
+                {canManage ? (
+                  <button type="button" className="primary-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
+                    Nuevo estudiante
+                  </button>
+                ) : null}
                 <span className="info-chip">{students.length} registrados</span>
               </div>
 
@@ -103,9 +106,11 @@ export function StudentsWorkspace({ snapshot, error }: StudentsWorkspaceProps) {
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{students.length} estudiantes</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Crear
-              </button>
+              {canManage ? (
+                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
+                  Crear
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -166,13 +171,15 @@ export function StudentsWorkspace({ snapshot, error }: StudentsWorkspaceProps) {
         </section>
       </div>
 
-      <StudentFormModal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        levels={levels}
-        grades={grades}
-        sections={sections}
-      />
+      {canManage ? (
+        <StudentFormModal
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          levels={levels}
+          grades={grades}
+          sections={sections}
+        />
+      ) : null}
     </>
   );
 }

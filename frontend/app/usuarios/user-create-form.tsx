@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
 import { getAccessToken } from '../lib/client-auth';
 
@@ -16,6 +16,20 @@ type RoleOption = {
   name: string;
 };
 
+type ProfileTeacherOption = {
+  id: string;
+  fullName: string;
+  email?: string | null;
+  status: string;
+};
+
+type ProfileStudentOption = {
+  id: string;
+  fullName: string;
+  enrollmentCode?: string | null;
+  status: string;
+};
+
 type UserCreateFormProps = {
   institutions: InstitutionOption[];
   roles: RoleOption[];
@@ -28,6 +42,14 @@ export type UserFormValues = {
   email: string;
   status: 'pending' | 'active' | 'blocked';
   roleCodes: string[];
+  teacherId?: string | null;
+  studentId?: string | null;
+  guardianships?: Array<{
+    studentId: string;
+    studentName: string;
+    relationshipLabel: string;
+    isPrimary: boolean;
+  }>;
 };
 
 type FormState = {
@@ -48,6 +70,12 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
+  const [profileOptions, setProfileOptions] = useState<{ teachers: ProfileTeacherOption[]; students: ProfileStudentOption[] }>({ teachers: [], students: [] });
+
+  const selectedRoles = initialValues?.roleCodes ?? [];
+  const showTeacherLink = useMemo(() => selectedRoles.includes('docente'), [selectedRoles]);
+  const showStudentLink = useMemo(() => selectedRoles.includes('estudiante'), [selectedRoles]);
+  const showRepresentativeLink = useMemo(() => selectedRoles.includes('representante'), [selectedRoles]);
 
   useEffect(() => {
     if (open) {
@@ -55,6 +83,41 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       setState({ success: false, message: null });
     }
   }, [open, mode, initialValues]);
+
+  useEffect(() => {
+    if (!open || mode !== 'create') return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const accessToken = await getAccessToken();
+        const response = await fetch(`${API_BASE_URL}/users/profile-options`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const payload = await response.json().catch(() => null) as { data?: { teachers: ProfileTeacherOption[]; students: ProfileStudentOption[] }; message?: string } | null;
+
+        if (!response.ok) {
+          throw new Error(payload?.message ?? 'No fue posible cargar opciones de vinculación.');
+        }
+
+        if (!cancelled) {
+          setProfileOptions(payload?.data ?? { teachers: [], students: [] });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible cargar opciones de vinculación.' });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, mode]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -66,13 +129,17 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       return;
     }
 
+    const roleCodes = formData.getAll('roleCodes').map((value) => String(value).trim()).filter(Boolean);
     const payload = {
       fullName: String(formData.get('fullName') ?? '').trim(),
       email: String(formData.get('email') ?? '').trim(),
       password: String(formData.get('password') ?? '').trim(),
       status: String(formData.get('status') ?? '').trim(),
       institutionId: String(formData.get('institutionId') ?? '').trim() || null,
-      roleCodes: formData.getAll('roleCodes').map((value) => String(value).trim()).filter(Boolean),
+      roleCodes,
+      teacherId: String(formData.get('teacherId') ?? '').trim() || null,
+      studentId: String(formData.get('studentId') ?? '').trim() || null,
+      representativeStudentIds: formData.getAll('representativeStudentIds').map((value) => String(value).trim()).filter(Boolean),
     };
 
     if (!payload.fullName || !payload.email || !payload.password || !payload.status || payload.roleCodes.length === 0) {
@@ -114,7 +181,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       onClose={onClose}
       title={mode === 'create' ? 'Registrar usuario' : 'Editar usuario'}
       description={mode === 'create'
-        ? 'Crea usuarios reales, define su estado y asigna roles dentro de la institución actual sin salir del flujo administrativo.'
+        ? 'Crea usuarios reales, define su estado, asigna roles y vincula el perfil académico cuando corresponda.'
         : 'La interacción de edición ya quedó preparada en modal para activarse apenas exista actualización de usuarios en la API.'}
     >
       <form action={handleSubmit} className="space-y-5">
@@ -171,6 +238,56 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
             ))}
           </div>
         </fieldset>
+
+        {mode === 'create' ? (
+          <section className="space-y-4 rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+            <div>
+              <p className="text-sm font-semibold text-slate-950">Vinculación académica</p>
+              <p className="mt-1 text-xs leading-5 text-slate-500">Usa estos campos cuando el usuario represente una identidad real dentro del colegio.</p>
+            </div>
+
+            {showTeacherLink ? (
+              <label className="block">
+                <span className="field-label">Vincular con docente</span>
+                <select name="teacherId" defaultValue={initialValues?.teacherId ?? ''} className="form-field">
+                  <option value="">Sin vínculo docente</option>
+                  {profileOptions.teachers.map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>{teacher.fullName}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {showStudentLink ? (
+              <label className="block">
+                <span className="field-label">Vincular con estudiante</span>
+                <select name="studentId" defaultValue={initialValues?.studentId ?? ''} className="form-field">
+                  <option value="">Sin vínculo estudiantil</option>
+                  {profileOptions.students.map((student) => (
+                    <option key={student.id} value={student.id}>{student.fullName} · {student.enrollmentCode ?? 'Sin código'}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {showRepresentativeLink ? (
+              <fieldset>
+                <legend className="field-label">Estudiantes asociados al representante</legend>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  {profileOptions.students.map((student) => (
+                    <label key={student.id} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+                      <input name="representativeStudentIds" type="checkbox" value={student.id} className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-sky-400" />
+                      <span>
+                        <span className="block font-medium text-slate-900">{student.fullName}</span>
+                        <span className="mt-1 block text-xs text-slate-500">{student.enrollmentCode ?? 'Sin código de matrícula'}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
+          </section>
+        ) : null}
 
         {mode === 'edit' ? (
           <div className="rounded-[24px] border border-dashed border-sky-200 bg-sky-50/70 px-4 py-4 text-sm text-slate-700">

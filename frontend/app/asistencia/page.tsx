@@ -1,3 +1,5 @@
+import { getCurrentUser, canWorkOnAttendance } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { AttendanceWorkspace } from './attendance-workspace';
 
@@ -111,7 +113,8 @@ async function loadAttendanceModule() {
 }
 
 export default async function AsistenciaPage() {
-  const { snapshot, error } = await loadAttendanceModule();
+  const [{ snapshot, error }, session] = await Promise.all([loadAttendanceModule(), getCurrentUser()]);
+  const canManage = canWorkOnAttendance(session.user);
 
   return (
     <main className="space-y-6">
@@ -148,7 +151,14 @@ export default async function AsistenciaPage() {
         </div>
       </section>
 
-      <AttendanceWorkspace snapshot={snapshot} error={error} />
+      {canManage ? (
+        <AttendanceWorkspace snapshot={snapshot} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede revisar asistencia, pero no registrar ni modificar tomas diarias desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

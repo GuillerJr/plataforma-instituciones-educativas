@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canManageAcademic, canReadAcademic } from '../utils/access-control.js';
+import { appendRepresentativeScope, appendStudentScope, resolveAcademicIdentityScope } from '../utils/profile-academic-filters.js';
 
 const router = Router();
 
@@ -100,7 +102,17 @@ async function resolveAcademicPlacement(
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canReadAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar estudiantes.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const scope = await resolveAcademicIdentityScope(request.auth, institution.id);
+  const studentConditions = ['st.institution_id = $1'];
+  const studentValues: Array<string | string[]> = [institution.id];
+
+  appendStudentScope(scope, studentConditions, studentValues, 'st.id');
+  appendRepresentativeScope(scope, studentConditions, studentValues, 'st.id');
 
   const [studentsResult, levelsResult, gradesResult, sectionsResult] = await Promise.all([
     pool.query(
@@ -125,10 +137,10 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_levels l ON l.id = st.level_id
         INNER JOIN edu_academic_grades g ON g.id = st.grade_id
         INNER JOIN edu_academic_sections s ON s.id = st.section_id
-        WHERE st.institution_id = $1
+        WHERE ${studentConditions.join(' AND ')}
         ORDER BY st.created_at DESC
       `,
-      [institution.id],
+      studentValues,
     ),
     pool.query(
       `
@@ -201,6 +213,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear estudiantes.' });
+  }
+
   const payload = studentSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
   const client = await pool.connect();

@@ -1,3 +1,5 @@
+import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { AcademicStructureWorkspace } from './academic-structure-workspace';
 
@@ -63,7 +65,8 @@ async function loadAcademicStructure() {
 }
 
 export default async function AcademicoPage() {
-  const { snapshot, error } = await loadAcademicStructure();
+  const [{ snapshot, error }, session] = await Promise.all([loadAcademicStructure(), getCurrentUser()]);
+  const canManage = canManageAcademic(session.user);
 
   return (
     <main className="space-y-6">
@@ -101,7 +104,14 @@ export default async function AcademicoPage() {
         </div>
       </section>
 
-      <AcademicStructureWorkspace snapshot={snapshot} error={error} />
+      {canManage ? (
+        <AcademicStructureWorkspace snapshot={snapshot} error={error} />
+      ) : (
+        <ModuleAccessGuard
+          allowed={false}
+          fallback="Tu perfil puede consultar la estructura escolar, pero no crear niveles, grados ni secciones desde esta cuenta."
+        />
+      )}
     </main>
   );
 }

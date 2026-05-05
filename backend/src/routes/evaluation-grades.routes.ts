@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canReadAcademic, canWorkOnEvaluations } from '../utils/access-control.js';
+import { appendRepresentativeScope, appendStudentScope, appendTeacherAssignmentScope, resolveAcademicIdentityScope } from '../utils/profile-academic-filters.js';
 
 const router = Router();
 
@@ -184,10 +186,19 @@ async function resolveEligibleEnrollment(
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canReadAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar calificaciones.' });
+  }
+
   const filters = gradeFiltersSchema.parse(request.query);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const scope = await resolveAcademicIdentityScope(request.auth, institution.id);
   const conditions = ['eg.institution_id = $1'];
-  const values: Array<string> = [institution.id];
+  const values: Array<string | string[]> = [institution.id];
+
+  appendTeacherAssignmentScope(scope, conditions, values, 'aa.teacher_id');
+  appendStudentScope(scope, conditions, values, 'eg.student_id');
+  appendRepresentativeScope(scope, conditions, values, 'eg.student_id');
 
   if (filters.evaluationId) {
     values.push(filters.evaluationId);
@@ -301,9 +312,24 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_levels l ON l.id = g.level_id
         WHERE e.institution_id = $1
           AND e.status = 'active'
+          AND (
+            $2::boolean = TRUE
+            OR ($3::boolean = TRUE AND st.id = $4::uuid)
+            OR ($5::boolean = TRUE AND st.id = ANY($6::uuid[]))
+            OR ($7::boolean = FALSE AND $8::boolean = FALSE)
+          )
         ORDER BY st.full_name ASC, e.created_at DESC
       `,
-      [institution.id],
+      [
+        institution.id,
+        scope.isGlobalScope,
+        scope.isStudent && Boolean(scope.studentId),
+        scope.studentId ?? null,
+        scope.isRepresentative && scope.representativeStudentIds.length > 0,
+        scope.representativeStudentIds,
+        scope.isStudent,
+        scope.isRepresentative,
+      ],
     ),
   ]);
 
@@ -328,6 +354,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canWorkOnEvaluations(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para registrar calificaciones.' });
+  }
+
   const payload = gradeSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
   const client = await pool.connect();

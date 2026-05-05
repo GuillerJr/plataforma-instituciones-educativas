@@ -4,6 +4,46 @@
 
 :root {
   color-scheme: light;
+  --bg-app: radial-gradient(circle at top, #ffffff 0%, #f7f9fc 34%, #eef3f8 100%);
+  --bg-grid-line: rgba(255, 255, 255, 0.05);
+  --text-main: #10213a;
+  --text-strong: #0f172a;
+  --text-muted: #64748b;
+  --panel-bg: rgba(255, 255, 255, 0.96);
+  --panel-soft: rgba(248, 250, 252, 0.92);
+  --panel-border: rgba(226, 232, 240, 0.92);
+  --hover-bg: rgba(239, 246, 255, 0.92);
+  --hover-text: #0f5bd8;
+  --button-primary: #0f172a;
+  --button-primary-hover: #172554;
+  --button-secondary-bg: #ffffff;
+  --button-secondary-text: #334155;
+  --button-secondary-border: rgba(226, 232, 240, 0.92);
+  --accent: #2563eb;
+  --accent-soft: rgba(219, 234, 254, 0.9);
+  --shadow-soft: 0 14px 34px rgba(15, 23, 42, 0.06);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-app: radial-gradient(circle at top, #08111f 0%, #0b1324 38%, #111827 100%);
+  --bg-grid-line: rgba(148, 163, 184, 0.06);
+  --text-main: #e5eefc;
+  --text-strong: #f8fafc;
+  --text-muted: #94a3b8;
+  --panel-bg: rgba(15, 23, 42, 0.9);
+  --panel-soft: rgba(30, 41, 59, 0.82);
+  --panel-border: rgba(51, 65, 85, 0.92);
+  --hover-bg: rgba(30, 41, 59, 0.96);
+  --hover-text: #93c5fd;
+  --button-primary: #2563eb;
+  --button-primary-hover: #1d4ed8;
+  --button-secondary-bg: rgba(15, 23, 42, 0.95);
+  --button-secondary-text: #dbeafe;
+  --button-secondary-border: rgba(51, 65, 85, 0.92);
+  --accent: #60a5fa;
+  --accent-soft: rgba(37, 99, 235, 0.18);
+  --shadow-soft: 0 20px 44px rgba(2, 6, 23, 0.36);
 }
 
 * {
@@ -17,9 +57,10 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top, #ffffff 0%, #f7f9fc 34%, #eef3f8 100%);
-  color: #10213a;
+  background: var(--bg-app);
+  color: var(--text-main);
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  transition: background 220ms ease, color 220ms ease;
 }
 
 body::before {
@@ -27,8 +68,8 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(var(--bg-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid-line) 1px, transparent 1px);
   background-size: 24px 24px;
   mask-image: radial-gradient(circle at top, black, transparent 78%);
   opacity: 0.35;
@@ -123,7 +164,10 @@ a {
   }
 
   .surface-panel {
-    @apply rounded-[24px] border border-slate-200/90 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.05)];
+    @apply rounded-[24px] shadow-[0_14px_34px_rgba(15,23,42,0.05)];
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    box-shadow: var(--shadow-soft);
   }
 
   .surface-muted {
@@ -179,15 +223,39 @@ a {
   }
 
   .primary-button {
-    @apply inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-2.5 text-center text-sm font-semibold leading-5 text-white shadow-[0_12px_24px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5 hover:bg-slate-800;
+    @apply inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-center text-sm font-semibold leading-5 text-white transition hover:-translate-y-0.5;
+    background: var(--button-primary);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .primary-button:hover {
+    background: var(--button-primary-hover);
   }
 
   .secondary-button {
-    @apply inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-medium leading-5 text-slate-700 transition hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700;
+    @apply inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-center text-sm font-medium leading-5 transition hover:-translate-y-0.5;
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+  }
+
+  .secondary-button:hover {
+    background: var(--hover-bg);
+    color: var(--hover-text);
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
   }
 
   .compact-button {
-    @apply inline-flex min-h-10 max-w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-center text-sm font-medium leading-5 text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700;
+    @apply inline-flex min-h-10 max-w-full items-center justify-center gap-2 rounded-xl px-3.5 py-2 text-center text-sm font-medium leading-5 transition;
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+  }
+
+  .compact-button:hover {
+    background: var(--hover-bg);
+    color: var(--hover-text);
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
   }
 
   .metric-card {
@@ -235,11 +303,23 @@ a {
   }
 
   .icon-button {
-    @apply relative inline-flex h-9 w-9 items-center justify-center rounded-[18px] border border-slate-200 bg-white transition hover:border-sky-200 hover:bg-sky-50;
+    @apply relative inline-flex h-9 w-9 items-center justify-center rounded-[18px] transition;
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    color: var(--text-muted);
+  }
+
+  .icon-button:hover {
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+    background: var(--hover-bg);
+    color: var(--hover-text);
   }
 
   .table-shell {
-    @apply overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.05)];
+    @apply overflow-hidden rounded-[24px];
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    box-shadow: var(--shadow-soft);
   }
 
   .table-toolbar {
@@ -333,6 +413,25 @@ a {
   .mobile-sidebar-panel {
     @apply flex h-full w-full max-w-[340px] flex-col border-r border-slate-200 bg-white/95 p-4 shadow-[0_24px_70px_rgba(15,23,42,0.18)] backdrop-blur sm:max-w-[380px] sm:p-5;
     animation: mobile-sidebar-slide-in 180ms ease-out;
+  }
+
+  .app-frame {
+    background: var(--bg-app);
+    color: var(--text-main);
+  }
+
+  .app-main {
+    background: transparent;
+  }
+
+  .app-sidebar-panel {
+    border-right: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+  }
+
+  .topbar-surface {
+    border-bottom: 1px solid var(--panel-border);
+    background: color-mix(in srgb, var(--panel-bg) 96%, transparent);
   }
 }
 
