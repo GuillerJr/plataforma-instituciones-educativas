@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { UserPlus } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { StudentFormModal } from './student-create-form';
 import type { StudentAcademicGrade, StudentAcademicLevel, StudentAcademicSection, StudentRecord, StudentStatus } from './page';
 
@@ -55,9 +57,7 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 {canManage ? (
-                  <button type="button" className="primary-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                    Nuevo estudiante
-                  </button>
+                  <ActionButton label="Estudiante" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
                 ) : null}
                 <span className="info-chip">{students.length} registrados</span>
               </div>
@@ -107,9 +107,7 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{students.length} estudiantes</span>
               {canManage ? (
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Crear
-                </button>
+                <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
               ) : null}
             </div>
           </div>

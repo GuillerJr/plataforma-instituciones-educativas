@@ -2,7 +2,10 @@
 
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { CalendarRange, GraduationCap, Plus, School } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { GradeFormModal, LevelFormModal, SectionFormModal } from './academic-create-forms';
 import type { AcademicGrade, AcademicLevel, AcademicSection } from './page';
 
@@ -57,15 +60,9 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                 <p className="table-subtitle">La prioridad es operar niveles, grados y secciones con lectura útil y directa.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setLevelOpen(true)}>
-                  Nuevo nivel
-                </button>
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setGradeOpen(true)}>
-                  Nuevo curso o grado
-                </button>
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setSectionOpen(true)}>
-                  Nueva sección
-                </button>
+                <ActionButton label="Nivel" icon={School} className="w-full sm:w-auto" onClick={() => setLevelOpen(true)} />
+                <ActionButton label="Curso" icon={GraduationCap} className="w-full sm:w-auto" onClick={() => setGradeOpen(true)} />
+                <ActionButton label="Sección" icon={CalendarRange} className="w-full sm:w-auto" onClick={() => setSectionOpen(true)} />
               </div>
             </div>
             <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -114,6 +111,8 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
           countLabel={`${levels.length} niveles`}
           emptyLabel="Todavía no hay niveles registrados."
           onCreate={() => setLevelOpen(true)}
+          actionLabel="Nivel"
+          actionIcon={School}
           page={levelsPage}
           totalPages={totalLevelPages}
           totalItems={levels.length}
@@ -158,6 +157,8 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
           countLabel={`${grades.length} registros`}
           emptyLabel="Todavía no hay cursos o grados registrados."
           onCreate={() => setGradeOpen(true)}
+          actionLabel="Curso"
+          actionIcon={GraduationCap}
           page={gradesPage}
           totalPages={totalGradePages}
           totalItems={grades.length}
@@ -202,6 +203,8 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
           countLabel={`${sections.length} secciones`}
           emptyLabel="Todavía no hay secciones registradas."
           onCreate={() => setSectionOpen(true)}
+          actionLabel="Sección"
+          actionIcon={CalendarRange}
           page={sectionsPage}
           totalPages={totalSectionPages}
           totalItems={sections.length}
@@ -259,6 +262,8 @@ function EntityTable({
   emptyLabel,
   children,
   onCreate,
+  actionLabel,
+  actionIcon: ActionIcon,
   page,
   totalPages,
   totalItems,
@@ -272,6 +277,8 @@ function EntityTable({
   emptyLabel: string;
   children: ReactNode;
   onCreate: () => void;
+  actionLabel: string;
+  actionIcon: LucideIcon;
   page: number;
   totalPages: number;
   totalItems: number;
@@ -288,7 +295,7 @@ function EntityTable({
         </div>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
           <span className="info-chip">{countLabel}</span>
-          <button type="button" className="compact-button w-full sm:w-auto" onClick={onCreate}>Crear</button>
+          <ActionButton label={actionLabel} icon={ActionIcon} className="w-full sm:w-auto" onClick={onCreate} />
         </div>
       </div>
 

@@ -14,6 +14,8 @@ import {
   CalendarRange,
   CircleHelp,
   ClipboardCheck,
+  Eye,
+  EyeOff,
   GraduationCap,
   Globe2,
   Link2,
@@ -26,6 +28,8 @@ import {
   X,
 } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+
+const APP_HEADER_VISIBILITY_KEY = 'edu-app-header-visible';
 
 const navigationItems = [
   { href: "/sistema/panel", label: "Dashboard", Icon: School, description: "Centro institucional", roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'] },
@@ -142,11 +146,26 @@ function isActiveNavigationItem(pathname: string, href: string) {
   return normalized === href || normalized.startsWith(`${href}/`);
 }
 
+function getUserInitials(fullName?: string | null) {
+  if (!fullName) return 'ED';
+
+  const initials = fullName
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((chunk) => chunk[0]?.toUpperCase() ?? '')
+    .join('');
+
+  return initials || 'ED';
+}
+
 export function AppShell({ children, currentUser }: Readonly<{ children: ReactNode; currentUser: CurrentUser | null }>) {
   const rawPathname = usePathname() ?? "/sistema";
   const pathname = useMemo(() => normalizePathname(rawPathname), [rawPathname]);
   const activePage = useMemo(() => getActivePage(pathname), [pathname]);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const userInitials = useMemo(() => getUserInitials(currentUser?.fullName), [currentUser?.fullName]);
 
   useEffect(() => {
     setMobileSidebarOpen(false);
@@ -169,6 +188,15 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
       window.removeEventListener("keydown", handleEscape);
     };
   }, [mobileSidebarOpen]);
+
+  useEffect(() => {
+    const storedPreference = window.localStorage.getItem(APP_HEADER_VISIBILITY_KEY);
+    if (storedPreference === 'false') setHeaderVisible(false);
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(APP_HEADER_VISIBILITY_KEY, String(headerVisible));
+  }, [headerVisible]);
 
   const allowedNavigationItems = useMemo(() => {
     if (!currentUser) return navigationItems.filter((item) => item.href === '/sistema/panel');
@@ -211,16 +239,6 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
           >
             <X aria-hidden="true" className="h-4 w-4" />
           </button>
-        </div>
-
-        <div className="mb-3 mt-4 shrink-0 rounded-lg border border-slate-200 bg-slate-50 p-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white font-bold text-slate-700">AG</div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-slate-900">{currentUser?.fullName ?? 'Acceso institucional'}</p>
-              <p className="truncate text-[11px] font-medium text-slate-500">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
-            </div>
-          </div>
         </div>
 
         <nav className="soft-scroll sidebar-scroll min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
@@ -277,7 +295,35 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
       </aside>
 
       <main className="app-main min-h-screen min-w-0 overflow-x-hidden lg:pl-[272px]">
-        <header className="topbar-surface sticky top-0 z-30 px-4 py-2.5 backdrop-blur sm:px-5 lg:px-6">
+        {!headerVisible ? (
+          <div className="fixed right-4 top-4 z-40 flex items-center gap-2 sm:right-5 lg:right-6">
+            <button
+              type="button"
+              className="icon-button flex h-10 w-10 items-center justify-center rounded-lg lg:hidden"
+              onClick={() => setMobileSidebarOpen(true)}
+              aria-label="Abrir navegación"
+              aria-controls="sidebar"
+              aria-expanded={mobileSidebarOpen}
+            >
+              <Menu aria-hidden="true" className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              className="compact-button flex h-10 items-center gap-2 rounded-lg px-3"
+              onClick={() => setHeaderVisible(true)}
+              aria-label="Mostrar encabezado"
+            >
+              <Eye aria-hidden="true" className="h-4 w-4" />
+              <span className="hidden sm:inline">Mostrar encabezado</span>
+            </button>
+          </div>
+        ) : null}
+
+        <header
+          className={`topbar-surface fixed left-0 right-0 top-0 z-30 px-4 py-2.5 backdrop-blur transition-all duration-300 sm:px-5 lg:left-[272px] lg:px-6 ${
+            headerVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'
+          }`}
+        >
           <div className="mx-auto flex w-full max-w-[1480px] min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <button
@@ -313,6 +359,15 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                 </select>
 
                 <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-start">
+                  <button
+                    type="button"
+                    className="compact-button hidden h-10 items-center gap-2 rounded-lg px-3 xl:inline-flex"
+                    onClick={() => setHeaderVisible(false)}
+                    aria-label="Ocultar encabezado"
+                  >
+                    <EyeOff aria-hidden="true" className="h-4 w-4" />
+                    <span>Ocultar</span>
+                  </button>
                   <ThemeToggle />
                   <button
                     type="button"
@@ -330,7 +385,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                   </button>
 
                   <div className="flex min-w-0 items-center gap-3 pl-1">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 font-bold text-slate-700">AG</div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 font-bold text-slate-700">{userInitials}</div>
                     <div className="hidden min-w-0 sm:block">
                       <p className="truncate text-sm font-bold leading-none text-slate-900">{currentUser?.fullName ?? 'Acceso institucional'}</p>
                       <p className="mt-1 truncate text-[11px] text-slate-500">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
@@ -342,7 +397,9 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[1480px] p-4 sm:p-5 lg:p-6">{children}</div>
+        <div className={`mx-auto w-full max-w-[1480px] p-4 transition-[padding] duration-300 sm:p-5 lg:p-6 ${headerVisible ? 'pt-28 sm:pt-32 xl:pt-24' : 'pt-20 sm:pt-20 xl:pt-6'}`}>
+          {children}
+        </div>
       </main>
     </div>
   );

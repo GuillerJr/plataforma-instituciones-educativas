@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { CalendarDays } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { EnrollmentFormModal } from './enrollment-create-form';
 import type { EnrollmentAcademicGrade, EnrollmentAcademicLevel, EnrollmentAcademicSection, EnrollmentRecord, EnrollmentStatus, EnrollmentStudent } from './page';
 
@@ -54,9 +56,7 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
                 <p className="table-subtitle">Se prioriza cobertura real, estudiantes afectados y novedades administrativas.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Nueva matrícula
-                </button>
+                <ActionButton label="Matrícula" icon={CalendarDays} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
                 <span className="info-chip">{snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}</span>
               </div>
             </div>
@@ -106,9 +106,7 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{enrollments.length} matrículas</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Crear
-              </button>
+              <ActionButton label="Nueva" icon={CalendarDays} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
             </div>
           </div>
 

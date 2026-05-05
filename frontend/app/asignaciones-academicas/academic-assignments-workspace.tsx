@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Link2 } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { AcademicAssignmentFormModal } from './academic-assignment-create-form';
 import type {
   AcademicAssignmentRecord,
@@ -61,9 +63,7 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
                 <p className="table-subtitle">Se prioriza cobertura docente, alcance curricular y densidad real de operación.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Nueva asignación académica
-                </button>
+                <ActionButton label="Asignación" icon={Link2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
                 <span className="info-chip">{assignments.length} registradas</span>
               </div>
             </div>
@@ -113,9 +113,7 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{assignments.length} asignaciones</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Crear
-              </button>
+              <ActionButton label="Nueva" icon={Link2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
             </div>
           </div>
 

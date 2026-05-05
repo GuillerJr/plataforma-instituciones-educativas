@@ -1,5 +1,15 @@
 import Link from 'next/link';
+import {
+  BarChart3,
+  BookOpen,
+  Building2,
+  CalendarRange,
+  ClipboardCheck,
+  GraduationCap,
+  Settings,
+} from 'lucide-react';
 import { DashboardOverviewChart } from '../../components/dashboard-overview-chart';
+import { ActionLink } from '../../components/system-action';
 import { getCurrentUser, getPrimaryRoleLabel, hasSomeRole } from '../../lib/current-user';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 
@@ -213,12 +223,12 @@ export default async function PanelPage() {
                 </div>
                 <span className="info-chip">{dashboard.institutions.length} visibles</span>
               </div>
-              <div className="table-scroller">
-                <table className="data-table min-w-[520px]">
+              <div className="table-scroller table-scroller-fluid">
+                <table className="data-table data-table-fluid">
                   <thead>
                     <tr>
-                      <th>Registro</th>
-                      <th>Acción</th>
+                      <th className="w-[78%]">Registro</th>
+                      <th className="w-[22%]">Acción</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -230,7 +240,7 @@ export default async function PanelPage() {
                         </td>
                         <td>
                           <div className="table-actions">
-                            <Link href="/sistema/instituciones" className="compact-button">Gestionar</Link>
+                            <ActionLink href="/sistema/instituciones" icon={Building2} label="Abrir" />
                           </div>
                         </td>
                       </tr>
@@ -249,14 +259,14 @@ export default async function PanelPage() {
                 </div>
                 <span className="info-chip">{dashboard.recentUsers.length} visibles</span>
               </div>
-              <div className="table-scroller">
-                <table className="data-table min-w-[900px]">
+              <div className="table-scroller table-scroller-fluid">
+                <table className="data-table data-table-fluid">
                   <thead>
                     <tr>
-                      <th>Usuario</th>
-                      <th>Sede</th>
-                      <th>Estado</th>
-                      <th>Acción</th>
+                      <th className="w-[24%]">Usuario</th>
+                      <th className="w-[32%]">Sede</th>
+                      <th className="w-[12%]">Estado</th>
+                      <th className="w-[12%]">Acción</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -275,7 +285,7 @@ export default async function PanelPage() {
                         </td>
                         <td>
                           <div className="table-actions">
-                            {canManageUsers ? <Link href="/sistema/usuarios" className="compact-button">Gestionar</Link> : <span className="text-xs text-slate-400">Solo lectura</span>}
+                            {canManageUsers ? <ActionLink href="/sistema/usuarios" icon={Settings} label="Abrir" /> : <span className="text-xs text-slate-400">Solo lectura</span>}
                           </div>
                         </td>
                       </tr>
@@ -296,12 +306,12 @@ export default async function PanelPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-3 p-5">
-                <Link href="/sistema/academico" className="compact-button">Académico</Link>
-                <Link href="/sistema/estudiantes" className="compact-button">Estudiantes</Link>
-                <Link href="/sistema/evaluaciones" className="compact-button">Evaluaciones</Link>
-                <Link href="/sistema/asistencia" className="compact-button">Asistencia</Link>
-                <Link href="/sistema/materias" className="compact-button">Materias</Link>
-                {canManageUsers ? <Link href="/sistema/usuarios" className="compact-button">Usuarios</Link> : null}
+                <ActionLink href="/sistema/academico" icon={CalendarRange} label="Académico" />
+                <ActionLink href="/sistema/estudiantes" icon={GraduationCap} label="Estudiantes" />
+                <ActionLink href="/sistema/evaluaciones" icon={ClipboardCheck} label="Evaluaciones" />
+                <ActionLink href="/sistema/asistencia" icon={BarChart3} label="Asistencia" />
+                <ActionLink href="/sistema/materias" icon={BookOpen} label="Materias" />
+                {canManageUsers ? <ActionLink href="/sistema/usuarios" icon={Settings} label="Usuarios" /> : null}
               </div>
             </section>
           ) : null}
@@ -364,10 +374,10 @@ function TeacherPanel({ dashboard }: { dashboard: DashboardPayload }) {
           </div>
         </div>
         <div className="flex flex-wrap gap-3 p-5">
-          <Link href="/sistema/evaluaciones" className="compact-button">Evaluaciones</Link>
-          <Link href="/sistema/asistencia" className="compact-button">Asistencia</Link>
-          <Link href="/sistema/materias" className="compact-button">Materias</Link>
-          <Link href="/sistema/academico" className="compact-button">Académico</Link>
+          <ActionLink href="/sistema/evaluaciones" icon={ClipboardCheck} label="Evaluaciones" />
+          <ActionLink href="/sistema/asistencia" icon={BarChart3} label="Asistencia" />
+          <ActionLink href="/sistema/materias" icon={BookOpen} label="Materias" />
+          <ActionLink href="/sistema/academico" icon={CalendarRange} label="Académico" />
         </div>
       </div>
     </section>

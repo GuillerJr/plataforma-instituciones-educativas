@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { ClipboardCheck } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { AttendanceFormModal } from './attendance-create-form';
 import type { AttendanceAcademicGrade, AttendanceAcademicLevel, AttendanceAcademicSection, AttendanceEnrollmentOption, AttendanceRecord, AttendanceStatus } from './page';
 
@@ -80,9 +82,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
                 <p className="table-subtitle">Información útil para coordinación y tutoría, con foco en volumen, cobertura y seguimiento real.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Registrar asistencia
-                </button>
+                <ActionButton label="Asistencia" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
                 <span className="info-chip">{snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}</span>
               </div>
             </div>
@@ -135,9 +135,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{filteredRecords.length} registros</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Cargar día
-              </button>
+              <ActionButton label="Cargar" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
             </div>
           </div>
 

@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { ClipboardCheck, Pencil } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { EvaluationFormModal } from './evaluation-create-form';
 import { EvaluationGradeFormModal } from './evaluation-grade-create-form';
 import type {
@@ -84,12 +86,8 @@ export function EvaluationsWorkspace({
                 <p className="table-subtitle">Prioridad en volumen, cobertura y rendimiento real, no en textos de relleno.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)}>
-                  Nueva evaluación
-                </button>
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)}>
-                  Registrar calificación
-                </button>
+                <ActionButton label="Evaluación" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)} />
+                <ActionButton label="Calificación" icon={Pencil} className="w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)} />
               </div>
             </div>
             <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -138,9 +136,7 @@ export function EvaluationsWorkspace({
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{evaluations.length} evaluaciones</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)}>
-                Crear
-              </button>
+              <ActionButton label="Nueva" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)} />
             </div>
           </div>
 
@@ -211,9 +207,7 @@ export function EvaluationsWorkspace({
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{grades.length} calificaciones</span>
               <span className="info-chip">{gradeWideEvaluations} evaluaciones por curso</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)}>
-                Registrar
-              </button>
+              <ActionButton label="Notas" icon={Pencil} className="w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)} />
             </div>
           </div>
 

@@ -1,7 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { Mail, Pencil, UserPlus } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionAnchor, ActionButton } from '../../components/system-action';
 import { UserFormModal, UserFormValues } from './user-create-form';
 
 type EduUser = UserFormValues & {
@@ -54,9 +56,7 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
                 <h2 className="table-title">Estado real de usuarios y perfiles</h2>
                 <p className="table-subtitle">Menos texto plano y más lectura útil para decidir altas, bloqueos y cobertura de roles.</p>
               </div>
-              <button type="button" className="compact-button" onClick={() => setCreateOpen(true)}>
-                Crear usuario
-              </button>
+              <ActionButton label="Usuario" icon={UserPlus} onClick={() => setCreateOpen(true)} />
             </div>
             <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
               <div className="metric-tile"><p className="summary-label">Activos</p><p className="summary-value">{usersByStatus.active}</p></div>
@@ -110,9 +110,7 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{users.length} usuarios</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Crear
-              </button>
+              <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
             </div>
           </div>
 
@@ -151,12 +149,8 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
                         </td>
                         <td>
                           <div className="table-actions">
-                            <button type="button" className="compact-button" onClick={() => setEditingUser(user)}>
-                              Editar
-                            </button>
-                            <a href={`mailto:${user.email}`} className="compact-button">
-                              Correo
-                            </a>
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingUser(user)} />
+                            <ActionAnchor href={`mailto:${user.email}`} label="Correo" icon={Mail} />
                           </div>
                         </td>
                       </tr>

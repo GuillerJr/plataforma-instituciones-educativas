@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { UserPlus } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionButton } from '../../components/system-action';
 import { TeacherFormModal } from './teacher-create-form';
 import type { TeacherAcademicGrade, TeacherAcademicLevel, TeacherAcademicSection, TeacherRecord, TeacherStatus } from './page';
 
@@ -50,9 +52,7 @@ export function TeachersWorkspace({ snapshot, error }: TeachersWorkspaceProps) {
                 <p className="table-subtitle">La prioridad es ver disponibilidad, asignación y actividad real, no bloques decorativos.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Nuevo docente
-                </button>
+                <ActionButton label="Docente" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
                 <span className="info-chip">{teachers.length} registrados</span>
               </div>
             </div>
@@ -102,9 +102,7 @@ export function TeachersWorkspace({ snapshot, error }: TeachersWorkspaceProps) {
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{teachers.length} docentes</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Crear
-              </button>
+              <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
             </div>
           </div>
 

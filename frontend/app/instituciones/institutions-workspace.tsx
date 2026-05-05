@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Building2, Mail, Pencil } from 'lucide-react';
 import { PaginationControls } from '../../components/pagination-controls';
+import { ActionAnchor, ActionButton } from '../../components/system-action';
 import { InstitutionFormModal, InstitutionFormValues } from './institution-create-form';
 
 type Institution = InstitutionFormValues & {
@@ -34,9 +36,7 @@ export function InstitutionsWorkspace({ institutions, error }: InstitutionsWorks
                 <p className="table-subtitle">La prioridad es contacto, tipología y capacidad de seguimiento real.</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                  Nuevo registro
-                </button>
+                <ActionButton label="Registro" icon={Building2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
                 <span className="info-chip">{institutions.length} registros</span>
               </div>
             </div>
@@ -82,9 +82,7 @@ export function InstitutionsWorkspace({ institutions, error }: InstitutionsWorks
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
               <span className="info-chip">{institutions.length} registros</span>
-              <button type="button" className="compact-button w-full sm:w-auto" onClick={() => setCreateOpen(true)}>
-                Crear
-              </button>
+              <ActionButton label="Nuevo" icon={Building2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
             </div>
           </div>
 
@@ -123,13 +121,9 @@ export function InstitutionsWorkspace({ institutions, error }: InstitutionsWorks
                         </td>
                         <td>
                           <div className="table-actions">
-                            <button type="button" className="compact-button" onClick={() => setEditingInstitution(institution)}>
-                              Editar
-                            </button>
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingInstitution(institution)} />
                             {institution.contactEmail ? (
-                              <a href={`mailto:${institution.contactEmail}`} className="compact-button">
-                                Correo
-                              </a>
+                              <ActionAnchor href={`mailto:${institution.contactEmail}`} label="Correo" icon={Mail} />
                             ) : null}
                           </div>
                         </td>
