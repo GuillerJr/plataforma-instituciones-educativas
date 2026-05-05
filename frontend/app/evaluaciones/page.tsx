@@ -180,31 +180,32 @@ export default async function EvaluacionesPage() {
   const [evaluationsModule, gradesModule] = await Promise.all([loadEvaluationsModule(), loadEvaluationGradesModule()]);
 
   return (
-    <main className="page-main">
-      <section className="hero-panel">
-        <div className="hero-grid">
+    <main className="space-y-6">
+      <section className="panel-card overflow-hidden rounded-[18px] border border-[#EEF1F5] bg-white p-5 shadow-soft lg:p-6">
+        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <p className="eyebrow">Fase académica 6</p>
-            <h1 className="section-title mt-3">Evaluaciones y calificaciones conectadas con asignaciones, materias, docentes y matrículas reales</h1>
-            <p className="section-copy mt-4 max-w-3xl">
+            <span className="badge badge-blue">Fase académica 6</span>
+            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
+              Evaluaciones y calificaciones conectadas con asignaciones, materias, docentes y matrículas reales
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
               El módulo permite crear instrumentos de evaluación y registrar notas de estudiantes matriculados dentro de la única institución educativa activa.
             </p>
           </div>
-          <aside className="side-note-card">
-            <div className="summary-strip xl:grid-cols-2">
-              <div className="summary-item">
-                <p className="summary-label">Evaluaciones</p>
-                <p className="summary-value">{evaluationsModule.snapshot?.summary.evaluations ?? 0}</p>
-                <p className="mt-1 text-sm text-slate-500">Instrumentos visibles por materia y docente.</p>
-              </div>
-              <div className="summary-item">
-                <p className="summary-label">Promedio registrado</p>
-                <p className="summary-value">{gradesModule.snapshot?.summary.averageScore ?? '0'}</p>
-                <p className="mt-1 text-sm text-slate-500">Lectura rápida del rendimiento cargado.</p>
-              </div>
+
+          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
+              <p className="tiny-label">Evaluaciones</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{evaluationsModule.snapshot?.summary.evaluations ?? 0}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Instrumentos visibles por materia y docente.</p>
             </div>
-            <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Cobertura actual</p>
+            <div className="rounded-2xl border border-line bg-white p-4">
+              <p className="tiny-label">Promedio registrado</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{gradesModule.snapshot?.summary.averageScore ?? '0'}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Lectura rápida del rendimiento cargado.</p>
+            </div>
+            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
+              <p className="tiny-label">Cobertura actual</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Cada nota se valida contra la cobertura de la evaluación y la matrícula activa del mismo periodo escolar antes de guardarse.
               </p>

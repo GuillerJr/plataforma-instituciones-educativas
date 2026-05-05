@@ -64,32 +64,35 @@ export default async function UsersPage() {
   const blockedUsers = users.filter((user) => user.status === 'blocked').length;
 
   return (
-    <main className="page-main">
-      <section className="hero-panel">
-        <div className="hero-grid">
+    <main className="space-y-6">
+      <section className="panel-card overflow-hidden rounded-[18px] border border-[#EEF1F5] bg-white p-5 shadow-soft lg:p-6">
+        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <p className="eyebrow">Usuarios y roles</p>
-            <h1 className="section-title mt-3">Gobernanza de acceso con foco en perfiles, estados y permisos</h1>
-            <p className="section-copy mt-4 max-w-3xl">
+            <span className="badge badge-blue">Usuarios y roles</span>
+            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
+              Gobernanza de acceso con foco en perfiles, estados y permisos
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
               La vista de usuarios se simplifica para el trabajo diario del colegio: listados compactos, roles visibles y acciones concentradas en modales sin tocar el backend actual.
             </p>
           </div>
-          <aside className="side-note-card">
-            <div className="summary-strip xl:grid-cols-2">
-              <div className="summary-item">
-                <p className="summary-label">Usuarios activos</p>
-                <p className="summary-value">{activeUsers}</p>
-                <p className="mt-1 text-sm text-slate-500">Accesos operativos habilitados.</p>
-              </div>
-              <div className="summary-item">
-                <p className="summary-label">Bloqueados</p>
-                <p className="summary-value">{blockedUsers}</p>
-                <p className="mt-1 text-sm text-slate-500">Cuentas suspendidas para seguimiento.</p>
-              </div>
+
+          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
+              <p className="tiny-label">Usuarios activos</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{activeUsers}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Accesos operativos habilitados.</p>
             </div>
-            <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Lectura de acceso</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">Se priorizan estados, roles y acciones de fila para reducir saltos visuales y mejorar la operación en pantallas pequeñas.</p>
+            <div className="rounded-2xl border border-line bg-white p-4">
+              <p className="tiny-label">Bloqueados</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{blockedUsers}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Cuentas suspendidas para seguimiento.</p>
+            </div>
+            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
+              <p className="tiny-label">Lectura de acceso</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Se priorizan estados, roles y acciones de fila para reducir saltos visuales y mejorar la operación en pantallas pequeñas.
+              </p>
             </div>
           </aside>
         </div>

@@ -66,32 +66,36 @@ export default async function AcademicoPage() {
   const { snapshot, error } = await loadAcademicStructure();
 
   return (
-    <main className="page-main">
-      <section className="hero-panel">
-        <div className="hero-grid">
+    <main className="space-y-6">
+      <section className="panel-card overflow-hidden rounded-[18px] border border-[#EEF1F5] bg-white p-5 shadow-soft lg:p-6">
+        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <p className="eyebrow">Fase académica 1</p>
-            <h1 className="section-title mt-3">Niveles, cursos y secciones listos para operar en una sola institución</h1>
-            <p className="section-copy mt-4 max-w-3xl">
-              Esta vista instala la base académica real del colegio con estructura mínima, altas rápidas y lectura clara para coordinación y administración.
+            <span className="badge badge-success">Fase académica 1</span>
+            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
+              Niveles, cursos y secciones listos para operar en una sola institución
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
+              Esta vista instala la base académica real del colegio con estructura mínima, altas rápidas y lectura clara
+              para coordinación y administración.
             </p>
           </div>
-          <aside className="side-note-card">
-            <div className="summary-strip xl:grid-cols-2">
-              <div className="summary-item">
-                <p className="summary-label">Institución activa</p>
-                <p className="summary-value text-lg sm:text-xl">{snapshot?.institution.name ?? 'Sin datos'}</p>
-                <p className="mt-1 text-sm text-slate-500">Base única del colegio actual.</p>
-              </div>
-              <div className="summary-item">
-                <p className="summary-label">Bloques cargados</p>
-                <p className="summary-value">{(snapshot?.summary.levels ?? 0) + (snapshot?.summary.grades ?? 0) + (snapshot?.summary.sections ?? 0)}</p>
-                <p className="mt-1 text-sm text-slate-500">Entre niveles, grados y paralelos.</p>
-              </div>
+
+          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
+              <p className="tiny-label">Institución activa</p>
+              <p className="mt-2 text-[22px] font-extrabold leading-tight text-ink">{snapshot?.institution.name ?? 'Sin datos'}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Base única del colegio actual.</p>
             </div>
-            <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Alcance actual</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">La estructura queda conectada al backend real y preparada para crecer luego hacia matrícula, asignaciones y carga docente.</p>
+            <div className="rounded-2xl border border-line bg-white p-4">
+              <p className="tiny-label">Bloques cargados</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{(snapshot?.summary.levels ?? 0) + (snapshot?.summary.grades ?? 0) + (snapshot?.summary.sections ?? 0)}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Entre niveles, grados y paralelos.</p>
+            </div>
+            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
+              <p className="tiny-label">Alcance actual</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                La estructura queda conectada al backend real y preparada para crecer luego hacia matrícula, asignaciones y carga docente.
+              </p>
             </div>
           </aside>
         </div>

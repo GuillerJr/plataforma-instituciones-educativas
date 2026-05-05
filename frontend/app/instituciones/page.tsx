@@ -32,32 +32,36 @@ export default async function InstitutionsPage() {
   const privateCount = institutions.length - publicCount;
 
   return (
-    <main className="page-main">
-      <section className="hero-panel">
-        <div className="hero-grid">
+    <main className="space-y-6">
+      <section className="panel-card overflow-hidden rounded-[18px] border border-[#EEF1F5] bg-white p-5 shadow-soft lg:p-6">
+        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <p className="eyebrow">Institución y sedes</p>
-            <h1 className="section-title mt-3">Datos institucionales visibles, compactos y listos para operación</h1>
-            <p className="section-copy mt-4 max-w-3xl">
-              Esta vista concentra la institución base, sus sedes y sus datos operativos en una lectura compacta, directa y coherente con un solo colegio.
+            <span className="badge badge-blue">Institución y sedes</span>
+            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
+              Datos institucionales visibles, compactos y listos para operación
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
+              Esta vista concentra la institución base, sus sedes y sus datos operativos en una lectura compacta,
+              directa y coherente con un solo colegio.
             </p>
           </div>
-          <aside className="side-note-card">
-            <div className="summary-strip xl:grid-cols-2">
-              <div className="summary-item">
-                <p className="summary-label">Estructura visible</p>
-                <p className="summary-value">{institutions.length}</p>
-                <p className="mt-1 text-sm text-slate-500">Sede principal y sedes cargadas.</p>
-              </div>
-              <div className="summary-item">
-                <p className="summary-label">Distribución</p>
-                <p className="summary-value text-lg sm:text-xl">{publicCount} / {privateCount}</p>
-                <p className="mt-1 text-sm text-slate-500">Públicas y privadas visibles.</p>
-              </div>
+
+          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
+              <p className="tiny-label">Estructura visible</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{institutions.length}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Sede principal y sedes cargadas.</p>
             </div>
-            <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Composición</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">Más equilibrio entre contexto, resumen y tabla para que la vista no se vea pesada ni dispersa.</p>
+            <div className="rounded-2xl border border-line bg-white p-4">
+              <p className="tiny-label">Distribución</p>
+              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{publicCount} / {privateCount}</p>
+              <p className="mt-2 text-xs leading-5 text-muted">Públicas y privadas visibles.</p>
+            </div>
+            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
+              <p className="tiny-label">Composición</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Más equilibrio entre contexto, resumen y tabla para que la vista no se vea pesada ni dispersa.
+              </p>
             </div>
           </aside>
         </div>
