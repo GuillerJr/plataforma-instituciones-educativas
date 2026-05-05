@@ -121,8 +121,8 @@ export default async function PanelPage() {
     : [];
 
   return (
-    <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
+    <main className="dashboard-page space-y-5 sm:space-y-6">
+      <section className="panel-card overflow-hidden p-4 sm:p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
             <div className="flex flex-wrap items-center gap-3">
@@ -136,17 +136,17 @@ export default async function PanelPage() {
           </div>
 
           <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
+            <div className="rounded-xl border border-line bg-brand-50/60 p-4">
               <p className="tiny-label">Sedes visibles</p>
               <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{institutionCoverage}</p>
               <p className="mt-2 text-xs leading-5 text-muted">Estructura alcanzada por tu sesión.</p>
             </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
+            <div className="rounded-xl border border-line bg-white p-4">
               <p className="tiny-label">Actividad reciente</p>
               <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{trackedUsers}</p>
               <p className="mt-2 text-xs leading-5 text-muted">Usuarios recientes dentro del alcance visible.</p>
             </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
+            <div className="rounded-xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
               <p className="tiny-label">Promedio académico</p>
               <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{dashboard?.metrics.averageGrade ?? 0}</p>
               <p className="mt-2 text-xs leading-5 text-muted">Promedio real calculado desde calificaciones registradas.</p>
@@ -476,7 +476,7 @@ function MetricCard({ label, value, helper, accent }: { label: string; value: nu
   } as const;
 
   return (
-    <div className={`rounded-2xl border p-4 ${tones[accent]}`}>
+    <div className={`rounded-xl border p-4 ${tones[accent]}`}>
       <p className="summary-label">{label}</p>
       <p className="mt-2 text-[28px] font-extrabold leading-none text-slate-950">{value}</p>
       <p className="mt-2 text-xs leading-5 text-slate-500">{helper}</p>
@@ -486,7 +486,7 @@ function MetricCard({ label, value, helper, accent }: { label: string; value: nu
 
 function MiniMetric({ label, value, helper }: { label: string; value: string; helper: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{label}</p>
       <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
       <p className="mt-2 text-xs leading-5 text-slate-500">{helper}</p>

@@ -25,9 +25,9 @@ export function RegisterInterestForm({ requestType: initialRequestType, context 
   }
 
   return (
-    <form action={handleSubmit} className="surface-panel w-full max-w-[760px] p-6 shadow-[0_30px_80px_rgba(8,35,63,0.12)] sm:p-8">
+    <form action={handleSubmit} className="surface-panel w-full max-w-[760px] p-5 shadow-[0_26px_70px_rgba(8,35,63,0.11)] sm:p-7">
       {isRecoveryRequest ? (
-        <div className="mb-5 rounded-[20px] border border-sky-200 bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-900">
+        <div className="mb-5 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-900">
           Indica tus datos institucionales y describe que necesitas recuperar tu contraseña. Este flujo queda preparado para que el equipo administrativo gestione la solicitud en la siguiente fase.
         </div>
       ) : null}
@@ -76,7 +76,7 @@ export function RegisterInterestForm({ requestType: initialRequestType, context 
       </div>
 
       {submitted ? (
-        <div className="mt-5 rounded-[20px] border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm leading-6 text-emerald-800">
+        <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm leading-6 text-emerald-800">
           Solicitud preparada. En la siguiente fase se conectará con el flujo institucional de recepción y seguimiento.
         </div>
       ) : null}

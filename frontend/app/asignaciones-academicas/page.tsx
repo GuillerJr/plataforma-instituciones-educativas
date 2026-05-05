@@ -130,8 +130,8 @@ export default async function AsignacionesAcademicasPage() {
                 <p className="mt-1 text-sm text-slate-500">Aplicación general por grado o curso.</p>
               </div>
             </div>
-            <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Alcance actual</p>
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Alcance actual</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">Las asignaciones quedan validadas contra docentes, materias y jerarquía académica ya creada para una sola institución educativa.</p>
             </div>
           </aside>

@@ -180,15 +180,15 @@ export default function HomePage() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-eduText">
+    <main className="landing-home min-h-screen overflow-x-hidden bg-white text-eduText">
       <header className="fixed left-0 right-0 top-0 z-50 header-glass">
         <div className="container-page">
-          <div className="flex h-20 items-center justify-between gap-6">
+          <div className="flex min-h-20 items-center justify-between gap-4 py-3 sm:gap-6">
             <Link href="#inicio" className="flex shrink-0 items-center gap-3" aria-label="Ir al inicio">
-              <div className="dark-panel flex h-12 w-12 items-center justify-center rounded-2xl shadow-glow">
+              <div className="dark-panel flex h-11 w-11 items-center justify-center rounded-xl shadow-glow sm:h-12 sm:w-12">
                 <span className="text-xl font-black text-white">E</span>
               </div>
-              <div>
+              <div className="min-w-0">
                 <h1 className="text-xl font-black leading-none text-eduNavy">Educa</h1>
                 <p className="mt-1 text-xs font-bold text-slate-500">Excelencia académica con dirección institucional</p>
               </div>
@@ -213,7 +213,7 @@ export default function HomePage() {
 
             <button
               type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-eduSky text-eduBlue lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-eduSky text-eduBlue ring-1 ring-blue-100 transition hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-100 lg:hidden"
               aria-label="Abrir menú"
               onClick={() => setMobileMenuOpen((value) => !value)}
             >
@@ -245,7 +245,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section id="inicio" className="hero-bg pb-20 pt-32 lg:pb-28 lg:pt-40">
+      <section id="inicio" className="hero-bg pb-14 pt-28 sm:pb-20 sm:pt-32 lg:pb-24 lg:pt-36">
         <div className="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div
             className="fade-up show"
@@ -255,11 +255,11 @@ export default function HomePage() {
               Matrículas abiertas · Periodo académico 2026
             </div>
 
-            <h2 className="text-4xl font-black leading-[1.03] tracking-tight text-eduNavy md:text-6xl lg:text-7xl">
+            <h2 className="text-[clamp(2.25rem,7vw,4.9rem)] font-black leading-[1.03] tracking-tight text-eduNavy">
               Educación moderna para formar líderes con propósito.
             </h2>
 
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-slate-600 md:text-xl">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
               En Educa impulsamos el talento de cada estudiante mediante excelencia académica, tecnología educativa,
               valores, acompañamiento cercano a las familias y acceso institucional ordenado al sistema.
             </p>
@@ -273,17 +273,17 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-10 grid max-w-xl grid-cols-3 gap-4">
-              <div className="rounded-3xl border border-white bg-white/80 p-5 shadow-soft">
-                <p className="text-3xl font-black text-eduBlue">25+</p>
+            <div className="mt-10 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white bg-white/80 p-4 shadow-soft sm:p-5">
+                <p className="text-2xl font-black text-eduBlue sm:text-3xl">25+</p>
                 <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Años de experiencia</p>
               </div>
-              <div className="rounded-3xl border border-white bg-white/80 p-5 shadow-soft">
-                <p className="text-3xl font-black text-eduBlue">1.800+</p>
+              <div className="rounded-2xl border border-white bg-white/80 p-4 shadow-soft sm:p-5">
+                <p className="text-2xl font-black text-eduBlue sm:text-3xl">1.800+</p>
                 <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Estudiantes activos</p>
               </div>
-              <div className="rounded-3xl border border-white bg-white/80 p-5 shadow-soft">
-                <p className="text-3xl font-black text-eduBlue">96%</p>
+              <div className="rounded-2xl border border-white bg-white/80 p-4 shadow-soft sm:p-5">
+                <p className="text-2xl font-black text-eduBlue sm:text-3xl">96%</p>
                 <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Satisfacción familiar</p>
               </div>
             </div>
@@ -292,8 +292,8 @@ export default function HomePage() {
           <div
             className="fade-up show"
           >
-            <div className="floating relative hero-visual-card rounded-5xl border border-white bg-white p-4 shadow-premium sm:p-6">
-              <div className="dark-panel flex h-full min-h-[500px] flex-col justify-between overflow-hidden rounded-4xl p-6 sm:p-8 lg:min-h-[520px]">
+            <div className="floating relative hero-visual-card rounded-5xl border border-white bg-white p-3 shadow-premium sm:p-5">
+              <div className="dark-panel flex h-full min-h-[420px] flex-col justify-between overflow-hidden rounded-4xl p-5 sm:min-h-[500px] sm:p-7 lg:min-h-[520px]">
                 <div className="relative z-10">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -309,24 +309,24 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="mt-8 grid grid-cols-2 gap-4">
+                  <div className="mt-7 grid gap-3 sm:grid-cols-2 sm:gap-4">
                     {[
                       ['🎓', 'Excelencia', 'Alto rendimiento académico'],
                       ['💡', 'Innovación', 'Tecnología y proyectos STEAM'],
                       ['🤝', 'Cercanía', 'Acompañamiento personalizado'],
                       ['🌎', 'Visión global', 'Idiomas, valores y liderazgo'],
                     ].map(([icon, title, copy]) => (
-                      <div key={title} className="rounded-3xl border border-white/15 bg-white/12 p-5">
-                        <div className="mb-4 text-4xl">{icon}</div>
+                      <div key={title} className="rounded-2xl border border-white/15 bg-white/12 p-4 sm:p-5">
+                        <div className="mb-3 text-3xl sm:text-4xl">{icon}</div>
                         <h4 className="font-black text-white">{title}</h4>
-                        <p className="mt-1 text-sm text-white/65">{copy}</p>
+                        <p className="mt-1 text-sm leading-6 text-white/65">{copy}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="relative z-10 mt-7 rounded-3xl bg-white p-5 shadow-soft">
-                  <div className="flex items-center justify-between gap-5">
+                <div className="relative z-10 mt-7 rounded-2xl bg-white p-4 shadow-soft sm:p-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
                     <div>
                       <p className="text-sm font-black text-slate-500">Indicador institucional</p>
                       <p className="mt-1 text-2xl font-black text-eduNavy">96% satisfacción</p>

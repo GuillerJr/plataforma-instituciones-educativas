@@ -39,8 +39,8 @@ module.exports = {
         glow: '0 18px 45px rgba(29, 91, 255, 0.25)',
       },
       borderRadius: {
-        '4xl': '2rem',
-        '5xl': '2.5rem',
+        '4xl': '1.5rem',
+        '5xl': '1.75rem',
       },
     },
   },

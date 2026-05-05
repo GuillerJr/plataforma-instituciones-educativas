@@ -120,7 +120,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
                 <p className="summary-value">{snapshot?.summary.justified ?? 0}</p>
               </div>
             </div>
-            <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm leading-6 text-slate-600">
               Cobertura actual: {snapshot?.summary.sectionsCovered ?? 0} secciones, {snapshot?.summary.trackedDates ?? 0} fechas, {snapshot?.summary.studentsCovered ?? 0} estudiantes seguidos y {presentShare}% de registros marcados como presentes.
             </div>
           </aside>

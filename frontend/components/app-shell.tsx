@@ -188,7 +188,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
       <aside
         id="sidebar"
         aria-label="Navegación principal"
-        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[288px] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden px-4 py-5 shadow-2xl transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none ${
+        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[288px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden px-4 py-5 shadow-2xl transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none ${
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -278,7 +278,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
 
       <main className="app-main min-h-screen min-w-0 overflow-x-hidden lg:pl-[288px]">
         <header className="topbar-surface sticky top-0 z-30 px-4 py-3 backdrop-blur sm:px-5 lg:px-6">
-          <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="mx-auto flex w-full max-w-[1600px] min-w-0 flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <button
                 type="button"
@@ -292,12 +292,12 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
               </button>
 
               <div className="min-w-0">
-                <h2 className="truncate text-[22px] font-extrabold leading-tight text-ink sm:text-[28px]">{activePage.title}</h2>
-                <p className="mt-1 text-xs text-muted sm:text-sm">{activePage.subtitle}</p>
+                <h2 className="truncate text-[clamp(1.25rem,3.5vw,1.75rem)] font-extrabold leading-tight text-ink">{activePage.title}</h2>
+                <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted sm:text-sm">{activePage.subtitle}</p>
               </div>
             </div>
 
-            <div className="flex w-full flex-col gap-3 xl:w-auto xl:flex-row xl:items-center">
+            <div className="flex w-full min-w-0 flex-col gap-3 xl:w-auto xl:flex-row xl:items-center">
               <div className="relative min-w-0 xl:w-[320px]">
                 <input
                   className="h-[42px] w-full rounded-xl border border-gray-200 bg-[#FAFBFC] pl-10 pr-4 text-sm outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
@@ -306,13 +306,13 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                 <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" />
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
                 <select className="h-[42px] w-full rounded-xl border border-gray-200 bg-[#FAFBFC] px-3 text-sm text-gray-700 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100 sm:w-[155px]">
                   <option>Periodo 2026</option>
                   <option>Periodo 2025</option>
                 </select>
 
-                <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-start">
+                <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-start">
                   <ThemeToggle />
                   <button
                     type="button"

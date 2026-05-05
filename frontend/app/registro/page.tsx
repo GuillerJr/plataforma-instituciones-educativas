@@ -12,10 +12,10 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const params = await searchParams;
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_18%_14%,rgba(36,180,126,0.15),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(29,91,255,0.17),transparent_30%),linear-gradient(180deg,#f8fbff_0%,#eef5fc_52%,#e8eef6_100%)] px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+    <main className="auth-page min-h-screen overflow-hidden bg-[radial-gradient(circle_at_18%_14%,rgba(36,180,126,0.14),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(29,91,255,0.16),transparent_30%),linear-gradient(180deg,#f8fbff_0%,#eef5fc_52%,#e8eef6_100%)] px-4 py-8 sm:px-8 lg:px-12 lg:py-12">
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-          <div className="glass-panel relative overflow-hidden p-6 sm:p-8">
+          <div className="glass-panel relative overflow-hidden p-5 sm:p-7">
             <div aria-hidden="true" className="absolute -right-20 -top-20 h-52 w-52 rounded-full bg-blue-100/70 blur-3xl" />
             <div aria-hidden="true" className="absolute -bottom-24 left-12 h-52 w-52 rounded-full bg-emerald-100/60 blur-3xl" />
             <div className="relative">
