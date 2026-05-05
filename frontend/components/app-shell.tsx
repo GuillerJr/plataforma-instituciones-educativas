@@ -188,24 +188,24 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
       <aside
         id="sidebar"
         aria-label="Navegación principal"
-        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[288px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden px-4 py-5 shadow-2xl transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none ${
+        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[272px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden px-3 py-4 shadow-2xl transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none ${
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex shrink-0 items-center justify-between pb-5">
+        <div className="flex shrink-0 items-center justify-between border-b border-slate-200 pb-4">
           <Link href="/sistema/panel" className="flex min-w-0 items-center gap-3" onClick={() => setMobileSidebarOpen(false)}>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-900 font-extrabold text-white shadow-soft">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 font-bold text-white">
               E
             </div>
             <div className="min-w-0">
-              <h1 className="truncate text-[18px] font-extrabold leading-none text-ink">EduSmart</h1>
-              <p className="mt-1 truncate text-[11px] font-medium text-muted">Gestión institucional</p>
+              <h1 className="truncate text-[15px] font-bold leading-none text-slate-950">EduSmart</h1>
+              <p className="mt-1 truncate text-[11px] font-medium text-slate-500">Gestión institucional</p>
             </div>
           </Link>
 
           <button
             type="button"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:bg-gray-50 lg:hidden"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 lg:hidden"
             onClick={() => setMobileSidebarOpen(false)}
             aria-label="Cerrar navegación"
           >
@@ -213,17 +213,17 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
           </button>
         </div>
 
-        <div className="mb-4 shrink-0 rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+        <div className="mb-3 mt-4 shrink-0 rounded-lg border border-slate-200 bg-slate-50 p-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 font-extrabold text-brand-700">AG</div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white font-bold text-slate-700">AG</div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-extrabold text-gray-800">{currentUser?.fullName ?? 'Acceso institucional'}</p>
-              <p className="truncate text-[11px] font-medium text-muted">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
+              <p className="truncate text-sm font-bold text-slate-900">{currentUser?.fullName ?? 'Acceso institucional'}</p>
+              <p className="truncate text-[11px] font-medium text-slate-500">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
             </div>
           </div>
         </div>
 
-        <nav className="soft-scroll sidebar-scroll min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1">
+        <nav className="soft-scroll sidebar-scroll min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
           {allowedNavigationItems.map((item) => {
             const isActive = isActiveNavigationItem(pathname, item.href);
             const Icon = item.Icon;
@@ -233,20 +233,20 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileSidebarOpen(false)}
-                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
-                  isActive ? "bg-brand-600 text-white shadow-soft" : "text-gray-600 hover:bg-brand-50 hover:text-brand-700"
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+                  isActive ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
                 }`}
               >
                 <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                    isActive ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500"
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                    isActive ? "bg-white/10 text-white" : "bg-white text-slate-500 ring-1 ring-slate-200"
                   }`}
                 >
                   <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
                 </span>
                 <span className="min-w-0">
                   <span className="block truncate">{item.label}</span>
-                  <span className={`hidden truncate text-[11px] font-medium xl:block ${isActive ? "text-white/75" : "text-gray-400"}`}>
+                  <span className={`hidden truncate text-[11px] font-medium xl:block ${isActive ? "text-white/70" : "text-slate-400"}`}>
                     {item.description}
                   </span>
                 </span>
@@ -254,12 +254,12 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
             );
           })}
 
-          <div className="my-4 h-px bg-gray-100" />
+          <div className="my-3 h-px bg-slate-200" />
 
           <Link
             href="/"
             onClick={() => setMobileSidebarOpen(false)}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-brand-50 hover:text-brand-700"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
           >
             <Globe2 aria-hidden="true" className="h-[18px] w-[18px]" />
             <span>Sitio público</span>
@@ -267,7 +267,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
 
           <button
             type="button"
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-brand-50 hover:text-brand-700"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
           >
             <CircleHelp aria-hidden="true" className="h-[18px] w-[18px]" />
             <span>Ayuda</span>
@@ -276,13 +276,13 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
 
       </aside>
 
-      <main className="app-main min-h-screen min-w-0 overflow-x-hidden lg:pl-[288px]">
-        <header className="topbar-surface sticky top-0 z-30 px-4 py-3 backdrop-blur sm:px-5 lg:px-6">
-          <div className="mx-auto flex w-full max-w-[1600px] min-w-0 flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <main className="app-main min-h-screen min-w-0 overflow-x-hidden lg:pl-[272px]">
+        <header className="topbar-surface sticky top-0 z-30 px-4 py-2.5 backdrop-blur sm:px-5 lg:px-6">
+          <div className="mx-auto flex w-full max-w-[1480px] min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex min-w-0 items-center gap-3">
               <button
                 type="button"
-                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:bg-brand-50 lg:hidden"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 lg:hidden"
                 onClick={() => setMobileSidebarOpen(true)}
                 aria-label="Abrir navegación"
                 aria-controls="sidebar"
@@ -292,22 +292,22 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
               </button>
 
               <div className="min-w-0">
-                <h2 className="truncate text-[clamp(1.25rem,3.5vw,1.75rem)] font-extrabold leading-tight text-ink">{activePage.title}</h2>
-                <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted sm:text-sm">{activePage.subtitle}</p>
+                <h2 className="truncate text-[clamp(1.15rem,3vw,1.45rem)] font-bold leading-tight text-slate-950">{activePage.title}</h2>
+                <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-500 sm:text-[13px]">{activePage.subtitle}</p>
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 flex-col gap-3 xl:w-auto xl:flex-row xl:items-center">
-              <div className="relative min-w-0 xl:w-[320px]">
+            <div className="flex w-full min-w-0 flex-col gap-2 xl:w-auto xl:flex-row xl:items-center">
+              <div className="relative min-w-0 xl:w-[300px]">
                 <input
-                  className="h-[42px] w-full rounded-xl border border-gray-200 bg-[#FAFBFC] pl-10 pr-4 text-sm outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
                   placeholder="Buscar estudiante, curso, docente..."
                 />
-                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" />
+                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-400" />
               </div>
 
-              <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
-                <select className="h-[42px] w-full rounded-xl border border-gray-200 bg-[#FAFBFC] px-3 text-sm text-gray-700 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100 sm:w-[155px]">
+              <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
+                <select className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 sm:w-[150px]">
                   <option>Periodo 2026</option>
                   <option>Periodo 2025</option>
                 </select>
@@ -316,24 +316,24 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                   <ThemeToggle />
                   <button
                     type="button"
-                    className="icon-button flex h-[42px] w-[42px] items-center justify-center rounded-xl"
+                    className="icon-button flex h-10 w-10 items-center justify-center rounded-lg"
                     aria-label="Ver notificaciones"
                   >
                     <Bell aria-hidden="true" className="h-[18px] w-[18px]" />
                   </button>
                   <button
                     type="button"
-                    className="icon-button flex h-[42px] w-[42px] items-center justify-center rounded-xl"
+                    className="icon-button flex h-10 w-10 items-center justify-center rounded-lg"
                     aria-label="Ver mensajes"
                   >
                     <MessageCircle aria-hidden="true" className="h-[18px] w-[18px]" />
                   </button>
 
                   <div className="flex min-w-0 items-center gap-3 pl-1">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-800 font-bold text-white">AG</div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 font-bold text-slate-700">AG</div>
                     <div className="hidden min-w-0 sm:block">
-                      <p className="truncate text-sm font-bold leading-none text-gray-800">{currentUser?.fullName ?? 'Acceso institucional'}</p>
-                      <p className="mt-1 truncate text-[11px] text-muted">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
+                      <p className="truncate text-sm font-bold leading-none text-slate-900">{currentUser?.fullName ?? 'Acceso institucional'}</p>
+                      <p className="mt-1 truncate text-[11px] text-slate-500">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
                     </div>
                   </div>
                 </div>
@@ -342,7 +342,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[1600px] p-4 sm:p-5 lg:p-6">{children}</div>
+        <div className="mx-auto w-full max-w-[1480px] p-4 sm:p-5 lg:p-6">{children}</div>
       </main>
     </div>
   );
