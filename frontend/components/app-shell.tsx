@@ -1,10 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { CurrentUser } from "../lib/current-user";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
@@ -12,10 +12,10 @@ import {
   BookOpen,
   CalendarDays,
   CalendarRange,
+  ChevronLeft,
+  ChevronRight,
   CircleHelp,
   ClipboardCheck,
-  Eye,
-  EyeOff,
   GraduationCap,
   Globe2,
   Link2,
@@ -29,7 +29,9 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 
-const APP_HEADER_VISIBILITY_KEY = 'edu-app-header-visible';
+const APP_SIDEBAR_VISIBILITY_KEY = 'edu-app-sidebar-visible';
+const DESKTOP_SIDEBAR_WIDTH = '272px';
+const DESKTOP_SIDEBAR_COLLAPSED_WIDTH = '88px';
 
 const navigationItems = [
   { href: "/sistema/panel", label: "Dashboard", Icon: School, description: "Centro institucional", roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'] },
@@ -159,13 +161,31 @@ function getUserInitials(fullName?: string | null) {
   return initials || 'ED';
 }
 
+function formatRoleLabel(roleCode?: string | null) {
+  if (!roleCode) return 'Sesion activa';
+
+  const dictionary: Record<string, string> = {
+    superadmin: 'Superadministrador',
+    admin_institucional: 'Administrador institucional',
+    docente: 'Docente',
+    estudiante: 'Estudiante',
+    representante: 'Representante',
+  };
+
+  return dictionary[roleCode] ?? roleCode.replace(/_/g, ' ');
+}
+
 export function AppShell({ children, currentUser }: Readonly<{ children: ReactNode; currentUser: CurrentUser | null }>) {
   const rawPathname = usePathname() ?? "/sistema";
   const pathname = useMemo(() => normalizePathname(rawPathname), [rawPathname]);
   const activePage = useMemo(() => getActivePage(pathname), [pathname]);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [headerVisible, setHeaderVisible] = useState(true);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [topbarHeight, setTopbarHeight] = useState(112);
+  const topbarRef = useRef<HTMLElement | null>(null);
   const userInitials = useMemo(() => getUserInitials(currentUser?.fullName), [currentUser?.fullName]);
+  const primaryRoleLabel = useMemo(() => formatRoleLabel(currentUser?.roleCodes?.[0]), [currentUser?.roleCodes]);
+  const mobileSidebarLabel = mobileSidebarOpen ? 'Cerrar barra lateral' : 'Abrir barra lateral';
 
   useEffect(() => {
     setMobileSidebarOpen(false);
@@ -190,13 +210,36 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
   }, [mobileSidebarOpen]);
 
   useEffect(() => {
-    const storedPreference = window.localStorage.getItem(APP_HEADER_VISIBILITY_KEY);
-    if (storedPreference === 'false') setHeaderVisible(false);
+    const storedPreference = window.localStorage.getItem(APP_SIDEBAR_VISIBILITY_KEY);
+    if (storedPreference === 'false') setSidebarVisible(false);
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem(APP_HEADER_VISIBILITY_KEY, String(headerVisible));
-  }, [headerVisible]);
+    window.localStorage.setItem(APP_SIDEBAR_VISIBILITY_KEY, String(sidebarVisible));
+  }, [sidebarVisible]);
+
+  useEffect(() => {
+    const topbarElement = topbarRef.current;
+    if (!topbarElement) return;
+
+    const syncTopbarHeight = () => {
+      setTopbarHeight(Math.ceil(topbarElement.getBoundingClientRect().height));
+    };
+
+    syncTopbarHeight();
+
+    const resizeObserver = new ResizeObserver(() => {
+      syncTopbarHeight();
+    });
+
+    resizeObserver.observe(topbarElement);
+    window.addEventListener('resize', syncTopbarHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', syncTopbarHeight);
+    };
+  }, [activePage.subtitle, activePage.title, mobileSidebarOpen, sidebarVisible]);
 
   const allowedNavigationItems = useMemo(() => {
     if (!currentUser) return navigationItems.filter((item) => item.href === '/sistema/panel');
@@ -204,10 +247,16 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
   }, [currentUser]);
 
   return (
-    <div className="app-frame min-h-screen text-slate-900 transition-colors duration-300">
+    <div
+      className="app-frame min-h-screen text-slate-900 transition-colors duration-300"
+      style={{
+        '--app-topbar-offset': `${topbarHeight}px`,
+        '--app-sidebar-width': sidebarVisible ? DESKTOP_SIDEBAR_WIDTH : DESKTOP_SIDEBAR_COLLAPSED_WIDTH,
+      } as CSSProperties}
+    >
       <div
         aria-hidden="true"
-        className={`fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${
+        className={`mobile-sidebar-overlay fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${
           mobileSidebarOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={() => setMobileSidebarOpen(false)}
@@ -216,32 +265,57 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
       <aside
         id="sidebar"
         aria-label="Navegación principal"
-        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[272px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden px-3 py-4 shadow-2xl transition-transform duration-300 ease-out lg:translate-x-0 lg:shadow-none ${
+        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[272px] max-w-[calc(100vw-1rem)] flex-col overflow-hidden px-3 py-4 shadow-2xl transition-[width,transform] duration-300 ease-out lg:translate-x-0 lg:shadow-none ${
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } ${sidebarVisible ? 'lg:w-[272px]' : 'lg:w-[88px]'}`}
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-slate-200 pb-4">
-          <Link href="/sistema/panel" className="flex min-w-0 items-center gap-3" onClick={() => setMobileSidebarOpen(false)}>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 font-bold text-white">
+        <div className="sidebar-brand-panel flex shrink-0 items-center justify-between gap-3">
+          <Link href="/sistema/panel" className={`flex min-w-0 items-center gap-3 ${sidebarVisible ? '' : 'lg:gap-0'}`} onClick={() => setMobileSidebarOpen(false)}>
+            <div className="sidebar-brand-mark flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold text-white">
               E
             </div>
-            <div className="min-w-0">
+            <div className={`min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
+              <p className="sidebar-brand-kicker">Sistema interno</p>
               <h1 className="truncate text-[15px] font-bold leading-none text-slate-950">EduSmart</h1>
               <p className="mt-1 truncate text-[11px] font-medium text-slate-500">Gestión institucional</p>
             </div>
           </Link>
 
-          <button
-            type="button"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 lg:hidden"
-            onClick={() => setMobileSidebarOpen(false)}
-            aria-label="Cerrar navegación"
-          >
-            <X aria-hidden="true" className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 lg:flex"
+              onClick={() => setSidebarVisible((value) => !value)}
+              aria-label={sidebarVisible ? 'Colapsar barra lateral' : 'Expandir barra lateral'}
+              title={sidebarVisible ? 'Colapsar barra lateral' : 'Expandir barra lateral'}
+              aria-controls="sidebar"
+              aria-expanded={sidebarVisible}
+            >
+              {sidebarVisible ? <ChevronLeft aria-hidden="true" className="h-4 w-4" /> : <ChevronRight aria-hidden="true" className="h-4 w-4" />}
+            </button>
+
+            <button
+              type="button"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 lg:hidden"
+              onClick={() => setMobileSidebarOpen(false)}
+              aria-label="Cerrar barra lateral"
+              title="Cerrar barra lateral"
+            >
+              <X aria-hidden="true" className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
+        {sidebarVisible ? (
+          <div className="sidebar-context-card hidden lg:block">
+            <p className="tiny-label">Area activa</p>
+            <p className="mt-2 text-sm font-semibold text-slate-950">{activePage.title}</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">{activePage.quickAction}</p>
+          </div>
+        ) : null}
+
         <nav className="soft-scroll sidebar-scroll min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
+          {sidebarVisible ? <p className="sidebar-section-label px-3 pt-1">Modulos</p> : null}
           {allowedNavigationItems.map((item) => {
             const isActive = isActiveNavigationItem(pathname, item.href);
             const Icon = item.Icon;
@@ -251,20 +325,20 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileSidebarOpen(false)}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                  isActive ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
-                }`}
+                aria-label={item.label}
+                title={!sidebarVisible ? item.label : undefined}
+                className={`app-sidebar-link ${isActive ? "app-sidebar-link-active" : ""} ${sidebarVisible ? '' : 'lg:justify-center lg:px-2'}`}
               >
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                    isActive ? "bg-white/10 text-white" : "bg-white text-slate-500 ring-1 ring-slate-200"
+                  className={`sidebar-link-icon ${
+                    isActive ? "sidebar-link-icon-active" : ""
                   }`}
                 >
                   <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
                 </span>
-                <span className="min-w-0">
+                <span className={`min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
                   <span className="block truncate">{item.label}</span>
-                  <span className={`hidden truncate text-[11px] font-medium xl:block ${isActive ? "text-white/70" : "text-slate-400"}`}>
+                  <span className={`hidden truncate text-[11px] font-medium xl:block ${isActive ? "text-slate-500" : "text-slate-400"}`}>
                     {item.description}
                   </span>
                 </span>
@@ -277,118 +351,106 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
           <Link
             href="/"
             onClick={() => setMobileSidebarOpen(false)}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+            aria-label="Sitio público"
+            title={!sidebarVisible ? 'Sitio público' : undefined}
+            className={`app-sidebar-link ${sidebarVisible ? '' : 'lg:justify-center lg:px-2'}`}
           >
-            <Globe2 aria-hidden="true" className="h-[18px] w-[18px]" />
-            <span>Sitio público</span>
+            <span className="sidebar-link-icon">
+              <Globe2 aria-hidden="true" className="h-[18px] w-[18px]" />
+            </span>
+            <span className={sidebarVisible ? '' : 'lg:hidden'}>Sitio público</span>
           </Link>
 
           <button
             type="button"
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+            aria-label="Ayuda"
+            title={!sidebarVisible ? 'Ayuda' : undefined}
+            className={`app-sidebar-link ${sidebarVisible ? '' : 'lg:justify-center lg:px-2'}`}
           >
-            <CircleHelp aria-hidden="true" className="h-[18px] w-[18px]" />
-            <span>Ayuda</span>
+            <span className="sidebar-link-icon">
+              <CircleHelp aria-hidden="true" className="h-[18px] w-[18px]" />
+            </span>
+            <span className={sidebarVisible ? '' : 'lg:hidden'}>Ayuda</span>
           </button>
         </nav>
 
+        <div className="sidebar-footer-panel mt-3 shrink-0">
+          <div className={`flex min-w-0 items-center gap-3 ${sidebarVisible ? '' : 'lg:justify-center'}`}>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white font-bold text-slate-700">{userInitials}</div>
+            <div className={`min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
+              <p className="truncate text-sm font-semibold text-slate-950">{currentUser?.fullName ?? 'Acceso institucional'}</p>
+              <p className="mt-1 truncate text-[11px] text-slate-500">{primaryRoleLabel}</p>
+            </div>
+          </div>
+        </div>
+
       </aside>
 
-      <main className="app-main min-h-screen min-w-0 overflow-x-hidden lg:pl-[272px]">
-        {!headerVisible ? (
-          <div className="fixed right-4 top-4 z-40 flex items-center gap-2 sm:right-5 lg:right-6">
-            <button
-              type="button"
-              className="icon-button flex h-10 w-10 items-center justify-center rounded-lg lg:hidden"
-              onClick={() => setMobileSidebarOpen(true)}
-              aria-label="Abrir navegación"
-              aria-controls="sidebar"
-              aria-expanded={mobileSidebarOpen}
-            >
-              <Menu aria-hidden="true" className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              className="compact-button flex h-10 items-center gap-2 rounded-lg px-3"
-              onClick={() => setHeaderVisible(true)}
-              aria-label="Mostrar encabezado"
-            >
-              <Eye aria-hidden="true" className="h-4 w-4" />
-              <span className="hidden sm:inline">Mostrar encabezado</span>
-            </button>
-          </div>
-        ) : null}
-
+      <main className="app-main min-h-screen min-w-0 overflow-x-hidden transition-[padding] duration-300">
         <header
-          className={`topbar-surface fixed left-0 right-0 top-0 z-30 px-4 py-2.5 backdrop-blur transition-all duration-300 sm:px-5 lg:left-[272px] lg:px-6 ${
-            headerVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'
-          }`}
+          ref={topbarRef}
+          className="topbar-surface fixed left-0 right-0 top-0 z-30 px-4 py-2.5 backdrop-blur transition-[left] duration-300 sm:px-5 lg:px-6"
         >
-          <div className="mx-auto flex w-full max-w-[1480px] min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-            <div className="flex min-w-0 items-center gap-3">
-              <button
-                type="button"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 lg:hidden"
-                onClick={() => setMobileSidebarOpen(true)}
-                aria-label="Abrir navegación"
-                aria-controls="sidebar"
-                aria-expanded={mobileSidebarOpen}
-              >
-                <Menu aria-hidden="true" className="h-5 w-5" />
-              </button>
+          <div className="mx-auto flex w-full max-w-[1480px] min-w-0 flex-col gap-3.5 xl:gap-4">
+            <div className="flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-start lg:justify-between xl:items-center">
+              <div className="flex min-w-0 items-start gap-3">
+                <button
+                  type="button"
+                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 lg:hidden"
+                  onClick={() => setMobileSidebarOpen((value) => !value)}
+                  aria-label={mobileSidebarLabel}
+                  title={mobileSidebarLabel}
+                  aria-controls="sidebar"
+                  aria-expanded={mobileSidebarOpen}
+                >
+                  {mobileSidebarOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
+                </button>
 
-              <div className="min-w-0">
-                <h2 className="truncate text-[clamp(1.15rem,3vw,1.45rem)] font-bold leading-tight text-slate-950">{activePage.title}</h2>
-                <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-500 sm:text-[13px]">{activePage.subtitle}</p>
-              </div>
-            </div>
-
-            <div className="flex w-full min-w-0 flex-col gap-2 xl:w-auto xl:flex-row xl:items-center">
-              <div className="relative min-w-0 xl:w-[300px]">
-                <input
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
-                  placeholder="Buscar estudiante, curso, docente..."
-                />
-                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-400" />
+                <div className="min-w-0">
+                  <div className="flex min-w-0 flex-wrap items-center gap-2">
+                    <span className="info-chip">{primaryRoleLabel}</span>
+                    <span className="info-chip hidden sm:inline-flex">{activePage.quickAction}</span>
+                  </div>
+                  <h2 className="mt-2 truncate text-[clamp(1.15rem,3vw,1.45rem)] font-bold leading-tight text-slate-950">{activePage.title}</h2>
+                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500 sm:text-[13px]">{activePage.subtitle}</p>
+                </div>
               </div>
 
-              <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
-                <select className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 sm:w-[150px]">
-                  <option>Periodo 2026</option>
-                  <option>Periodo 2025</option>
-                </select>
+              <div className="topbar-panel flex w-full min-w-0 flex-col gap-2.5 rounded-2xl px-3 py-3 lg:w-auto lg:min-w-[560px] lg:flex-row lg:items-center lg:justify-end xl:min-w-[720px] xl:flex-nowrap xl:gap-3">
+                <label className="header-search min-w-0 flex-1">
+                  <Search aria-hidden="true" className="h-[18px] w-[18px] shrink-0 text-slate-400" />
+                  <input placeholder="Buscar estudiante, curso, docente..." />
+                </label>
 
-                <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-start">
-                  <button
-                    type="button"
-                    className="compact-button hidden h-10 items-center gap-2 rounded-lg px-3 xl:inline-flex"
-                    onClick={() => setHeaderVisible(false)}
-                    aria-label="Ocultar encabezado"
-                  >
-                    <EyeOff aria-hidden="true" className="h-4 w-4" />
-                    <span>Ocultar</span>
-                  </button>
-                  <ThemeToggle />
-                  <button
-                    type="button"
-                    className="icon-button flex h-10 w-10 items-center justify-center rounded-lg"
-                    aria-label="Ver notificaciones"
-                  >
-                    <Bell aria-hidden="true" className="h-[18px] w-[18px]" />
-                  </button>
-                  <button
-                    type="button"
-                    className="icon-button flex h-10 w-10 items-center justify-center rounded-lg"
-                    aria-label="Ver mensajes"
-                  >
-                    <MessageCircle aria-hidden="true" className="h-[18px] w-[18px]" />
-                  </button>
+                <div className="topbar-utility-group flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between lg:justify-end">
+                  <select className="topbar-select h-10 w-full px-3 text-sm text-slate-700 outline-none sm:w-[168px]">
+                    <option>Periodo 2026</option>
+                    <option>Periodo 2025</option>
+                  </select>
 
-                  <div className="flex min-w-0 items-center gap-3 pl-1">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 font-bold text-slate-700">{userInitials}</div>
-                    <div className="hidden min-w-0 sm:block">
-                      <p className="truncate text-sm font-bold leading-none text-slate-900">{currentUser?.fullName ?? 'Acceso institucional'}</p>
-                      <p className="mt-1 truncate text-[11px] text-slate-500">{currentUser?.roleCodes?.[0] ?? 'Sesión activa'}</p>
+                  <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-start">
+                    <ThemeToggle />
+                    <button
+                      type="button"
+                      className="icon-button flex h-10 w-10 items-center justify-center rounded-xl"
+                      aria-label="Ver notificaciones"
+                    >
+                      <Bell aria-hidden="true" className="h-[18px] w-[18px]" />
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-button flex h-10 w-10 items-center justify-center rounded-xl"
+                      aria-label="Ver mensajes"
+                    >
+                      <MessageCircle aria-hidden="true" className="h-[18px] w-[18px]" />
+                    </button>
+
+                    <div className="topbar-user-panel flex min-w-0 items-center gap-3 pl-1">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-700">{userInitials}</div>
+                      <div className="hidden min-w-0 sm:block">
+                        <p className="truncate text-sm font-bold leading-none text-slate-900">{currentUser?.fullName ?? 'Acceso institucional'}</p>
+                        <p className="mt-1 truncate text-[11px] text-slate-500">{primaryRoleLabel}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -397,8 +459,10 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
           </div>
         </header>
 
-        <div className={`mx-auto w-full max-w-[1480px] p-4 transition-[padding] duration-300 sm:p-5 lg:p-6 ${headerVisible ? 'pt-28 sm:pt-32 xl:pt-24' : 'pt-20 sm:pt-20 xl:pt-6'}`}>
-          {children}
+        <div className="app-content-shell">
+          <div className="mx-auto w-full max-w-[1480px] p-4 sm:p-5 lg:p-6">
+            {children}
+          </div>
         </div>
       </main>
     </div>
