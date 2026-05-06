@@ -136,28 +136,28 @@ export default async function PanelPage() {
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <span className="badge badge-blue">Panel operativo</span>
+              <span className="badge badge-blue">Panel institucional</span>
               <span className="info-chip">{getPrimaryRoleLabel(user)}</span>
             </div>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">Lectura inmediata de operación, accesos y actividad real</h1>
+            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">Lectura ejecutiva del sistema con datos reales y accesos según tu rol</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              El panel ahora prioriza datos reales de la base institucional, filtra el alcance según el rol logueado y reduce bloques decorativos para enfocarse en operación útil.
+              Este panel resume la operación académica y administrativa visible para tu sesión, mantiene el alcance por permisos y prioriza información útil para trabajar sin ruido visual.
             </p>
           </div>
 
           <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
             <div className="rounded-xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Sedes visibles</p>
+              <p className="tiny-label">Instituciones visibles</p>
               <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{institutionCoverage}</p>
               <p className="mt-2 text-xs leading-5 text-muted">Estructura alcanzada por tu sesión.</p>
             </div>
             <div className="rounded-xl border border-line bg-white p-4">
-              <p className="tiny-label">Actividad reciente</p>
+              <p className="tiny-label">Usuarios recientes</p>
               <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{trackedUsers}</p>
               <p className="mt-2 text-xs leading-5 text-muted">Usuarios recientes dentro del alcance visible.</p>
             </div>
             <div className="rounded-xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Promedio académico</p>
+              <p className="tiny-label">Promedio registrado</p>
               <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{dashboard?.metrics.averageGrade ?? 0}</p>
               <p className="mt-2 text-xs leading-5 text-muted">Promedio real calculado desde calificaciones registradas.</p>
             </div>

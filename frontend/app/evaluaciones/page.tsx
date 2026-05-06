@@ -187,12 +187,12 @@ export default async function EvaluacionesPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-blue">Fase académica 6</span>
+            <span className="badge badge-blue">Evaluaciones y notas</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
               Evaluaciones y calificaciones conectadas con asignaciones, materias, docentes y matrículas reales
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              El módulo permite crear instrumentos de evaluación y registrar notas de estudiantes matriculados dentro de la única institución educativa activa.
+              La interfaz mejora la lectura de cobertura, periodo, puntaje y rendimiento sin modificar la lógica actual de evaluaciones o calificaciones.
             </p>
           </div>
 
@@ -208,9 +208,9 @@ export default async function EvaluacionesPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Lectura rápida del rendimiento cargado.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Cobertura actual</p>
+              <p className="tiny-label">Validación operativa</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Cada nota se valida contra la cobertura de la evaluación y la matrícula activa del mismo periodo escolar antes de guardarse.
+                Cada nota conserva su validación contra la cobertura de la evaluación y la matrícula activa del mismo periodo escolar.
               </p>
             </div>
           </aside>

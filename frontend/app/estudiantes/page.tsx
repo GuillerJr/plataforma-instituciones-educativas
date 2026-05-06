@@ -94,13 +94,12 @@ export default async function EstudiantesPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-warn">Fase académica 3</span>
+            <span className="badge badge-warn">Estudiantes</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Estudiantes y matrícula mínima conectados con la estructura real del colegio
+              Registro estudiantil y ubicación escolar conectados con la estructura real del colegio
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              El módulo ya permite registrar estudiantes sobre la institución activa y ubicarlos coherentemente en nivel,
-              curso y sección dentro del flujo académico actual.
+              La experiencia mantiene intacta la lógica actual y mejora la lectura de matrícula, estado y ubicación académica de cada estudiante.
             </p>
           </div>
 
@@ -116,9 +115,9 @@ export default async function EstudiantesPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Casos visibles para seguimiento administrativo.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Alcance actual</p>
+              <p className="tiny-label">Lectura institucional</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                La fase deja resuelta la alta mínima de estudiantes y su ubicación coherente dentro de una sola institución educativa.
+                La pantalla conserva el alta de estudiantes y su ubicación coherente dentro de la institución educativa activa.
               </p>
             </div>
           </aside>

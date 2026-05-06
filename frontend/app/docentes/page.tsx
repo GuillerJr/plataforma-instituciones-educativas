@@ -91,12 +91,12 @@ export default async function DocentesPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-blue">Fase académica 2</span>
+            <span className="badge badge-blue">Docentes</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Docentes y asignación académica conectados con la estructura real del colegio
+              Planta docente conectada con la estructura real del colegio
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La planta docente ya puede registrarse sobre la institución activa y vincularse directamente a nivel, curso o sección sin salir del flujo académico actual.
+              La interfaz prioriza cobertura, especialidad y asignación visible sin alterar el flujo académico ya implementado.
             </p>
           </div>
 
@@ -112,9 +112,9 @@ export default async function DocentesPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Sin asignación académica visible.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Alcance actual</p>
+              <p className="tiny-label">Operación docente</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                La fase deja resuelta la alta de docentes y una asignación coherente enlazada con la base académica ya creada para una sola institución.
+                La vista mantiene el alta de docentes y su relación con la base académica ya creada para la institución activa.
               </p>
             </div>
           </aside>

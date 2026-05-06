@@ -73,13 +73,12 @@ export default async function AcademicoPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-success">Fase académica 1</span>
+            <span className="badge badge-success">Estructura académica</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Niveles, cursos y secciones listos para operar en una sola institución
+              Niveles, cursos y secciones organizados para sostener toda la operación escolar
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              Esta vista instala la base académica real del colegio con estructura mínima, altas rápidas y lectura clara
-              para coordinación y administración.
+              Esta vista concentra la base académica real del colegio y la presenta con una jerarquía más clara para coordinación y administración.
             </p>
           </div>
 
@@ -95,9 +94,9 @@ export default async function AcademicoPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Entre niveles, grados y paralelos.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Alcance actual</p>
+              <p className="tiny-label">Base conectada</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                La estructura queda conectada al backend real y preparada para crecer luego hacia matrícula, asignaciones y carga docente.
+                La estructura sigue conectada al backend actual y mantiene la relación con matrícula, asignaciones y carga docente.
               </p>
             </div>
           </aside>

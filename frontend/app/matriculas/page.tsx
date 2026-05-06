@@ -114,12 +114,12 @@ export default async function MatriculasPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-blue">Fase académica 5</span>
+            <span className="badge badge-blue">Matrículas</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Matrículas e inscripciones enlazadas con estudiantes y secciones reales
+              Matrículas e inscripciones enlazadas con estudiantes, periodos y secciones reales
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              El módulo registra la matrícula del periodo activo sobre una sola institución educativa y deriva automáticamente nivel y curso desde la sección elegida.
+              La experiencia conserva la lógica del periodo activo y mejora la lectura de estado, trazabilidad y ubicación académica de cada inscripción.
             </p>
           </div>
 
@@ -135,9 +135,9 @@ export default async function MatriculasPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Retiros o anulaciones visibles para control.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Periodo activo</p>
+              <p className="tiny-label">Trazabilidad</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                {snapshot?.institution.activeSchoolYearLabel ?? 'Sin periodo configurado'} · La matrícula actualiza la ubicación del estudiante y mantiene la trazabilidad por sección.
+                {snapshot?.institution.activeSchoolYearLabel ?? 'Sin periodo configurado'} · La matrícula mantiene la relación con estudiante, sección y periodo escolar actual.
               </p>
             </div>
           </aside>

@@ -1,178 +1,110 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useState } from 'react';
+import {
+  ArrowRight,
+  BookOpen,
+  Building2,
+  ClipboardCheck,
+  GraduationCap,
+  IdCard,
+  Layers3,
+  Link2,
+  Menu,
+  School,
+  ShieldCheck,
+  UsersRound,
+  X,
+} from 'lucide-react';
 
 const navItems = [
-  { label: 'Beneficios', href: '#beneficios' },
-  { label: 'Programas', href: '#programas' },
-  { label: 'Modelo', href: '#modelo' },
-  { label: 'Campus', href: '#instalaciones' },
-  { label: 'Admisiones', href: '#admisiones' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Producto', href: '#producto' },
+  { label: 'Módulos', href: '#modulos' },
+  { label: 'Flujos', href: '#flujos' },
+  { label: 'Roles', href: '#roles' },
+  { label: 'Acceso', href: '#acceso' },
 ];
 
-const benefits = [
+const productModules = [
   {
-    icon: '📚',
-    bg: 'bg-eduSky',
-    title: 'Excelencia académica',
-    description:
-      'Currículo actualizado, seguimiento continuo y una experiencia formativa que combina exigencia, orden y cercanía.',
+    title: 'Instituciones y sedes',
+    description: 'Registro base de institución, tipo, contacto y sedes visibles dentro del sistema.',
+    icon: Building2,
   },
   {
-    icon: '👩‍🏫',
-    bg: 'bg-amber-50',
-    title: 'Docentes expertos',
-    description:
-      'Equipo preparado en metodologías activas, uso responsable de tecnología educativa y acompañamiento institucional.',
+    title: 'Usuarios y roles',
+    description: 'Perfiles, estados de cuenta y gobierno de acceso para la operación institucional.',
+    icon: IdCard,
   },
   {
-    icon: '🧠',
-    bg: 'bg-eduMint',
-    title: 'Acompañamiento real',
-    description:
-      'Tutorías, seguimiento por etapas y comunicación clara con las familias durante todo el proceso escolar.',
+    title: 'Estructura académica',
+    description: 'Niveles, cursos y secciones que sostienen la operación escolar y la matrícula.',
+    icon: Layers3,
   },
   {
-    icon: '🚀',
-    bg: 'bg-blue-50',
-    title: 'Innovación aplicada',
-    description:
-      'Proyectos STEAM, laboratorios y herramientas digitales integradas con una operación escolar seria.',
-  },
-];
-
-const programs = [
-  {
-    emoji: '🧸',
-    gradient: 'from-blue-100 via-white to-sky-100',
-    label: 'Educación inicial',
-    title: 'Primeros descubrimientos',
-    description:
-      'Desarrollo socioemocional, lenguaje, creatividad y autonomía en un entorno seguro y cuidadosamente acompañado.',
-    tags: ['Juego', 'Creatividad', 'Autonomía'],
+    title: 'Docentes y estudiantes',
+    description: 'Altas, datos base, ubicación académica y lectura rápida de actividad.',
+    icon: UsersRound,
   },
   {
-    emoji: '📘',
-    gradient: 'from-amber-100 via-white to-blue-100',
-    label: 'Educación básica',
-    title: 'Bases sólidas',
-    description:
-      'Lectura comprensiva, pensamiento lógico, inglés, hábitos de estudio y formación en valores con seguimiento continuo.',
-    tags: ['Lectura', 'Inglés', 'Valores'],
+    title: 'Matrículas y materias',
+    description: 'Inscripciones del periodo activo y catálogo curricular enlazado con la institución.',
+    icon: BookOpen,
   },
   {
-    emoji: '🎓',
-    gradient: 'from-green-100 via-white to-blue-100',
-    label: 'Bachillerato',
-    title: 'Preparación futura',
-    description:
-      'Liderazgo, investigación, orientación vocacional y preparación rigurosa para universidad y proyectos de vida.',
-    tags: ['Liderazgo', 'STEAM', 'Universidad'],
+    title: 'Asignaciones, evaluaciones y asistencia',
+    description: 'Carga docente, calificaciones y control diario sobre datos académicos reales.',
+    icon: ClipboardCheck,
   },
 ];
 
-const testimonials = [
+const operatingFlows = [
   {
-    quote:
-      'Desde el primer contacto se nota organización, seriedad y una propuesta académica que transmite confianza a las familias.',
-    initial: 'M',
-    badge: 'bg-eduBlue',
-    name: 'María Fernanda',
-    role: 'Madre de familia',
+    step: '01',
+    title: 'Acceso institucional seguro',
+    description: 'Inicio de sesión privado para operación administrativa, docente, estudiantil y de representación familiar.',
   },
   {
-    quote:
-      'Me gusta que aquí el aprendizaje se conecta con proyectos, tecnología y una preparación real para el siguiente nivel.',
-    initial: 'D',
-    badge: 'bg-eduGreen',
-    name: 'Daniel Ortega',
-    role: 'Estudiante',
+    step: '02',
+    title: 'Solicitud pública unificada',
+    description: 'El sistema ya contempla solicitudes de acceso, información institucional y admisión desde la capa pública.',
   },
   {
-    quote:
-      'Educa combina instalaciones modernas, trato cercano y una estructura institucional que se siente bien pensada.',
-    initial: 'A',
-    badge: 'bg-eduGold text-eduNavy',
-    name: 'Andrés Salazar',
-    role: 'Padre de familia',
+    step: '03',
+    title: 'Gestión académica conectada',
+    description: 'La estructura, matrícula, evaluación y asistencia trabajan sobre relaciones reales entre módulos.',
   },
 ];
 
-const facilities = [
+const roles = [
   {
-    emoji: '💻',
-    className: 'dark-panel text-white shadow-premium',
-    title: 'Aulas digitales',
-    description: 'Pantallas interactivas, plataformas educativas y recursos multimedia al servicio de la clase.',
+    title: 'Superadministración',
+    description: 'Visión transversal de instituciones, usuarios, estructura académica y operación general.',
   },
   {
-    emoji: '🔬',
-    className: 'bg-blue-50 shadow-soft',
-    title: 'Laboratorios',
-    description: 'Ciencia, robótica, experimentación e innovación con espacios preparados para práctica real.',
+    title: 'Administración institucional',
+    description: 'Gestión operativa del colegio: estructura, personal, estudiantes, matrículas y seguimiento.',
   },
   {
-    emoji: '🌿',
-    className: 'bg-green-50 shadow-soft',
-    title: 'Áreas verdes',
-    description: 'Espacios de bienestar, recreación y convivencia estudiantil dentro de una jornada equilibrada.',
+    title: 'Docencia',
+    description: 'Acceso a materias, estructura visible, evaluaciones y control de asistencia según su alcance.',
   },
   {
-    emoji: '🏀',
-    className: 'bg-amber-50 shadow-soft',
-    title: 'Deporte y cultura',
-    description: 'Clubes, canchas, talleres y actividades extracurriculares para formación integral.',
+    title: 'Estudiante',
+    description: 'Consulta de rendimiento y asistencia construida sobre sus registros vinculados.',
+  },
+  {
+    title: 'Representación familiar',
+    description: 'Seguimiento de estudiantes asociados y lectura directa de su situación académica.',
   },
 ];
 
-const admissionSteps = [
-  {
-    number: '1',
-    title: 'Solicita información',
-    description: 'Completa el formulario o agenda una llamada con nuestro equipo institucional.',
-    badge: 'bg-eduBlue',
-  },
-  {
-    number: '2',
-    title: 'Visita el campus',
-    description: 'Conoce instalaciones, metodología, niveles académicos y propuesta formativa.',
-    badge: 'bg-eduBlue',
-  },
-  {
-    number: '3',
-    title: 'Evaluación y entrevista',
-    description: 'Revisamos nivel académico, contexto familiar y necesidades de acompañamiento.',
-    badge: 'bg-eduBlue',
-  },
-  {
-    number: '4',
-    title: 'Formaliza la matrícula',
-    description: 'Recibe lineamientos, documentación y acceso al proceso de continuidad institucional.',
-    badge: 'bg-eduGreen',
-  },
-];
-
-const contactDetails = [
-  {
-    emoji: '📍',
-    wrapper: 'bg-eduSky text-eduBlue',
-    title: 'Dirección',
-    value: 'Campus Educa, corredor académico principal, Guayaquil',
-  },
-  {
-    emoji: '📞',
-    wrapper: 'bg-eduMint text-eduGreen',
-    title: 'Teléfono',
-    value: '+593 99 123 4567',
-  },
-  {
-    emoji: '✉️',
-    wrapper: 'bg-amber-50 text-eduNavy',
-    title: 'Correo',
-    value: 'admisiones@educa.hacktrickstore.com',
-  },
+const systemPillars = [
+  'Permisos por rol ya definidos en código',
+  'Módulos conectados entre sí sin duplicar datos',
+  'Panel privado separado del sitio público',
+  'Flujos preparados para acceso, información y admisión',
 ];
 
 export default function HomePage() {
@@ -180,646 +112,300 @@ export default function HomePage() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <main className="landing-home min-h-screen overflow-x-hidden bg-white text-eduText">
-      <header className="fixed left-0 right-0 top-0 z-50 header-glass">
-        <div className="container-page">
-          <div className="flex min-h-20 items-center justify-between gap-4 py-3 sm:gap-6">
-            <Link href="#inicio" className="flex shrink-0 items-center gap-3" aria-label="Ir al inicio">
-              <div className="dark-panel flex h-11 w-11 items-center justify-center rounded-xl shadow-glow sm:h-12 sm:w-12">
-                <span className="text-xl font-black text-white">E</span>
-              </div>
-              <div className="min-w-0">
-                <h1 className="text-xl font-black leading-none text-eduNavy">Educa</h1>
-                <p className="mt-1 text-xs font-bold text-slate-500">Excelencia académica con dirección institucional</p>
-              </div>
-            </Link>
-
-            <nav className="hidden items-center gap-7 text-sm font-bold lg:flex">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="nav-link">
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div className="hidden items-center gap-3 lg:flex">
-              <Link href="/registro?requestType=informacion&context=header" className="btn-secondary px-5 py-3 text-sm">
-                Solicitar información
-              </Link>
-              <Link href="/login" className="btn-primary px-6 py-3 text-sm">
-                Iniciar sesión
-              </Link>
+    <main className="min-h-screen bg-[linear-gradient(180deg,#f4f7fb_0%,#eef3f8_38%,#f8fafc_100%)] text-slate-900">
+      <header className="sticky top-0 z-50 border-b border-white/70 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <Link href="#inicio" className="flex items-center gap-3" aria-label="Ir al inicio">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#18345f_0%,#0f223d_100%)] text-sm font-semibold text-white shadow-[0_18px_40px_rgba(15,34,61,0.25)]">
+              ED
             </div>
-
-            <button
-              type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-eduSky text-eduBlue ring-1 ring-blue-100 transition hover:bg-blue-100 focus:outline-none focus:ring-4 focus:ring-blue-100 lg:hidden"
-              aria-label="Abrir menú"
-              onClick={() => setMobileMenuOpen((value) => !value)}
-            >
-              <svg width="27" height="27" viewBox="0 0 24 24" fill="none">
-                <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" />
-              </svg>
-            </button>
-          </div>
-
-          <div className={`mobile-menu lg:hidden ${mobileMenuOpen ? 'active' : ''}`}>
-            <nav className="flex flex-col gap-4 pb-6 text-sm font-bold text-slate-700">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
-                  {item.label}
-                </Link>
-              ))}
-              <Link href="/login" className="btn-secondary px-6 py-3" onClick={() => setMobileMenuOpen(false)}>
-                Iniciar sesión
-              </Link>
-              <Link
-                href="/registro?requestType=admision&context=mobile-menu"
-                className="btn-primary mt-2 px-6 py-3"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Inscríbete ahora
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      <section id="inicio" className="hero-bg pb-14 pt-28 sm:pb-20 sm:pt-32 lg:pb-24 lg:pt-36">
-        <div className="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div
-            className="fade-up show"
-          >
-            <div className="section-label mb-7">
-              <span className="h-2.5 w-2.5 rounded-full bg-eduGreen"></span>
-              Matrículas abiertas · Periodo académico 2026
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sistema educativo</p>
+              <p className="text-base font-semibold text-slate-950">Educa Plataforma</p>
             </div>
+          </Link>
 
-            <h2 className="text-[clamp(2.25rem,7vw,4.9rem)] font-black leading-[1.03] tracking-tight text-eduNavy">
-              Educación moderna para formar líderes con propósito.
-            </h2>
-
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
-              En Educa impulsamos el talento de cada estudiante mediante excelencia académica, tecnología educativa,
-              valores, acompañamiento cercano a las familias y acceso institucional ordenado al sistema.
-            </p>
-
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <Link href="/registro?requestType=admision&context=hero" className="btn-primary px-8 py-4">
-                Inscríbete ahora
+          <nav className="hidden items-center gap-6 lg:flex">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className="text-sm font-medium text-slate-600 transition hover:text-slate-950">
+                {item.label}
               </Link>
-              <Link href="#contacto" className="btn-secondary px-8 py-4">
-                Agenda una visita
-              </Link>
-            </div>
-
-            <div className="mt-10 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white bg-white/80 p-4 shadow-soft sm:p-5">
-                <p className="text-2xl font-black text-eduBlue sm:text-3xl">25+</p>
-                <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Años de experiencia</p>
-              </div>
-              <div className="rounded-2xl border border-white bg-white/80 p-4 shadow-soft sm:p-5">
-                <p className="text-2xl font-black text-eduBlue sm:text-3xl">1.800+</p>
-                <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Estudiantes activos</p>
-              </div>
-              <div className="rounded-2xl border border-white bg-white/80 p-4 shadow-soft sm:p-5">
-                <p className="text-2xl font-black text-eduBlue sm:text-3xl">96%</p>
-                <p className="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Satisfacción familiar</p>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="fade-up show"
-          >
-            <div className="floating relative hero-visual-card rounded-5xl border border-white bg-white p-3 shadow-premium sm:p-5">
-              <div className="dark-panel flex h-full min-h-[420px] flex-col justify-between overflow-hidden rounded-4xl p-5 sm:min-h-[500px] sm:p-7 lg:min-h-[520px]">
-                <div className="relative z-10">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm font-bold text-white/65">Campus inteligente</p>
-                      <h3 className="mt-1 text-2xl font-black text-white sm:text-3xl">Aprendizaje integral</h3>
-                    </div>
-
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/12">
-                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 4L21 9L12 14L3 9L12 4Z" stroke="white" strokeWidth="2" strokeLinejoin="round" />
-                        <path d="M6 11.5V16C6 17.7 8.7 19.2 12 19.2C15.3 19.2 18 17.7 18 16V11.5" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <div className="mt-7 grid gap-3 sm:grid-cols-2 sm:gap-4">
-                    {[
-                      ['🎓', 'Excelencia', 'Alto rendimiento académico'],
-                      ['💡', 'Innovación', 'Tecnología y proyectos STEAM'],
-                      ['🤝', 'Cercanía', 'Acompañamiento personalizado'],
-                      ['🌎', 'Visión global', 'Idiomas, valores y liderazgo'],
-                    ].map(([icon, title, copy]) => (
-                      <div key={title} className="rounded-2xl border border-white/15 bg-white/12 p-4 sm:p-5">
-                        <div className="mb-3 text-3xl sm:text-4xl">{icon}</div>
-                        <h4 className="font-black text-white">{title}</h4>
-                        <p className="mt-1 text-sm leading-6 text-white/65">{copy}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="relative z-10 mt-7 rounded-2xl bg-white p-4 shadow-soft sm:p-5">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
-                    <div>
-                      <p className="text-sm font-black text-slate-500">Indicador institucional</p>
-                      <p className="mt-1 text-2xl font-black text-eduNavy">96% satisfacción</p>
-                      <p className="mt-1 text-sm text-slate-500">Familias recomiendan nuestra propuesta.</p>
-                    </div>
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-eduSky">
-                      <span className="text-xl font-black text-eduBlue">96</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="beneficios" className="bg-white py-20">
-        <div className="container-page">
-          <div
-            className="fade-up show mx-auto mb-14 max-w-3xl text-center"
-          >
-            <span className="section-label">⭐ ¿Por qué elegirnos?</span>
-            <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">
-              Una educación pensada para desarrollar potencial real
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-slate-600">
-              Combinamos formación académica, tecnología, habilidades humanas y seguimiento personalizado para que cada
-              estudiante avance con seguridad.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {benefits.map((item) => (
-              <article key={item.title} className="card fade-up rounded-4xl p-7 show">
-                <div className={`mb-6 flex h-16 w-16 items-center justify-center rounded-3xl text-4xl ${item.bg}`}>{item.icon}</div>
-                <h3 className="text-xl font-black text-eduNavy">{item.title}</h3>
-                <p className="mt-3 leading-relaxed text-slate-600">{item.description}</p>
-              </article>
             ))}
-          </div>
-        </div>
-      </section>
+          </nav>
 
-      <section id="programas" className="decor-grid bg-eduSoft py-20">
-        <div className="container-page">
-          <div
-            className="fade-up show mb-14 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
-          >
-            <div className="max-w-3xl">
-              <span className="section-label">🎒 Programas académicos</span>
-              <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">
-                Formación integral para cada etapa de crecimiento
-              </h2>
-            </div>
-
-            <Link href="#contacto" className="btn-primary px-7 py-4">
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link href="/registro?requestType=informacion&context=landing-header" className="secondary-button px-5 py-3 text-sm">
               Solicitar información
             </Link>
+            <Link href="/login" className="primary-button px-5 py-3 text-sm">
+              Ingresar al sistema
+            </Link>
           </div>
 
-          <div className="grid gap-7 md:grid-cols-3">
-            {programs.map((program) => (
-              <article key={program.label} className="card fade-up overflow-hidden rounded-5xl show">
-                <div className={`flex h-52 items-center justify-center bg-gradient-to-br ${program.gradient}`}>
-                  <span className="text-8xl">{program.emoji}</span>
+          <button
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 lg:hidden"
+            aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            onClick={() => setMobileMenuOpen((value) => !value)}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        {mobileMenuOpen ? (
+          <div className="border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
+            <nav className="flex flex-col gap-3">
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href} className="rounded-2xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50" onClick={() => setMobileMenuOpen(false)}>
+                  {item.label}
+                </Link>
+              ))}
+              <Link href="/registro?requestType=informacion&context=landing-mobile" className="secondary-button mt-2 w-full" onClick={() => setMobileMenuOpen(false)}>
+                Solicitar información
+              </Link>
+              <Link href="/login" className="primary-button w-full" onClick={() => setMobileMenuOpen(false)}>
+                Ingresar al sistema
+              </Link>
+            </nav>
+          </div>
+        ) : null}
+      </header>
+
+      <section id="inicio" className="px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-24 lg:pt-16">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
+              <ShieldCheck className="h-4 w-4 text-sky-700" />
+              Plataforma institucional con acceso privado
+            </span>
+
+            <h1 className="mt-6 max-w-4xl text-[clamp(2.6rem,6vw,5.2rem)] font-semibold leading-[1.02] tracking-tight text-slate-950">
+              Gestión académica y administrativa para instituciones educativas con operación real y clara.
+            </h1>
+
+            <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+              Educa organiza usuarios, sedes, estructura académica, docentes, estudiantes, matrículas, materias,
+              asignaciones, evaluaciones, calificaciones y asistencia dentro de una experiencia institucional sólida,
+              confiable y orientada al trabajo diario.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link href="/login" className="primary-button px-6 py-4">
+                Acceder al panel
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/registro?requestType=acceso&context=landing-hero" className="secondary-button px-6 py-4">
+                Solicitar acceso
+              </Link>
+            </div>
+
+            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.07)]">
+                <p className="text-3xl font-semibold text-slate-950">{roles.length}</p>
+                <p className="mt-2 text-sm text-slate-500">roles ya contemplados</p>
+              </div>
+              <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.07)]">
+                <p className="text-3xl font-semibold text-slate-950">{productModules.length}</p>
+                <p className="mt-2 text-sm text-slate-500">bloques funcionales visibles</p>
+              </div>
+              <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.07)]">
+                <p className="text-3xl font-semibold text-slate-950">{operatingFlows.length}</p>
+                <p className="mt-2 text-sm text-slate-500">flujos públicos y privados</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-x-12 -top-10 h-40 rounded-full bg-sky-200/40 blur-3xl" aria-hidden="true" />
+            <div className="absolute -bottom-10 left-10 h-40 w-40 rounded-full bg-emerald-200/35 blur-3xl" aria-hidden="true" />
+
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/92 p-4 shadow-[0_28px_90px_rgba(15,23,42,0.12)] sm:p-6">
+              <div className="rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,#f7fafc_0%,#eef3f8_100%)] p-5">
+                <div className="flex items-center justify-between gap-4 rounded-[1.25rem] bg-slate-950 px-5 py-4 text-white shadow-[0_18px_50px_rgba(2,6,23,0.22)]">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-white/55">Panel institucional</p>
+                    <p className="mt-1 text-lg font-semibold">Operación conectada por módulos</p>
+                  </div>
+                  <School className="h-6 w-6 text-sky-300" />
                 </div>
-                <div className="p-8">
-                  <p className="text-sm font-black uppercase tracking-wider text-eduBlue">{program.label}</p>
-                  <h3 className="mt-2 text-2xl font-black text-eduNavy">{program.title}</h3>
-                  <p className="mt-4 leading-relaxed text-slate-600">{program.description}</p>
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {program.tags.map((tag, index) => (
-                      <span
-                        key={tag}
-                        className={[
-                          'rounded-full px-3 py-2 text-xs font-black',
-                          index === 0 && 'bg-blue-50 text-eduBlue',
-                          index === 1 && 'bg-green-50 text-eduGreen',
-                          index === 2 && 'bg-amber-50 text-amber-600',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {tag}
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {[
+                    ['Usuarios y roles', 'Accesos y estados'],
+                    ['Estructura académica', 'Niveles, cursos y secciones'],
+                    ['Docentes y estudiantes', 'Base humana del periodo'],
+                    ['Evaluaciones y asistencia', 'Seguimiento diario'],
+                  ].map(([title, copy]) => (
+                    <article key={title} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
+                      <p className="text-sm font-semibold text-slate-950">{title}</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-500">{copy}</p>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-5 rounded-[1.35rem] border border-slate-200 bg-white p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Cobertura funcional existente</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {['Instituciones', 'Usuarios', 'Docentes', 'Estudiantes', 'Matrículas', 'Materias', 'Asignaciones', 'Evaluaciones', 'Asistencia'].map((item) => (
+                      <span key={item} className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+                        {item}
                       </span>
                     ))}
                   </div>
                 </div>
-              </article>
-            ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-20">
-        <div className="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div
-            className="fade-up show"
-          >
-            <div className="grid grid-cols-2 gap-5">
-              <div className="dark-panel flex min-h-[230px] flex-col justify-between rounded-4xl p-7 text-white shadow-premium">
-                <p className="text-6xl">🏫</p>
-                <div>
-                  <h3 className="text-2xl font-black">Campus seguro</h3>
-                  <p className="mt-2 text-white/65">Ambientes diseñados para aprender y convivir.</p>
-                </div>
-              </div>
-              <div className="flex min-h-[230px] flex-col justify-between rounded-4xl bg-blue-50 p-7 shadow-soft">
-                <p className="text-6xl">🔬</p>
-                <div>
-                  <h3 className="text-2xl font-black text-eduNavy">Laboratorios</h3>
-                  <p className="mt-2 text-slate-600">Ciencia, robótica y tecnología aplicada.</p>
-                </div>
-              </div>
-              <div className="flex min-h-[230px] flex-col justify-between rounded-4xl bg-amber-50 p-7 shadow-soft">
-                <p className="text-6xl">🎨</p>
-                <div>
-                  <h3 className="text-2xl font-black text-eduNavy">Arte y cultura</h3>
-                  <p className="mt-2 text-slate-600">Creatividad, expresión y sensibilidad social.</p>
-                </div>
-              </div>
-              <div className="flex min-h-[230px] flex-col justify-between rounded-4xl bg-green-50 p-7 shadow-soft">
-                <p className="text-6xl">⚽</p>
-                <div>
-                  <h3 className="text-2xl font-black text-eduNavy">Deporte</h3>
-                  <p className="mt-2 text-slate-600">Disciplina, bienestar y trabajo en equipo.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            id="nosotros"
-            className="fade-up show"
-          >
-            <span className="section-label">💙 Sobre nosotros</span>
-            <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">
-              Educamos con excelencia, humanidad e innovación
+      <section id="producto" className="border-y border-slate-200 bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14">
+          <div>
+            <p className="eyebrow">Producto institucional</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              Diseñado para ordenar operación, permisos y seguimiento académico dentro de una sola experiencia.
             </h2>
-
-            <p className="mt-6 text-lg leading-relaxed text-slate-600">
-              Educa forma estudiantes íntegros, creativos y seguros de sí mismos. Nuestro enfoque combina conocimiento,
-              valores, pensamiento crítico, trazabilidad institucional y herramientas digitales para acompañar a cada familia.
-            </p>
-
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              <div className="rounded-4xl border border-slate-100 bg-eduSoft p-6">
-                <h3 className="text-xl font-black text-eduNavy">Misión</h3>
-                <p className="mt-3 text-slate-600">
-                  Formar estudiantes autónomos, responsables y capaces de aprender durante toda la vida.
-                </p>
-              </div>
-              <div className="rounded-4xl border border-slate-100 bg-eduSoft p-6">
-                <h3 className="text-xl font-black text-eduNavy">Visión</h3>
-                <p className="mt-3 text-slate-600">
-                  Ser una institución referente por calidad académica, innovación y formación humana.
-                </p>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
-
-      <section className="dark-panel py-16">
-        <div className="container-page">
-          <div
-            className="fade-up show grid grid-cols-2 gap-5 lg:grid-cols-4"
-          >
-            {[
-              ['1.800+', 'Estudiantes activos'],
-              ['120+', 'Docentes capacitados'],
-              ['25', 'Años de experiencia'],
-              ['96%', 'Satisfacción familiar'],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-4xl border border-white/15 bg-white/10 p-7 text-center">
-                <p className="text-4xl font-black text-white md:text-5xl">{value}</p>
-                <p className="mt-2 font-bold text-white/65">{label}</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {systemPillars.map((pillar) => (
+              <div key={pillar} className="rounded-3xl border border-slate-200 bg-slate-50/80 p-5 text-sm leading-7 text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+                {pillar}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="modelo" className="bg-white py-20">
-        <div className="container-page">
-          <div
-            className="fade-up show mx-auto mb-14 max-w-3xl text-center"
-          >
-            <span className="section-label">🧩 Modelo pedagógico</span>
-            <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">Aprender haciendo, pensando y creando</h2>
-            <p className="mt-5 text-lg leading-relaxed text-slate-600">
-              Nuestro modelo combina aprendizaje basado en proyectos, tecnología, pensamiento crítico, comunicación y
-              retroalimentación continua.
+      <section id="modulos" className="px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="eyebrow">Módulos reales</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              La interfaz pública comunica exactamente lo que el sistema ya soporta en el panel interno.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-slate-600">
+              No se muestran promesas vacías ni funciones inventadas. Cada bloque corresponde a capacidades ya presentes en rutas, permisos y flujos existentes del proyecto.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              ['🔎', 'Explorar', 'Los estudiantes investigan problemas reales y formulan preguntas significativas.', 'bg-blue-50'],
-              ['🛠️', 'Crear', 'Diseñan soluciones, prototipos, proyectos colaborativos y experiencias prácticas.', 'bg-amber-50'],
-              ['💬', 'Comunicar', 'Presentan ideas con seguridad, claridad, criterio y argumentación.', 'bg-green-50'],
-              ['📈', 'Mejorar', 'Reciben retroalimentación constante para fortalecer su aprendizaje.', 'bg-sky-50'],
-            ].map(([icon, title, copy, bg]) => (
-              <article key={title} className="card fade-up rounded-4xl p-7 show">
-                <div className={`mb-6 flex h-16 w-16 items-center justify-center rounded-3xl text-4xl ${bg}`}>{icon}</div>
-                <h3 className="text-xl font-black text-eduNavy">{title}</h3>
-                <p className="mt-3 text-slate-600">{copy}</p>
-              </article>
-            ))}
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {productModules.map((module) => {
+              const Icon = module.icon;
+
+              return (
+                <article key={module.title} className="rounded-[1.8rem] border border-white bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-[0_14px_34px_rgba(15,23,42,0.18)]">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-5 text-xl font-semibold text-slate-950">{module.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{module.description}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section className="decor-grid bg-eduSoft py-20">
-        <div className="container-page">
-          <div
-            className="fade-up show mx-auto mb-14 max-w-3xl text-center"
-          >
-            <span className="section-label bg-white">💬 Testimonios</span>
-            <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">
-              Familias que confían en nuestra propuesta educativa
+      <section id="flujos" className="bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">Flujos existentes</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+              Desde la capa pública hasta la operación interna, la experiencia responde a funcionalidades ya implementadas.
             </h2>
           </div>
 
-          <div className="grid gap-7 md:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <article key={testimonial.name} className="card fade-up rounded-4xl p-8 show">
-                <div className="mb-5 text-xl text-eduGold">★★★★★</div>
-                <p className="leading-relaxed text-slate-600">“{testimonial.quote}”</p>
-                <div className="mt-7 flex items-center gap-4">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-full font-black text-white ${testimonial.badge}`}>
-                    {testimonial.initial}
-                  </div>
-                  <div>
-                    <p className="font-black text-eduNavy">{testimonial.name}</p>
-                    <p className="text-sm text-slate-500">{testimonial.role}</p>
-                  </div>
-                </div>
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {operatingFlows.map((flow) => (
+              <article key={flow.step} className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(2,6,23,0.22)]">
+                <p className="text-sm font-semibold tracking-[0.18em] text-sky-300">{flow.step}</p>
+                <h3 className="mt-4 text-xl font-semibold">{flow.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-white/72">{flow.description}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="instalaciones" className="bg-white py-20">
-        <div className="container-page">
-          <div
-            className="fade-up show mb-14 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
-          >
-            <div className="max-w-3xl">
-              <span className="section-label">🏛️ Campus e instalaciones</span>
-              <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">Espacios diseñados para aprender mejor</h2>
+      <section id="roles" className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="eyebrow">Roles del sistema</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              La plataforma ya distingue responsabilidades reales según el tipo de usuario logueado.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+            {roles.map((role) => (
+              <article key={role.title} className="rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 shadow-[0_16px_44px_rgba(15,23,42,0.06)]">
+                <h3 className="text-lg font-semibold text-slate-950">{role.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600">{role.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="acceso" className="px-4 pb-16 pt-4 sm:px-6 lg:px-8 lg:pb-24">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[2rem] border border-white bg-white p-7 shadow-[0_24px_70px_rgba(15,23,42,0.10)] sm:p-8">
+            <p className="eyebrow">Acceso y solicitudes</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              Un punto de entrada claro para el equipo institucional y para quien necesita contactar o solicitar acceso.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-slate-600">
+              El proyecto ya separa el sitio público del sistema privado y dispone de páginas para autenticación,
+              recuperación y solicitudes de acceso, información o admisión.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Link href="/login" className="primary-button px-6 py-4">
+                Iniciar sesión
+              </Link>
+              <Link href="/registro?requestType=informacion&context=landing-final" className="secondary-button px-6 py-4">
+                Registrar solicitud
+              </Link>
             </div>
-            <p className="max-w-xl text-lg leading-relaxed text-slate-600">
-              Ambientes seguros, modernos y equipados para ciencia, tecnología, arte, deporte y convivencia.
-            </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {facilities.map((facility) => (
-              <article
-                key={facility.title}
-                className={`fade-up flex min-h-[260px] flex-col justify-between rounded-4xl p-7 show ${facility.className}`}
-              >
-                <p className="text-6xl">{facility.emoji}</p>
-                <div>
-                  <h3 className={`text-2xl font-black ${facility.className.includes('text-white') ? 'text-white' : 'text-eduNavy'}`}>
-                    {facility.title}
-                  </h3>
-                  <p className={`mt-3 ${facility.className.includes('text-white') ? 'text-white/65' : 'text-slate-600'}`}>
-                    {facility.description}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="admisiones" className="bg-eduSoft py-20">
-        <div className="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div
-            className="fade-up show"
-          >
-            <span className="section-label">📝 Admisiones</span>
-            <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">Un proceso claro, humano y acompañado</h2>
-            <p className="mt-6 text-lg leading-relaxed text-slate-600">
-              Nuestro equipo de admisiones te acompaña en cada paso para que conozcas la institución, resuelvas tus dudas y
-              tomes una decisión segura para tu familia.
-            </p>
-
-            <div className="mt-8 space-y-5">
-              {admissionSteps.map((step) => (
-                <div key={step.number} className="flex gap-5 rounded-4xl bg-white p-5 shadow-soft">
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-black text-white ${step.badge}`}>
-                    {step.number}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-eduNavy">{step.title}</h3>
-                    <p className="text-slate-600">{step.description}</p>
-                  </div>
+          <div className="rounded-[2rem] border border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#edf3f8_100%)] p-7 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Rutas visibles</p>
+            <div className="mt-5 space-y-3">
+              {[
+                ['/login', 'Acceso institucional protegido'],
+                ['/registro', 'Solicitud pública unificada'],
+                ['/sistema/panel', 'Panel principal por rol'],
+                ['/sistema/*', 'Módulos académicos y administrativos'],
+              ].map(([route, label]) => (
+                <div key={route} className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
+                  <code className="font-semibold text-slate-950">{route}</code>
+                  <span className="ml-2 text-slate-500">{label}</span>
                 </div>
               ))}
             </div>
           </div>
-
-          <div
-            className="fade-up show dark-panel rounded-5xl p-8 text-white shadow-premium lg:p-10"
-          >
-            <p className="font-black text-white/65">Cupos limitados</p>
-            <h3 className="mt-3 text-3xl font-black md:text-4xl">Admisiones abiertas para el nuevo periodo académico</h3>
-            <p className="mt-5 leading-relaxed text-white/70">
-              Agenda una visita personalizada y descubre cómo podemos acompañar el crecimiento académico y humano de tu hijo.
-            </p>
-
-            <div className="mt-8 rounded-4xl border border-white/15 bg-white/10 p-6">
-              <h4 className="text-xl font-black">Tu visita incluye:</h4>
-              <ul className="mt-5 space-y-3 text-white/75">
-                <li>✅ Recorrido por el campus</li>
-                <li>✅ Entrevista con admisiones</li>
-                <li>✅ Información de costos y continuidad</li>
-                <li>✅ Revisión del programa académico</li>
-              </ul>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3">
-              <Link href="/registro?requestType=admision&context=admisiones" className="btn-gold w-full px-8 py-4">
-                Solicitar admisión
-              </Link>
-              <Link href="/login" className="btn-secondary w-full border-white/15 bg-white/10 px-8 py-4 text-white hover:text-white">
-                Iniciar sesión al sistema
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section id="contacto" className="bg-white py-20">
-        <div className="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <div
-            className="fade-up show"
-          >
-            <span className="section-label">📩 Contacto</span>
-            <h2 className="mt-5 text-3xl font-black text-eduNavy md:text-5xl">Da el primer paso hacia una mejor educación</h2>
-            <p className="mt-6 text-lg leading-relaxed text-slate-600">
-              Completa el formulario y nuestro equipo institucional se comunicará contigo para brindarte información
-              personalizada sobre admisiones, visitas y continuidad.
+      <footer className="border-t border-slate-200 bg-white px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-base font-semibold text-slate-950">Educa Plataforma</p>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
+              Interfaz institucional para gestión educativa con módulos reales de usuarios, estructura académica,
+              matrícula, evaluación y seguimiento escolar.
             </p>
-
-            <div className="mt-9 space-y-5">
-              {contactDetails.map((item) => (
-                <div key={item.title} className="flex gap-4">
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl ${item.wrapper}`}>
-                    {item.emoji}
-                  </div>
-                  <div>
-                    <h3 className="font-black text-eduNavy">{item.title}</h3>
-                    <p className="text-slate-600">{item.value}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
-
-          <form
-            className="fade-up show rounded-5xl border border-slate-100 bg-eduSoft p-6 shadow-soft md:p-8"
-          >
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-black text-eduNavy">Nombre completo</label>
-                <input type="text" className="input-field" placeholder="Ej. Carlos Andrade" />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-black text-eduNavy">Correo electrónico</label>
-                <input type="email" className="input-field" placeholder="correo@ejemplo.com" />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-black text-eduNavy">Teléfono</label>
-                <input type="tel" className="input-field" placeholder="+593 99 000 0000" />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-black text-eduNavy">Programa de interés</label>
-                <select className="input-field" defaultValue="">
-                  <option value="" disabled>
-                    Selecciona una opción
-                  </option>
-                  <option>Educación Inicial</option>
-                  <option>Educación Básica</option>
-                  <option>Bachillerato</option>
-                  <option>Visita al campus</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="mt-5">
-              <label className="mb-2 block text-sm font-black text-eduNavy">Mensaje</label>
-              <textarea rows={5} className="input-field resize-none" placeholder="Cuéntanos qué información necesitas..." />
-            </div>
-
-            <Link href="/registro?requestType=contacto&context=formulario" className="btn-primary mt-6 w-full px-8 py-4">
-              Enviar solicitud
-            </Link>
-
-            <p className="mt-4 text-center text-xs text-slate-500">
-              Al continuar, nuestro equipo podrá orientarte y darte seguimiento institucional.
-            </p>
-          </form>
-        </div>
-      </section>
-
-      <section className="dark-panel py-16">
-        <div
-          className="container-page fade-up show text-center"
-        >
-          <h2 className="text-3xl font-black text-white md:text-5xl">El futuro de tu hijo empieza con una gran decisión</h2>
-          <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-white/70">
-            Forma parte de una comunidad educativa que inspira, acompaña y prepara estudiantes para liderar con propósito.
-          </p>
-
-          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link href="/registro?requestType=informacion&context=cta-final" className="btn-gold px-8 py-4">
-              Solicita información
-            </Link>
-            <Link href="/login" className="btn-secondary px-8 py-4">
-              Iniciar sesión
-            </Link>
+          <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+            <Link href="/login" className="transition hover:text-slate-950">Acceso</Link>
+            <Link href="/registro?requestType=informacion&context=landing-footer" className="transition hover:text-slate-950">Solicitudes</Link>
+            <Link href="#modulos" className="transition hover:text-slate-950">Módulos</Link>
           </div>
         </div>
-      </section>
-
-      <footer className="bg-[#061326] pb-8 pt-16 text-white">
-        <div className="container-page">
-          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <div className="blue-gradient flex h-12 w-12 items-center justify-center rounded-2xl text-xl font-black">E</div>
-                <div>
-                  <h3 className="text-xl font-black">Educa</h3>
-                  <p className="text-sm font-bold text-white/45">Excelencia académica con proyección institucional</p>
-                </div>
-              </div>
-
-              <p className="mt-5 leading-relaxed text-white/55">
-                Institución educativa moderna enfocada en excelencia académica, innovación, seguimiento y operación escolar
-                conectada con su sistema interno.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="mb-5 text-lg font-black">Enlaces rápidos</h4>
-              <ul className="space-y-3 text-white/55">
-                <li><Link href="#inicio" className="transition hover:text-white">Inicio</Link></li>
-                <li><Link href="#beneficios" className="transition hover:text-white">Beneficios</Link></li>
-                <li><Link href="#programas" className="transition hover:text-white">Programas</Link></li>
-                <li><Link href="#modelo" className="transition hover:text-white">Modelo pedagógico</Link></li>
-                <li><Link href="#contacto" className="transition hover:text-white">Contacto</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="mb-5 text-lg font-black">Programas</h4>
-              <ul className="space-y-3 text-white/55">
-                <li>Educación Inicial</li>
-                <li>Educación Básica</li>
-                <li>Bachillerato</li>
-                <li>Clubes extracurriculares</li>
-                <li>Orientación vocacional</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="mb-5 text-lg font-black">Acceso y contacto</h4>
-              <ul className="space-y-3 text-white/55">
-                <li>📍 Campus Educa, Guayaquil</li>
-                <li>📞 +593 99 123 4567</li>
-                <li>✉️ admisiones@educa.hacktrickstore.com</li>
-              </ul>
-
-              <div className="mt-6 flex gap-3">
-                <Link href="/login" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 font-black transition hover:bg-eduBlue">in</Link>
-                <Link href="/registro?requestType=informacion&context=footer" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 font-black transition hover:bg-eduBlue">i</Link>
-                <Link href="#contacto" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 font-black transition hover:bg-eduBlue">c</Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/45 md:flex-row">
-            <p>© {currentYear} Educa. Todos los derechos reservados.</p>
-            <div className="flex flex-wrap gap-5">
-              <Link href="#" className="transition hover:text-white">Política de privacidad</Link>
-              <Link href="#" className="transition hover:text-white">Términos y condiciones</Link>
-            </div>
-          </div>
+        <div className="mx-auto mt-8 max-w-7xl border-t border-slate-200 pt-6 text-sm text-slate-400">
+          © {currentYear} Educa. Gestión institucional para instituciones educativas.
         </div>
       </footer>
     </main>

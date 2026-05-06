@@ -17,7 +17,7 @@ export function PaginationControls({ page, totalPages, pageSize, totalItems, ite
 
   return (
     <div className="pagination-bar">
-      <p className="leading-6 text-slate-600">
+      <p className="text-sm leading-6 text-slate-600">
         Mostrando {start}-{end} de {totalItems} {itemLabel}
       </p>
       <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">

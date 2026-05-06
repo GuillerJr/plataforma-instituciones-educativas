@@ -71,12 +71,12 @@ export default async function UsersPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-blue">Usuarios y roles</span>
+            <span className="badge badge-blue">Usuarios y accesos</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Gobernanza de acceso con foco en perfiles, estados y permisos
+              Gobierno de acceso con foco en perfiles, estados y permisos reales
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La vista de usuarios se simplifica para el trabajo diario del colegio: listados compactos, roles visibles y acciones concentradas en modales sin tocar el backend actual.
+              La experiencia se reorganiza para revisar cuentas, roles e instituciones asociadas con menos fricción y sin tocar la lógica actual del backend.
             </p>
           </div>
 
@@ -92,9 +92,9 @@ export default async function UsersPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Cuentas suspendidas para seguimiento.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Lectura de acceso</p>
+              <p className="tiny-label">Visibilidad operativa</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Se priorizan estados, roles y acciones de fila para reducir saltos visuales y mejorar la operación en pantallas pequeñas.
+                Se priorizan estados, roles y acciones reales de fila para que la gestión de cuentas sea más rápida en escritorio y móvil.
               </p>
             </div>
           </aside>

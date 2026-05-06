@@ -111,10 +111,10 @@ export default async function AsignacionesAcademicasPage() {
       <section className="hero-panel">
         <div className="hero-grid">
           <div>
-            <p className="eyebrow">Fase académica 4</p>
-            <h1 className="section-title mt-3">Asignaciones académicas enlazadas con docentes, materias y estructura real del colegio</h1>
+            <p className="eyebrow">Asignaciones académicas</p>
+            <h1 className="section-title mt-3">Carga docente enlazada con materias y estructura real del colegio</h1>
             <p className="section-copy mt-4 max-w-3xl">
-              La coordinación ya puede definir qué docente dicta qué materia y en qué nivel, curso o sección dentro de la institución activa.
+              La coordinación puede seguir definiendo qué docente dicta cada materia y en qué alcance académico, ahora con una lectura más clara y consistente.
             </p>
           </div>
           <aside className="side-note-card">
@@ -131,9 +131,9 @@ export default async function AsignacionesAcademicasPage() {
               </div>
             </div>
             <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Alcance actual</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">Las asignaciones quedan validadas contra docentes, materias y jerarquía académica ya creada para una sola institución educativa.</p>
-            </div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Validación actual</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Las asignaciones siguen validadas contra docentes, materias y jerarquía académica ya creada para la institución activa.</p>
+              </div>
           </aside>
         </div>
       </section>

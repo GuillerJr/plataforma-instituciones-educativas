@@ -2,9 +2,9 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Educa | Institución educativa, admisiones y acceso al sistema',
+  title: 'Educa Plataforma | Gestión educativa institucional',
   description:
-    'Landing institucional en español para Educa con oferta académica, modelo pedagógico, admisiones visibles y acceso privado al sistema.',
+    'Plataforma institucional para gestión educativa con acceso privado, roles diferenciados, estructura académica, matrícula, evaluación y asistencia.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -66,12 +66,12 @@ export default async function MateriasPage() {
       <section className="panel-card overflow-hidden p-5 lg:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
           <div>
-            <span className="badge badge-success">Fase académica 4</span>
+            <span className="badge badge-success">Materias</span>
             <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Materias visibles y listas para conectarse con docentes y estructura académica
+              Catálogo curricular visible y listo para operar con docentes y estructura académica
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              El módulo ya permite registrar materias reales para la institución activa y dejarlas preparadas para su asignación por nivel, curso o sección.
+              El módulo sigue registrando materias reales para la institución activa y mejora la claridad de su cobertura y uso académico.
             </p>
           </div>
 
@@ -87,9 +87,9 @@ export default async function MateriasPage() {
               <p className="mt-2 text-xs leading-5 text-muted">Registros que no participan hoy.</p>
             </div>
             <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Alcance actual</p>
+              <p className="tiny-label">Base curricular</p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                La fase deja resuelta la base de materias en español y conectada con la única institución educativa del entorno demo.
+                La base curricular sigue conectada con la institución activa, docentes y asignaciones académicas del sistema.
               </p>
             </div>
           </aside>

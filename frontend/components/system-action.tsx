@@ -17,7 +17,7 @@ function getActionClassName(className?: string, showLabel?: boolean) {
   const showMobileLabel = shouldShowMobileLabel(className);
 
   if (showLabel || showMobileLabel) {
-    return `compact-button action-button group min-h-10 min-w-0 shrink-0 justify-start gap-2.5 px-3 sm:h-10 sm:justify-center ${className ?? ''}`.trim();
+    return `compact-button action-button group min-h-10 min-w-0 shrink-0 justify-start gap-2.5 px-3.5 sm:h-10 sm:justify-center ${className ?? ''}`.trim();
   }
 
   return `compact-button action-button group h-10 w-10 shrink-0 justify-center px-0 ${className ?? ''}`.trim();
@@ -28,7 +28,7 @@ function ActionContent({ label, icon: Icon, showLabel = false, className }: Shar
 
   return (
     <>
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-white/80 text-slate-600 transition group-hover:border-slate-300 group-hover:text-slate-900">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-slate-200/80 bg-white/90 text-slate-600 transition group-hover:border-slate-300 group-hover:text-slate-900">
         <Icon aria-hidden="true" className="h-3.5 w-3.5" />
       </span>
       <span className={showLabel ? 'truncate' : showMobileLabel ? 'truncate text-left sm:sr-only' : 'sr-only'}>{label}</span>
