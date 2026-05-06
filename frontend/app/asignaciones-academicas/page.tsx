@@ -1,4 +1,5 @@
 import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { AcademicAssignmentsWorkspace } from './academic-assignments-workspace';
@@ -108,35 +109,17 @@ export default async function AsignacionesAcademicasPage() {
 
   return (
     <main className="page-main">
-      <section className="hero-panel">
-        <div className="hero-grid">
-          <div>
-            <p className="eyebrow">Asignaciones académicas</p>
-            <h1 className="section-title mt-3">Carga docente enlazada con materias y estructura real del colegio</h1>
-            <p className="section-copy mt-4 max-w-3xl">
-              La coordinación puede seguir definiendo qué docente dicta cada materia y en qué alcance académico, ahora con una lectura más clara y consistente.
-            </p>
-          </div>
-          <aside className="side-note-card">
-            <div className="summary-strip xl:grid-cols-2">
-              <div className="summary-item">
-                <p className="summary-label">Con sección puntual</p>
-                <p className="summary-value">{snapshot?.summary.withSection ?? 0}</p>
-                <p className="mt-1 text-sm text-slate-500">Cobertura cerrada por paralelo.</p>
-              </div>
-              <div className="summary-item">
-                <p className="summary-label">A nivel de curso</p>
-                <p className="summary-value">{courseWideAssignments}</p>
-                <p className="mt-1 text-sm text-slate-500">Aplicación general por grado o curso.</p>
-              </div>
-            </div>
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Validación actual</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">Las asignaciones siguen validadas contra docentes, materias y jerarquía académica ya creada para la institución activa.</p>
-              </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Asignaciones académicas"
+        title="Carga docente enlazada con materias y estructura real del colegio"
+        description="La coordinación puede seguir definiendo qué docente dicta cada materia y en qué alcance académico, ahora con una lectura más clara y consistente."
+        metrics={[
+          { label: 'Con sección puntual', value: snapshot?.summary.withSection ?? 0, helper: 'Cobertura cerrada por paralelo.' },
+          { label: 'A nivel de curso', value: courseWideAssignments, helper: 'Aplicación general por grado o curso.' },
+        ]}
+        noteTitle="Validación actual"
+        noteDescription="Las asignaciones siguen validadas contra docentes, materias y jerarquía académica ya creada para la institución activa."
+      />
 
       {canManage ? (
         <AcademicAssignmentsWorkspace snapshot={snapshot} error={error} />

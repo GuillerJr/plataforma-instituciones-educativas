@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { Mail, Pencil, UserPlus } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionAnchor, ActionButton } from '../../components/system-action';
 import { UserFormModal, UserFormValues } from './user-create-form';
@@ -48,71 +49,58 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Gobierno de acceso</p>
-                <h2 className="table-title">Estado real de usuarios y perfiles</h2>
-                <p className="table-subtitle">Menos texto plano y más lectura útil para decidir altas, bloqueos y cobertura de roles.</p>
-              </div>
-              <ActionButton label="Usuario" icon={UserPlus} onClick={() => setCreateOpen(true)} />
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Activos</p><p className="summary-value">{usersByStatus.active}</p></div>
-              <div className="metric-tile"><p className="summary-label">Pendientes</p><p className="summary-value">{usersByStatus.pending}</p></div>
-              <div className="metric-tile"><p className="summary-label">Bloqueados</p><p className="summary-value">{usersByStatus.blocked}</p></div>
-              <div className="metric-tile"><p className="summary-label">Roles en uso</p><p className="summary-value">{rolesInUse}</p></div>
-            </div>
-          </section>
-
-          <section className="table-shell overflow-hidden">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Catálogo de roles</p>
-                <h2 className="table-title">Perfiles disponibles</h2>
-                <p className="table-subtitle">Solo contexto útil para operación, sin duplicar explicación decorativa.</p>
-              </div>
-              <span className="info-chip">{roles.length} roles</span>
-            </div>
-            <div className="grid gap-3 p-5 md:grid-cols-2">
-              {roles.map((role) => (
-                <div key={role.id} className="choice-card">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-medium text-slate-950">{role.name}</p>
-                      <p className="mt-1 text-xs text-slate-500">{role.code}</p>
+        <WorkspacePrelude
+          eyebrow="Gobierno de acceso"
+          title="Estado real de usuarios y perfiles"
+          description="La pantalla prioriza lectura útil para decidir altas, bloqueos, cobertura por rol y sedes con una jerarquía visual más fuerte."
+          actions={<ActionButton label="Usuario" icon={UserPlus} onClick={() => setCreateOpen(true)} />}
+          metrics={[
+            { label: 'Activos', value: usersByStatus.active, helper: 'Cuentas habilitadas' },
+            { label: 'Pendientes', value: usersByStatus.pending, helper: 'Requieren seguimiento' },
+            { label: 'Bloqueados', value: usersByStatus.blocked, helper: 'Suspendidos' },
+            { label: 'Roles en uso', value: rolesInUse, helper: 'Cobertura operativa' },
+          ]}
+          sideLabel="Catálogo de roles"
+          sideTitle="Perfiles disponibles para la operación"
+          sideDescription="Los perfiles y sedes ya disponibles siguen siendo los mismos, pero ahora se presentan con mejor lectura y separación visual."
+          sideContent={
+            <>
+              <DetailList
+                items={roles.map((role) => ({
+                  label: role.code,
+                  value: (
+                    <div className="flex items-center justify-between gap-3">
+                      <span>{role.name}</span>
+                      <span className="info-chip">{role.isSystem ? 'Sistema' : 'Editable'}</span>
                     </div>
-                    <span className="info-chip">{role.isSystem ? 'Sistema' : 'Editable'}</span>
-                  </div>
+                  ),
+                }))}
+              />
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="metric-tile">
+                  <p className="summary-label">Roles del sistema</p>
+                  <p className="summary-value">{systemRoles}</p>
                 </div>
-              ))}
-            </div>
-            <div className="grid gap-3 border-t border-slate-200 p-5 sm:grid-cols-2">
-              <div className="metric-tile">
-                <p className="summary-label">Roles del sistema</p>
-                <p className="summary-value">{systemRoles}</p>
+                <div className="metric-tile">
+                  <p className="summary-label">Sedes disponibles</p>
+                  <p className="summary-value">{institutions.length}</p>
+                </div>
               </div>
-              <div className="metric-tile">
-                <p className="summary-label">Sedes disponibles</p>
-                <p className="summary-value">{institutions.length}</p>
-              </div>
-            </div>
-          </section>
-        </div>
+            </>
+          }
+        />
 
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Usuarios registrados</p>
-              <h2 className="table-title">Accesos y perfiles del colegio</h2>
-              <p className="table-subtitle">Tabla responsiva para revisar responsables, sede asignada, roles, estado y acciones rápidas.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Usuarios registrados"
+          title="Accesos y perfiles del colegio"
+          subtitle="Tabla responsiva para revisar responsables, sede asignada, roles, estado y acciones rápidas."
+          actions={
+            <>
               <span className="info-chip">{users.length} usuarios</span>
               <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -168,7 +156,7 @@ export function UsersWorkspace({ users, roles, institutions, error }: UsersWorks
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <UserFormModal

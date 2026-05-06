@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { UserPlus } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { TeacherFormModal } from './teacher-create-form';
@@ -43,68 +44,47 @@ export function TeachersWorkspace({ snapshot, error }: TeachersWorkspaceProps) {
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Planta docente</p>
-                <h2 className="table-title">Estado real de la cobertura docente</h2>
-                <p className="table-subtitle">La prioridad es ver disponibilidad, asignación y actividad real, no bloques decorativos.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Docente" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                <span className="info-chip">{teachers.length} registrados</span>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Docentes</p><p className="summary-value">{snapshot?.summary.teachers ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Con asignación</p><p className="summary-value">{snapshot?.summary.assignedTeachers ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Niveles disponibles</p><p className="summary-value">{levels.length}</p></div>
-              <div className="metric-tile"><p className="summary-label">Sin actividad</p><p className="summary-value">{inactiveTeachers}</p></div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Planta docente"
+          title="Estado real de la cobertura docente"
+          description="La prioridad es ver disponibilidad, asignación y actividad real con una lectura más ejecutiva dentro del módulo."
+          actions={
+            <>
+              <ActionButton label="Docente" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
+              <span className="info-chip">{teachers.length} registrados</span>
+            </>
+          }
+          metrics={[
+            { label: 'Docentes', value: snapshot?.summary.teachers ?? 0, helper: 'Base visible' },
+            { label: 'Con asignación', value: snapshot?.summary.assignedTeachers ?? 0, helper: 'Carga vinculada' },
+            { label: 'Niveles disponibles', value: levels.length, helper: 'Cobertura académica' },
+            { label: 'Sin actividad', value: inactiveTeachers, helper: 'Seguimiento pendiente' },
+          ]}
+          sideLabel="Cobertura académica"
+          sideTitle="Disponibilidad para vincular docentes a la estructura del colegio"
+          sideDescription="La misma lógica del módulo queda presentada con mejor contraste entre disponibilidad, asignación y cobertura de la estructura académica."
+          sideContent={
+            <DetailList
+              items={[
+                { label: 'Cursos visibles', value: grades.length },
+                { label: 'Secciones visibles', value: sections.length },
+                { label: 'Docentes sin carga', value: inactiveTeachers },
+              ]}
+            />
+          }
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura académica</p>
-                <p className="mt-2 text-sm text-slate-500">Disponibilidad actual para vincular docentes a la estructura del colegio.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Docentes</p>
-                <p className="summary-value">{snapshot?.summary.teachers ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Con asignación</p>
-                <p className="summary-value">{snapshot?.summary.assignedTeachers ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Niveles disponibles</p>
-                <p className="summary-value">{levels.length}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Sin actividad</p>
-                <p className="summary-value">{inactiveTeachers}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Docentes registrados</p>
-              <h2 className="table-title">Planta académica de la institución</h2>
-              <p className="table-subtitle">Tabla operativa para revisar área, asignación actual, estado y contacto en una sola lectura.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Docentes registrados"
+          title="Planta académica de la institución"
+          subtitle="Tabla operativa para revisar área, asignación actual, estado y contacto en una sola lectura."
+          actions={
+            <>
               <span className="info-chip">{teachers.length} docentes</span>
               <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -168,7 +148,7 @@ export function TeachersWorkspace({ snapshot, error }: TeachersWorkspaceProps) {
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <TeacherFormModal

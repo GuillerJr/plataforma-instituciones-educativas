@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Link2 } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { AcademicAssignmentFormModal } from './academic-assignment-create-form';
@@ -54,68 +55,39 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Carga docente por materia</p>
-                <h2 className="table-title">Estado real de asignaciones académicas</h2>
-                <p className="table-subtitle">Se prioriza cobertura docente, alcance curricular y densidad real de operación.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Asignación" icon={Link2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                <span className="info-chip">{assignments.length} registradas</span>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Asignaciones</p><p className="summary-value">{snapshot?.summary.assignments ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Con sección</p><p className="summary-value">{snapshot?.summary.withSection ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Docentes vinculados</p><p className="summary-value">{snapshot?.summary.linkedTeachers ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Por curso</p><p className="summary-value">{assignmentsWithoutSection}</p></div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Carga docente por materia"
+          title="Estado real de asignaciones académicas"
+          description="La composición enfatiza cobertura docente, alcance curricular y densidad real de operación sin tocar el comportamiento del módulo."
+          actions={
+            <>
+              <ActionButton label="Asignación" icon={Link2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
+              <span className="info-chip">{assignments.length} registradas</span>
+            </>
+          }
+          metrics={[
+            { label: 'Asignaciones', value: snapshot?.summary.assignments ?? 0, helper: 'Carga visible' },
+            { label: 'Con sección', value: snapshot?.summary.withSection ?? 0, helper: 'Cobertura puntual' },
+            { label: 'Docentes vinculados', value: snapshot?.summary.linkedTeachers ?? 0, helper: 'Personal asignado' },
+            { label: 'Por curso', value: assignmentsWithoutSection, helper: 'Cobertura general' },
+          ]}
+          sideLabel="Cobertura docente"
+          sideTitle="Asignaciones curriculares visibles en la institución actual"
+          sideDescription="La vista resume el mismo alcance funcional y mejora la separación entre asignación puntual por sección y asignación general por curso."
+          sideContent={<DetailList items={[{ label: 'Docentes visibles', value: teachers.length }, { label: 'Materias visibles', value: subjects.length }, { label: 'Secciones visibles', value: sections.length }]} />}
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura docente</p>
-                <p className="mt-2 text-sm text-slate-500">Vista resumida de las asignaciones curriculares ya visibles en la institución actual.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Asignaciones</p>
-                <p className="summary-value">{snapshot?.summary.assignments ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Con sección</p>
-                <p className="summary-value">{snapshot?.summary.withSection ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Docentes vinculados</p>
-                <p className="summary-value">{snapshot?.summary.linkedTeachers ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Por curso</p>
-                <p className="summary-value">{assignmentsWithoutSection}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Asignaciones registradas</p>
-              <h2 className="table-title">Carga académica visible por docente y materia</h2>
-              <p className="table-subtitle">Tabla operativa para revisar cobertura, horas y contexto académico en una sola lectura.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Asignaciones registradas"
+          title="Carga académica visible por docente y materia"
+          subtitle="Tabla operativa para revisar cobertura, horas y contexto académico en una sola lectura."
+          actions={
+            <>
               <span className="info-chip">{assignments.length} asignaciones</span>
               <ActionButton label="Nueva" icon={Link2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -170,7 +142,7 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <AcademicAssignmentFormModal

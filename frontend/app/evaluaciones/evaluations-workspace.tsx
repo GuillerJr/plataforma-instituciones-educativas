@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ClipboardCheck, Pencil } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { EvaluationFormModal } from './evaluation-create-form';
@@ -77,68 +78,39 @@ export function EvaluationsWorkspace({
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Planeación evaluativa</p>
-                <h2 className="table-title">Estado real de evaluaciones y notas</h2>
-                <p className="table-subtitle">Prioridad en volumen, cobertura y rendimiento real, no en textos de relleno.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Evaluación" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)} />
-                <ActionButton label="Calificación" icon={Pencil} className="w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)} />
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Evaluaciones</p><p className="summary-value">{evaluationsSnapshot?.summary.evaluations ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Con sección</p><p className="summary-value">{evaluationsSnapshot?.summary.sectionScoped ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Calificaciones</p><p className="summary-value">{gradesSnapshot?.summary.grades ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Promedio</p><p className="summary-value">{gradesSnapshot?.summary.averageScore ?? 0}</p></div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Planeación evaluativa"
+          title="Estado real de evaluaciones y notas"
+          description="La pantalla prioriza volumen, cobertura y rendimiento real con una jerarquía clara entre instrumentos, resultados y seguimiento del periodo."
+          actions={
+            <>
+              <ActionButton label="Evaluación" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)} />
+              <ActionButton label="Calificación" icon={Pencil} className="w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)} />
+            </>
+          }
+          metrics={[
+            { label: 'Evaluaciones', value: evaluationsSnapshot?.summary.evaluations ?? 0, helper: 'Instrumentos visibles' },
+            { label: 'Con sección', value: evaluationsSnapshot?.summary.sectionScoped ?? 0, helper: 'Cobertura puntual' },
+            { label: 'Calificaciones', value: gradesSnapshot?.summary.grades ?? 0, helper: 'Resultados cargados' },
+            { label: 'Promedio', value: gradesSnapshot?.summary.averageScore ?? 0, helper: 'Rendimiento actual' },
+          ]}
+          sideLabel="Seguimiento del periodo"
+          sideTitle="Avance evaluativo y volumen de notas cargadas"
+          sideDescription="El módulo conserva las mismas acciones y mejora la separación entre creación de instrumentos y registro de resultados."
+          sideContent={<DetailList items={[{ label: 'Asignaciones visibles', value: assignments.length }, { label: 'Estudiantes evaluables', value: studentOptions.length }, { label: 'Evaluaciones por curso', value: gradeWideEvaluations }]} />}
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Seguimiento del periodo</p>
-                <p className="mt-2 text-sm text-slate-500">Resumen compacto del avance evaluativo y del volumen de notas cargadas en la institución activa.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Evaluaciones</p>
-                <p className="summary-value">{evaluationsSnapshot?.summary.evaluations ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Con sección</p>
-                <p className="summary-value">{evaluationsSnapshot?.summary.sectionScoped ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Calificaciones</p>
-                <p className="summary-value">{gradesSnapshot?.summary.grades ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Promedio</p>
-                <p className="summary-value">{gradesSnapshot?.summary.averageScore ?? 0}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Evaluaciones registradas</p>
-              <h2 className="table-title">Instrumentos activos por materia, docente y cobertura</h2>
-              <p className="table-subtitle">Tabla operativa para revisar periodo, puntaje, alcance y progreso de registro en una sola lectura.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Evaluaciones registradas"
+          title="Instrumentos activos por materia, docente y cobertura"
+          subtitle="Tabla operativa para revisar periodo, puntaje, alcance y progreso de registro en una sola lectura."
+          actions={
+            <>
               <span className="info-chip">{evaluations.length} evaluaciones</span>
               <ActionButton label="Nueva" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateEvaluationOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {evaluationsError ? (
             <div className="table-empty text-rose-700">{evaluationsError}</div>
@@ -195,21 +167,20 @@ export function EvaluationsWorkspace({
               />
             </>
           )}
-        </section>
+        </DataSection>
 
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Calificaciones registradas</p>
-              <h2 className="table-title">Notas por evaluación y estudiante matriculado</h2>
-              <p className="table-subtitle">Seguimiento de rendimiento con trazabilidad de materia, cobertura académica y retroalimentación visible.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Calificaciones registradas"
+          title="Notas por evaluación y estudiante matriculado"
+          subtitle="Seguimiento de rendimiento con trazabilidad de materia, cobertura académica y retroalimentación visible."
+          actions={
+            <>
               <span className="info-chip">{grades.length} calificaciones</span>
               <span className="info-chip">{gradeWideEvaluations} evaluaciones por curso</span>
               <ActionButton label="Notas" icon={Pencil} className="w-full sm:w-auto" onClick={() => setCreateGradeOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {gradesError ? (
             <div className="table-empty text-rose-700">{gradesError}</div>
@@ -265,7 +236,7 @@ export function EvaluationsWorkspace({
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <EvaluationFormModal

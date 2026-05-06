@@ -1,4 +1,5 @@
 import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { SubjectsWorkspace } from './subjects-workspace';
@@ -63,38 +64,17 @@ export default async function MateriasPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <span className="badge badge-success">Materias</span>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Catálogo curricular visible y listo para operar con docentes y estructura académica
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              El módulo sigue registrando materias reales para la institución activa y mejora la claridad de su cobertura y uso académico.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Materias activas</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{snapshot?.summary.activeSubjects ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Disponibles para carga académica.</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <p className="tiny-label">Sin actividad</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{inactiveSubjects}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Registros que no participan hoy.</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Base curricular</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                La base curricular sigue conectada con la institución activa, docentes y asignaciones académicas del sistema.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Materias"
+        title="Catálogo curricular visible y listo para operar con docentes y estructura académica"
+        description="El módulo sigue registrando materias reales para la institución activa y mejora la claridad de su cobertura y uso académico."
+        metrics={[
+          { label: 'Materias activas', value: snapshot?.summary.activeSubjects ?? 0, helper: 'Disponibles para carga académica.' },
+          { label: 'Sin actividad', value: inactiveSubjects, helper: 'Registros que no participan hoy.' },
+        ]}
+        noteTitle="Base curricular"
+        noteDescription="La base curricular sigue conectada con la institución activa, docentes y asignaciones académicas del sistema."
+      />
 
       {canManage ? (
         <SubjectsWorkspace snapshot={snapshot} error={error} />

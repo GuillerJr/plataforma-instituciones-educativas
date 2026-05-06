@@ -180,7 +180,7 @@ export default function HomePage() {
             </span>
 
             <h1 className="mt-6 max-w-4xl text-[clamp(2.6rem,6vw,5.2rem)] font-semibold leading-[1.02] tracking-tight text-slate-950">
-              Gestión académica y administrativa para instituciones educativas con operación real y clara.
+              Gestión educativa con estructura real, permisos por rol y operación conectada de extremo a extremo.
             </h1>
 
             <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
@@ -213,6 +213,21 @@ export default function HomePage() {
                 <p className="mt-2 text-sm text-slate-500">flujos públicos y privados</p>
               </div>
             </div>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[1.6rem] border border-slate-200 bg-white/85 p-5 shadow-[0_18px_44px_rgba(15,23,42,0.06)]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Qué resuelve hoy</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  Centraliza la operación académica y administrativa sin separar los módulos en islas ni duplicar información entre áreas.
+                </p>
+              </div>
+              <div className="rounded-[1.6rem] border border-slate-200 bg-white/85 p-5 shadow-[0_18px_44px_rgba(15,23,42,0.06)]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Cómo se accede</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  Sitio público para solicitudes y panel privado para trabajo real del personal institucional, docentes, estudiantes y representantes.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="relative">
@@ -220,38 +235,63 @@ export default function HomePage() {
             <div className="absolute -bottom-10 left-10 h-40 w-40 rounded-full bg-emerald-200/35 blur-3xl" aria-hidden="true" />
 
             <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/92 p-4 shadow-[0_28px_90px_rgba(15,23,42,0.12)] sm:p-6">
-              <div className="rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,#f7fafc_0%,#eef3f8_100%)] p-5">
-                <div className="flex items-center justify-between gap-4 rounded-[1.25rem] bg-slate-950 px-5 py-4 text-white shadow-[0_18px_50px_rgba(2,6,23,0.22)]">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.16em] text-white/55">Panel institucional</p>
-                    <p className="mt-1 text-lg font-semibold">Operación conectada por módulos</p>
+              <div className="grid gap-4 rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,#f7fafc_0%,#eef3f8_100%)] p-5">
+                <div className="rounded-[1.35rem] bg-slate-950 px-5 py-5 text-white shadow-[0_18px_50px_rgba(2,6,23,0.22)]">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-white/55">Mapa operativo</p>
+                      <p className="mt-1 text-lg font-semibold">Panel institucional conectado por capas reales</p>
+                    </div>
+                    <School className="h-6 w-6 text-sky-300" />
                   </div>
-                  <School className="h-6 w-6 text-sky-300" />
+                  <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                    {[
+                      ['Acceso', 'Roles y permisos'],
+                      ['Académico', 'Estructura y matrícula'],
+                      ['Seguimiento', 'Notas y asistencia'],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-4">
+                        <p className="text-[11px] uppercase tracking-[0.14em] text-white/45">{label}</p>
+                        <p className="mt-2 text-sm font-semibold text-white">{value}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-[1.1fr_0.9fr]">
+                  <div className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Cobertura funcional existente</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {['Instituciones', 'Usuarios', 'Docentes', 'Estudiantes', 'Matrículas', 'Materias', 'Asignaciones', 'Evaluaciones', 'Asistencia'].map((item) => (
+                        <span key={item} className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Rutas activas</p>
+                    <div className="mt-3 space-y-2 text-sm text-slate-600">
+                      <p><code>/login</code> acceso institucional</p>
+                      <p><code>/registro</code> solicitudes públicas</p>
+                      <p><code>/sistema/*</code> módulos privados</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
                   {[
-                    ['Usuarios y roles', 'Accesos y estados'],
-                    ['Estructura académica', 'Niveles, cursos y secciones'],
-                    ['Docentes y estudiantes', 'Base humana del periodo'],
-                    ['Evaluaciones y asistencia', 'Seguimiento diario'],
+                    ['Usuarios y roles', 'Accesos, estados y gobierno institucional'],
+                    ['Estructura académica', 'Niveles, cursos, secciones y relaciones operativas'],
+                    ['Docentes y estudiantes', 'Base humana del periodo y ubicación escolar'],
+                    ['Evaluaciones y asistencia', 'Seguimiento académico sobre datos reales'],
                   ].map(([title, copy]) => (
                     <article key={title} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
                       <p className="text-sm font-semibold text-slate-950">{title}</p>
                       <p className="mt-2 text-sm leading-6 text-slate-500">{copy}</p>
                     </article>
                   ))}
-                </div>
-
-                <div className="mt-5 rounded-[1.35rem] border border-slate-200 bg-white p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Cobertura funcional existente</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {['Instituciones', 'Usuarios', 'Docentes', 'Estudiantes', 'Matrículas', 'Materias', 'Asignaciones', 'Evaluaciones', 'Asistencia'].map((item) => (
-                      <span key={item} className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>

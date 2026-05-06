@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { UserPlus } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { StudentFormModal } from './student-create-form';
@@ -44,73 +45,47 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <aside className="workspace-hero p-5">
-            <div className="flex flex-col gap-4">
-              <div>
-                <p className="eyebrow">Matrícula estudiantil</p>
-                <h2 className="mt-2 text-xl font-semibold text-slate-950">Altas rápidas con ubicación académica visible en el mismo flujo</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  La coordinación ya puede registrar estudiantes y dejarlos ubicados en nivel, curso y sección sin romper la navegación académica existente.
-                </p>
-              </div>
+        <WorkspacePrelude
+          eyebrow="Matrícula estudiantil"
+          title="Altas rápidas con ubicación académica visible en el mismo flujo"
+          description="La coordinación ya puede registrar estudiantes y dejarlos ubicados en nivel, curso y sección sin romper la navegación académica existente."
+          actions={
+            <>
+              {canManage ? <ActionButton label="Estudiante" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} /> : null}
+              <span className="info-chip">{students.length} registrados</span>
+            </>
+          }
+          metrics={[
+            { label: 'Estudiantes', value: snapshot?.summary.students ?? 0, helper: 'Base visible' },
+            { label: 'Activos', value: snapshot?.summary.activeStudents ?? 0, helper: 'Matrícula operativa' },
+            { label: 'Secciones en uso', value: snapshot?.summary.sectionsInUse ?? 0, helper: 'Cobertura actual' },
+            { label: 'Sin actividad', value: inactiveStudents, helper: 'Seguimiento administrativo' },
+          ]}
+          sideLabel="Cobertura de matrícula"
+          sideTitle="Ubicación académica validada contra la estructura real"
+          sideDescription="La matrícula inicial sigue validada contra la sección seleccionada para asegurar coherencia automática con curso y nivel."
+          sideContent={
+            <DetailList
+              items={[
+                { label: 'Niveles disponibles', value: levels.length },
+                { label: 'Cursos visibles', value: grades.length },
+                { label: 'Secciones activas', value: sections.length },
+              ]}
+            />
+          }
+        />
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                {canManage ? (
-                  <ActionButton label="Estudiante" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                ) : null}
-                <span className="info-chip">{students.length} registrados</span>
-              </div>
-
-              <div className="surface-muted p-4 text-sm text-slate-600">
-                La matrícula inicial queda validada contra la sección seleccionada para asegurar coherencia automática con curso y nivel.
-              </div>
-            </div>
-          </aside>
-
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura de matrícula</p>
-                <p className="mt-2 text-sm text-slate-500">Disponibilidad actual para ubicar estudiantes dentro de la estructura académica del colegio.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Estudiantes</p>
-                <p className="summary-value">{snapshot?.summary.students ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Activos</p>
-                <p className="summary-value">{snapshot?.summary.activeStudents ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Secciones en uso</p>
-                <p className="summary-value">{snapshot?.summary.sectionsInUse ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Sin actividad</p>
-                <p className="summary-value">{inactiveStudents}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Estudiantes registrados</p>
-              <h2 className="table-title">Matrícula operativa de la institución</h2>
-              <p className="table-subtitle">Tabla compacta para revisar ubicación académica, estado y datos base en una sola lectura.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Estudiantes registrados"
+          title="Matrícula operativa de la institución"
+          subtitle="Tabla compacta para revisar ubicación académica, estado y datos base en una sola lectura."
+          actions={
+            <>
               <span className="info-chip">{students.length} estudiantes</span>
-              {canManage ? (
-                <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-              ) : null}
-            </div>
-          </div>
+              {canManage ? <ActionButton label="Nuevo" icon={UserPlus} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} /> : null}
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -166,7 +141,7 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       {canManage ? (

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { BookOpen } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { SubjectFormModal } from './subject-create-form';
@@ -39,68 +40,39 @@ export function SubjectsWorkspace({ snapshot, error }: SubjectsWorkspaceProps) {
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Oferta curricular</p>
-                <h2 className="table-title">Estado real de materias y cobertura</h2>
-                <p className="table-subtitle">Más datos de uso y menos explicación decorativa dentro del módulo.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Materia" icon={BookOpen} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                <span className="info-chip">{subjects.length} registradas</span>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Materias</p><p className="summary-value">{snapshot?.summary.subjects ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Activas</p><p className="summary-value">{snapshot?.summary.activeSubjects ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Con nivel</p><p className="summary-value">{snapshot?.summary.scopedSubjects ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Sin actividad</p><p className="summary-value">{inactiveSubjects}</p></div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Oferta curricular"
+          title="Estado real de materias y cobertura"
+          description="La vista se enfoca en disponibilidad, nivel sugerido y uso académico con una composición menos genérica y más útil para coordinación."
+          actions={
+            <>
+              <ActionButton label="Materia" icon={BookOpen} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
+              <span className="info-chip">{subjects.length} registradas</span>
+            </>
+          }
+          metrics={[
+            { label: 'Materias', value: snapshot?.summary.subjects ?? 0, helper: 'Base curricular' },
+            { label: 'Activas', value: snapshot?.summary.activeSubjects ?? 0, helper: 'Disponibles hoy' },
+            { label: 'Con nivel', value: snapshot?.summary.scopedSubjects ?? 0, helper: 'Cobertura definida' },
+            { label: 'Sin actividad', value: inactiveSubjects, helper: 'Seguimiento pendiente' },
+          ]}
+          sideLabel="Cobertura curricular"
+          sideTitle="Lectura rápida de materias disponibles"
+          sideDescription="La base curricular conserva la misma lógica y se presenta con más claridad para revisar área, nivel y capacidad de asignación."
+          sideContent={<DetailList items={[{ label: 'Niveles disponibles', value: levels.length }, { label: 'Materias activas', value: snapshot?.summary.activeSubjects ?? 0 }]} />}
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura curricular</p>
-                <p className="mt-2 text-sm text-slate-500">Lectura rápida de materias disponibles para la operación académica actual.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Materias</p>
-                <p className="summary-value">{snapshot?.summary.subjects ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Activas</p>
-                <p className="summary-value">{snapshot?.summary.activeSubjects ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Con nivel</p>
-                <p className="summary-value">{snapshot?.summary.scopedSubjects ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Sin actividad</p>
-                <p className="summary-value">{inactiveSubjects}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Materias registradas</p>
-              <h2 className="table-title">Base curricular visible de la institución</h2>
-              <p className="table-subtitle">Tabla compacta para revisar código, área, nivel sugerido y uso académico en una sola lectura.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Materias registradas"
+          title="Base curricular visible de la institución"
+          subtitle="Tabla compacta para revisar código, área, nivel sugerido y uso académico en una sola lectura."
+          actions={
+            <>
               <span className="info-chip">{subjects.length} materias</span>
               <ActionButton label="Nueva" icon={BookOpen} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -154,7 +126,7 @@ export function SubjectsWorkspace({ snapshot, error }: SubjectsWorkspaceProps) {
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <SubjectFormModal open={createOpen} onClose={() => setCreateOpen(false)} levels={levels} />

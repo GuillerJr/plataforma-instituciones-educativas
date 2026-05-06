@@ -1,4 +1,5 @@
 import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { StudentsWorkspace } from './students-workspace';
@@ -91,38 +92,17 @@ export default async function EstudiantesPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <span className="badge badge-warn">Estudiantes</span>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Registro estudiantil y ubicación escolar conectados con la estructura real del colegio
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La experiencia mantiene intacta la lógica actual y mejora la lectura de matrícula, estado y ubicación académica de cada estudiante.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Estudiantes activos</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{snapshot?.summary.activeStudents ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Matrícula disponible para operación diaria.</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <p className="tiny-label">Con estado no activo</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{inactiveStudents}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Casos visibles para seguimiento administrativo.</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Lectura institucional</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                La pantalla conserva el alta de estudiantes y su ubicación coherente dentro de la institución educativa activa.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Estudiantes"
+        title="Registro estudiantil y ubicación escolar conectados con la estructura real del colegio"
+        description="La experiencia mantiene intacta la lógica actual y mejora la lectura de matrícula, estado y ubicación académica de cada estudiante."
+        metrics={[
+          { label: 'Estudiantes activos', value: snapshot?.summary.activeStudents ?? 0, helper: 'Matrícula disponible para operación diaria.' },
+          { label: 'Con estado no activo', value: inactiveStudents, helper: 'Casos visibles para seguimiento administrativo.' },
+        ]}
+        noteTitle="Lectura institucional"
+        noteDescription="La pantalla conserva el alta de estudiantes y su ubicación coherente dentro de la institución educativa activa."
+      />
 
       <StudentsWorkspace snapshot={snapshot} error={error} canManage={canManage} />
       {!canManage ? (

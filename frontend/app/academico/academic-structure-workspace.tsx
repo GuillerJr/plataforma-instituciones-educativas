@@ -3,7 +3,8 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { CalendarRange, GraduationCap, Plus, School } from 'lucide-react';
+import { CalendarRange, GraduationCap, School } from 'lucide-react';
+import { DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { GradeFormModal, LevelFormModal, SectionFormModal } from './academic-create-forms';
@@ -51,56 +52,36 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Base académica</p>
-                <h2 className="table-title">Estado real de la estructura escolar</h2>
-                <p className="table-subtitle">La prioridad es operar niveles, grados y secciones con lectura útil y directa.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Nivel" icon={School} className="w-full sm:w-auto" onClick={() => setLevelOpen(true)} />
-                <ActionButton label="Curso" icon={GraduationCap} className="w-full sm:w-auto" onClick={() => setGradeOpen(true)} />
-                <ActionButton label="Sección" icon={CalendarRange} className="w-full sm:w-auto" onClick={() => setSectionOpen(true)} />
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Niveles</p><p className="summary-value">{snapshot?.summary.levels ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Cursos o grados</p><p className="summary-value">{snapshot?.summary.grades ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Secciones</p><p className="summary-value">{snapshot?.summary.sections ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Con capacidad</p><p className="summary-value">{sectionsWithCapacity}</p></div>
-            </div>
-          </section>
-
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura estructural</p>
-                <p className="mt-2 text-sm text-slate-500">Vista resumida de la estructura mínima ya disponible para la institución.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Niveles</p>
-                <p className="summary-value">{snapshot?.summary.levels ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Cursos o grados</p>
-                <p className="summary-value">{snapshot?.summary.grades ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Secciones</p>
-                <p className="summary-value">{snapshot?.summary.sections ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Con capacidad</p>
-                <p className="summary-value">{sectionsWithCapacity}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
+        <WorkspacePrelude
+          eyebrow="Base académica"
+          title="Estado real de la estructura escolar"
+          description="La prioridad sigue siendo operar niveles, grados y secciones con lectura útil y directa, pero con una composición mucho más clara para coordinación académica."
+          actions={
+            <>
+              <ActionButton label="Nivel" icon={School} className="w-full sm:w-auto" onClick={() => setLevelOpen(true)} />
+              <ActionButton label="Curso" icon={GraduationCap} className="w-full sm:w-auto" onClick={() => setGradeOpen(true)} />
+              <ActionButton label="Sección" icon={CalendarRange} className="w-full sm:w-auto" onClick={() => setSectionOpen(true)} />
+            </>
+          }
+          metrics={[
+            { label: 'Niveles', value: snapshot?.summary.levels ?? 0, helper: 'Jerarquía base' },
+            { label: 'Cursos o grados', value: snapshot?.summary.grades ?? 0, helper: 'Oferta por nivel' },
+            { label: 'Secciones', value: snapshot?.summary.sections ?? 0, helper: 'Cobertura activa' },
+            { label: 'Con capacidad', value: sectionsWithCapacity, helper: 'Capacidad referencial' },
+          ]}
+          sideLabel="Cobertura estructural"
+          sideTitle="Resumen de la estructura mínima ya disponible"
+          sideDescription="La institución conserva el mismo alcance funcional y ahora muestra mejor la relación entre niveles, cursos y secciones ya cargadas."
+          sideContent={
+            <DetailList
+              items={[
+                { label: 'Institución', value: snapshot?.institution.name ?? 'Sin datos' },
+                { label: 'Niveles', value: snapshot?.summary.levels ?? 0 },
+                { label: 'Secciones con capacidad', value: sectionsWithCapacity },
+              ]}
+            />
+          }
+        />
 
         {error ? <div className="surface-panel px-5 py-4 text-sm text-rose-700">{error}</div> : null}
 

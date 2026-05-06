@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ClipboardCheck } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { AttendanceFormModal } from './attendance-create-form';
@@ -73,71 +74,39 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.92fr_1.08fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Control diario</p>
-                <h2 className="table-title">Estado real de asistencia del periodo</h2>
-                <p className="table-subtitle">Información útil para coordinación y tutoría, con foco en volumen, cobertura y seguimiento real.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Asistencia" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                <span className="info-chip">{snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}</span>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Presentes</p><p className="summary-value">{snapshot?.summary.present ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Ausentes</p><p className="summary-value">{snapshot?.summary.absent ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Atrasos</p><p className="summary-value">{snapshot?.summary.late ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Justificadas</p><p className="summary-value">{snapshot?.summary.justified ?? 0}</p></div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Control diario"
+          title="Estado real de asistencia del periodo"
+          description="La vista mantiene el seguimiento real por fecha y sección, pero con una lectura operativa más clara para coordinación y tutoría."
+          actions={
+            <>
+              <ActionButton label="Asistencia" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
+              <span className="info-chip">{snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}</span>
+            </>
+          }
+          metrics={[
+            { label: 'Presentes', value: snapshot?.summary.present ?? 0, helper: 'Registros confirmados' },
+            { label: 'Ausentes', value: snapshot?.summary.absent ?? 0, helper: 'Seguimiento diario' },
+            { label: 'Atrasos', value: snapshot?.summary.late ?? 0, helper: 'Llegadas tarde' },
+            { label: 'Justificadas', value: snapshot?.summary.justified ?? 0, helper: 'Con soporte' },
+          ]}
+          sideLabel="Lectura operativa"
+          sideTitle="Visibilidad rápida del comportamiento diario"
+          sideDescription="La cobertura sigue calculada con registros reales por secciones, fechas y matrículas activas del periodo escolar."
+          sideContent={<DetailList items={[{ label: 'Secciones cubiertas', value: snapshot?.summary.sectionsCovered ?? 0 }, { label: 'Fechas registradas', value: snapshot?.summary.trackedDates ?? 0 }, { label: 'Presentes', value: `${presentShare}% del total` }]} />}
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Lectura operativa</p>
-                <p className="mt-2 text-sm text-slate-500">Visibilidad rápida del comportamiento diario de asistencia dentro de la institución activa.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Presentes</p>
-                <p className="summary-value">{snapshot?.summary.present ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Ausentes</p>
-                <p className="summary-value">{snapshot?.summary.absent ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Atrasos</p>
-                <p className="summary-value">{snapshot?.summary.late ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Justificadas</p>
-                <p className="summary-value">{snapshot?.summary.justified ?? 0}</p>
-              </div>
-            </div>
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm leading-6 text-slate-600">
-              Cobertura actual: {snapshot?.summary.sectionsCovered ?? 0} secciones, {snapshot?.summary.trackedDates ?? 0} fechas, {snapshot?.summary.studentsCovered ?? 0} estudiantes seguidos y {presentShare}% de registros marcados como presentes.
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Asistencia registrada</p>
-              <h2 className="table-title">Historial diario por estudiante, sección y fecha</h2>
-              <p className="table-subtitle">Consulta compacta para revisar estado, ubicación académica y observaciones de asistencia sobre matrículas reales.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Asistencia registrada"
+          title="Historial diario por estudiante, sección y fecha"
+          subtitle="Consulta compacta para revisar estado, ubicación académica y observaciones de asistencia sobre matrículas reales."
+          actions={
+            <>
               <span className="info-chip">{filteredRecords.length} registros</span>
               <ActionButton label="Cargar" icon={ClipboardCheck} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           <div className="soft-divider grid gap-3 px-5 py-4 md:grid-cols-2 xl:grid-cols-3">
             <label className="block">
@@ -216,7 +185,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <AttendanceFormModal

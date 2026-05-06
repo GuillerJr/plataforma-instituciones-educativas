@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { CalendarDays } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
 import { EnrollmentFormModal } from './enrollment-create-form';
@@ -47,68 +48,39 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Inscripción académica</p>
-                <h2 className="table-title">Estado real de matrículas del periodo</h2>
-                <p className="table-subtitle">Se prioriza cobertura real, estudiantes afectados y novedades administrativas.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Matrícula" icon={CalendarDays} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                <span className="info-chip">{snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}</span>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile"><p className="summary-label">Matrículas</p><p className="summary-value">{snapshot?.summary.enrollments ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Activas</p><p className="summary-value">{snapshot?.summary.activeEnrollments ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Estudiantes cubiertos</p><p className="summary-value">{snapshot?.summary.uniqueStudents ?? 0}</p></div>
-              <div className="metric-tile"><p className="summary-label">Con novedad</p><p className="summary-value">{inactiveEnrollments}</p></div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Inscripción académica"
+          title="Estado real de matrículas del periodo"
+          description="La composición prioriza cobertura real, estudiantes afectados y novedades administrativas con una lectura más ordenada para secretaría y coordinación."
+          actions={
+            <>
+              <ActionButton label="Matrícula" icon={CalendarDays} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
+              <span className="info-chip">{snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}</span>
+            </>
+          }
+          metrics={[
+            { label: 'Matrículas', value: snapshot?.summary.enrollments ?? 0, helper: 'Periodo actual' },
+            { label: 'Activas', value: snapshot?.summary.activeEnrollments ?? 0, helper: 'Inscripciones vigentes' },
+            { label: 'Estudiantes cubiertos', value: snapshot?.summary.uniqueStudents ?? 0, helper: 'Cobertura de alumnos' },
+            { label: 'Con novedad', value: inactiveEnrollments, helper: 'Retiros o anulaciones' },
+          ]}
+          sideLabel="Cobertura del periodo"
+          sideTitle="Seguimiento visible de matrículas y secciones ocupadas"
+          sideDescription="La vista mantiene la lógica del periodo activo y mejora la lectura de capacidad operativa por estudiantes, secciones y estado administrativo."
+          sideContent={<DetailList items={[{ label: 'Secciones en uso', value: snapshot?.summary.sectionsInUse ?? 0 }, { label: 'Estudiantes visibles', value: students.length }]} />}
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura del periodo</p>
-                <p className="mt-2 text-sm text-slate-500">Seguimiento visible de matrículas, estudiantes cubiertos y secciones ocupadas en la institución activa.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="metric-tile">
-                <p className="summary-label">Matrículas</p>
-                <p className="summary-value">{snapshot?.summary.enrollments ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Activas</p>
-                <p className="summary-value">{snapshot?.summary.activeEnrollments ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Estudiantes cubiertos</p>
-                <p className="summary-value">{snapshot?.summary.uniqueStudents ?? 0}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Con novedad</p>
-                <p className="summary-value">{inactiveEnrollments}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell overflow-hidden">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Matrículas registradas</p>
-              <h2 className="table-title">Inscripciones del periodo escolar activo</h2>
-              <p className="table-subtitle">Tabla compacta para revisar estudiante, sección, trazabilidad académica y estado administrativo en una sola lectura.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Matrículas registradas"
+          title="Inscripciones del periodo escolar activo"
+          subtitle="Tabla compacta para revisar estudiante, sección, trazabilidad académica y estado administrativo en una sola lectura."
+          actions={
+            <>
               <span className="info-chip">{enrollments.length} matrículas</span>
               <ActionButton label="Nueva" icon={CalendarDays} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -163,7 +135,7 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <EnrollmentFormModal

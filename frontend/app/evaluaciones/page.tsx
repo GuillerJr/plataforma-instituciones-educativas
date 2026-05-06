@@ -1,4 +1,5 @@
 import { getCurrentUser, canWorkOnEvaluations } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { EvaluationsWorkspace } from './evaluations-workspace';
@@ -184,38 +185,17 @@ export default async function EvaluacionesPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <span className="badge badge-blue">Evaluaciones y notas</span>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Evaluaciones y calificaciones conectadas con asignaciones, materias, docentes y matrículas reales
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La interfaz mejora la lectura de cobertura, periodo, puntaje y rendimiento sin modificar la lógica actual de evaluaciones o calificaciones.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Evaluaciones</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{evaluationsModule.snapshot?.summary.evaluations ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Instrumentos visibles por materia y docente.</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <p className="tiny-label">Promedio registrado</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{gradesModule.snapshot?.summary.averageScore ?? '0'}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Lectura rápida del rendimiento cargado.</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Validación operativa</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Cada nota conserva su validación contra la cobertura de la evaluación y la matrícula activa del mismo periodo escolar.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Evaluaciones y notas"
+        title="Evaluaciones y calificaciones conectadas con asignaciones, materias, docentes y matrículas reales"
+        description="La interfaz mejora la lectura de cobertura, periodo, puntaje y rendimiento sin modificar la lógica actual de evaluaciones o calificaciones."
+        metrics={[
+          { label: 'Evaluaciones', value: evaluationsModule.snapshot?.summary.evaluations ?? 0, helper: 'Instrumentos visibles por materia y docente.' },
+          { label: 'Promedio registrado', value: gradesModule.snapshot?.summary.averageScore ?? '0', helper: 'Lectura rápida del rendimiento cargado.' },
+        ]}
+        noteTitle="Validación operativa"
+        noteDescription="Cada nota conserva su validación contra la cobertura de la evaluación y la matrícula activa del mismo periodo escolar."
+      />
 
       {canManage ? (
         <EvaluationsWorkspace

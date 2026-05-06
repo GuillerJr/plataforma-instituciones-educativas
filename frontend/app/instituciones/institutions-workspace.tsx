@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Building2, Mail, Pencil } from 'lucide-react';
+import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionAnchor, ActionButton } from '../../components/system-action';
 import { InstitutionFormModal, InstitutionFormValues } from './institution-create-form';
@@ -27,64 +28,44 @@ export function InstitutionsWorkspace({ institutions, error }: InstitutionsWorks
   return (
     <>
       <div className="space-y-5">
-        <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-          <section className="workspace-hero">
-            <div className="table-toolbar soft-divider">
-              <div>
-                <p className="eyebrow">Estructura institucional</p>
-                <h2 className="table-title">Estado real de sedes y registros base</h2>
-                <p className="table-subtitle">La prioridad es contacto, tipología y capacidad de seguimiento real.</p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <ActionButton label="Registro" icon={Building2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-                <span className="info-chip">{institutions.length} registros</span>
-              </div>
-            </div>
-            <div className="grid gap-3 p-5 sm:grid-cols-2">
-              <div className="metric-tile">
-                <p className="summary-label">Con contacto</p>
-                <p className="summary-value">{institutionsWithContact}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Sin contacto</p>
-                <p className="summary-value">{Math.max(institutions.length - institutionsWithContact, 0)}</p>
-              </div>
-            </div>
-          </section>
+        <WorkspacePrelude
+          eyebrow="Estructura institucional"
+          title="Estado real de sedes y registros base"
+          description="La prioridad sigue siendo contacto, tipología y capacidad de seguimiento real, ahora con una composición más institucional y menos genérica."
+          actions={
+            <>
+              <ActionButton label="Registro" icon={Building2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
+              <span className="info-chip">{institutions.length} registros</span>
+            </>
+          }
+          metrics={[
+            { label: 'Con contacto', value: institutionsWithContact, helper: 'Correo o teléfono cargado' },
+            { label: 'Sin contacto', value: Math.max(institutions.length - institutionsWithContact, 0), helper: 'Pendientes de completar' },
+          ]}
+          sideLabel="Cobertura operativa"
+          sideTitle="Registros listos para contacto y seguimiento"
+          sideDescription="La vista mantiene el mismo alcance funcional y reorganiza la información para detectar rápido qué sedes ya están preparadas para operación administrativa."
+          sideContent={
+            <DetailList
+              items={[
+                { label: 'Con contacto', value: `${institutionsWithContact} registros con medios de contacto visibles.` },
+                { label: 'Sin contacto', value: `${Math.max(institutions.length - institutionsWithContact, 0)} registros pendientes de completar.` },
+              ]}
+            />
+          }
+        />
 
-          <aside className="section-grid-card">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Cobertura operativa</p>
-                <p className="mt-2 text-sm text-slate-500">Registros con mejor preparación para contacto y seguimiento.</p>
-              </div>
-              <span className="info-chip">Resumen</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="metric-tile">
-                <p className="summary-label">Con contacto</p>
-                <p className="summary-value">{institutionsWithContact}</p>
-              </div>
-              <div className="metric-tile">
-                <p className="summary-label">Sin contacto</p>
-                <p className="summary-value">{Math.max(institutions.length - institutionsWithContact, 0)}</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-
-        <section className="table-shell">
-          <div className="table-toolbar soft-divider">
-            <div>
-              <p className="eyebrow">Estructura institucional</p>
-              <h2 className="table-title">Sedes y datos base</h2>
-              <p className="table-subtitle">Tabla responsiva para revisar ubicación, contacto y tipo de registro.</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <DataSection
+          eyebrow="Estructura institucional"
+          title="Sedes y datos base"
+          subtitle="Tabla responsiva para revisar ubicación, contacto y tipo de registro."
+          actions={
+            <>
               <span className="info-chip">{institutions.length} registros</span>
               <ActionButton label="Nuevo" icon={Building2} className="w-full sm:w-auto" onClick={() => setCreateOpen(true)} />
-            </div>
-          </div>
+            </>
+          }
+        >
 
           {error ? (
             <div className="table-empty text-rose-700">{error}</div>
@@ -142,7 +123,7 @@ export function InstitutionsWorkspace({ institutions, error }: InstitutionsWorks
               />
             </>
           )}
-        </section>
+        </DataSection>
       </div>
 
       <InstitutionFormModal open={createOpen} mode="create" onClose={() => setCreateOpen(false)} />

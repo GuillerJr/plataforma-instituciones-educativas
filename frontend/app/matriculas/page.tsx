@@ -1,4 +1,5 @@
 import { getCurrentUser, canManageAcademic } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { EnrollmentsWorkspace } from './enrollments-workspace';
@@ -111,38 +112,17 @@ export default async function MatriculasPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <span className="badge badge-blue">Matrículas</span>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Matrículas e inscripciones enlazadas con estudiantes, periodos y secciones reales
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La experiencia conserva la lógica del periodo activo y mejora la lectura de estado, trazabilidad y ubicación académica de cada inscripción.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Matrículas activas</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{snapshot?.summary.activeEnrollments ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Inscripciones vigentes para operación diaria.</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <p className="tiny-label">Con novedad</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{nonActiveEnrollments}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Retiros o anulaciones visibles para control.</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Trazabilidad</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {snapshot?.institution.activeSchoolYearLabel ?? 'Sin periodo configurado'} · La matrícula mantiene la relación con estudiante, sección y periodo escolar actual.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Matrículas"
+        title="Matrículas e inscripciones enlazadas con estudiantes, periodos y secciones reales"
+        description="La experiencia conserva la lógica del periodo activo y mejora la lectura de estado, trazabilidad y ubicación académica de cada inscripción."
+        metrics={[
+          { label: 'Matrículas activas', value: snapshot?.summary.activeEnrollments ?? 0, helper: 'Inscripciones vigentes para operación diaria.' },
+          { label: 'Con novedad', value: nonActiveEnrollments, helper: 'Retiros o anulaciones visibles para control.' },
+        ]}
+        noteTitle="Trazabilidad"
+        noteDescription={`${snapshot?.institution.activeSchoolYearLabel ?? 'Sin periodo configurado'} · La matrícula mantiene la relación con estudiante, sección y periodo escolar actual.`}
+      />
 
       {canManage ? (
         <EnrollmentsWorkspace snapshot={snapshot} error={error} />

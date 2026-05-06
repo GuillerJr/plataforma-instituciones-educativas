@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Settings,
 } from 'lucide-react';
+import { PageHero } from '../../components/admin-ui';
 import { DashboardOverviewChart } from '../../components/dashboard-overview-chart';
 import { ActionLink } from '../../components/system-action';
 import { getCurrentUser, getPrimaryRoleLabel, hasSomeRole } from '../../lib/current-user';
@@ -132,38 +133,18 @@ export default async function PanelPage() {
 
   return (
     <main className="dashboard-page space-y-5 sm:space-y-6">
-      <section className="panel-card overflow-hidden p-4 sm:p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="badge badge-blue">Panel institucional</span>
-              <span className="info-chip">{getPrimaryRoleLabel(user)}</span>
-            </div>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">Lectura ejecutiva del sistema con datos reales y accesos según tu rol</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              Este panel resume la operación académica y administrativa visible para tu sesión, mantiene el alcance por permisos y prioriza información útil para trabajar sin ruido visual.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Instituciones visibles</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{institutionCoverage}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Estructura alcanzada por tu sesión.</p>
-            </div>
-            <div className="rounded-xl border border-line bg-white p-4">
-              <p className="tiny-label">Usuarios recientes</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{trackedUsers}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Usuarios recientes dentro del alcance visible.</p>
-            </div>
-            <div className="rounded-xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Promedio registrado</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{dashboard?.metrics.averageGrade ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Promedio real calculado desde calificaciones registradas.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge={`Panel institucional · ${getPrimaryRoleLabel(user)}`}
+        title="Lectura ejecutiva del sistema con datos reales y accesos según tu rol"
+        description="Este panel resume la operación académica y administrativa visible para tu sesión, mantiene el alcance por permisos y prioriza información útil para trabajar sin ruido visual."
+        metrics={[
+          { label: 'Instituciones visibles', value: institutionCoverage, helper: 'Estructura alcanzada por tu sesión.' },
+          { label: 'Usuarios recientes', value: trackedUsers, helper: 'Actividad reciente dentro del alcance visible.' },
+          { label: 'Promedio registrado', value: dashboard?.metrics.averageGrade ?? 0, helper: 'Calculado desde calificaciones reales.' },
+        ]}
+        noteTitle="Alcance de sesión"
+        noteDescription="La información del panel cambia según el rol autenticado y reutiliza los mismos permisos, rutas y datos reales ya implementados en el sistema."
+      />
 
       {error || !dashboard ? (
         <div className="surface-panel px-5 py-4 text-sm text-rose-700">{error ?? 'No hay datos del panel.'}</div>

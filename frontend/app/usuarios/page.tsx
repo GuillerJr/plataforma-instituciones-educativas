@@ -1,4 +1,5 @@
 import { getCurrentUser, canManageUsers } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { UsersWorkspace } from './users-workspace';
@@ -68,38 +69,17 @@ export default async function UsersPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <span className="badge badge-blue">Usuarios y accesos</span>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Gobierno de acceso con foco en perfiles, estados y permisos reales
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La experiencia se reorganiza para revisar cuentas, roles e instituciones asociadas con menos fricción y sin tocar la lógica actual del backend.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Usuarios activos</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{activeUsers}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Accesos operativos habilitados.</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <p className="tiny-label">Bloqueados</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{blockedUsers}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Cuentas suspendidas para seguimiento.</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Visibilidad operativa</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Se priorizan estados, roles y acciones reales de fila para que la gestión de cuentas sea más rápida en escritorio y móvil.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Usuarios y accesos"
+        title="Gobierno de acceso con foco en perfiles, estados y permisos reales"
+        description="La experiencia se reorganiza para revisar cuentas, roles e instituciones asociadas con menos fricción y sin tocar la lógica actual del backend."
+        metrics={[
+          { label: 'Usuarios activos', value: activeUsers, helper: 'Accesos operativos habilitados.' },
+          { label: 'Bloqueados', value: blockedUsers, helper: 'Cuentas suspendidas para seguimiento.' },
+        ]}
+        noteTitle="Visibilidad operativa"
+        noteDescription="Se priorizan estados, roles y acciones reales de fila para que la gestión de cuentas sea más rápida en escritorio y móvil."
+      />
 
       {canManage ? (
         <UsersWorkspace users={users} roles={roles} institutions={institutions} error={error} />

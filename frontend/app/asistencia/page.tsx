@@ -1,4 +1,5 @@
 import { getCurrentUser, canWorkOnAttendance } from '../../lib/current-user';
+import { PageHero } from '../../components/admin-ui';
 import { ModuleAccessGuard } from '../../components/module-access-guard';
 import { DemoApiError, fetchDemoApi } from '../lib/demo-api';
 import { AttendanceWorkspace } from './attendance-workspace';
@@ -118,38 +119,17 @@ export default async function AsistenciaPage() {
 
   return (
     <main className="space-y-6">
-      <section className="panel-card overflow-hidden p-5 lg:p-6">
-        <div className="grid gap-4 xl:grid-cols-[1.35fr_0.9fr] xl:items-start">
-          <div>
-            <span className="badge badge-success">Asistencia</span>
-            <h1 className="mt-4 text-[24px] font-extrabold leading-tight text-ink sm:text-[28px]">
-              Asistencia por fecha y sección conectada con matrículas, estudiantes y operación académica real
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted sm:text-[15px]">
-              La experiencia mantiene la carga diaria existente y mejora la lectura de cobertura, filtros y seguimiento por fecha o sección.
-            </p>
-          </div>
-
-          <aside className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-            <div className="rounded-2xl border border-line bg-brand-50/60 p-4">
-              <p className="tiny-label">Asistencias</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{snapshot?.summary.records ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Registros diarios ya trazables por sección.</p>
-            </div>
-            <div className="rounded-2xl border border-line bg-white p-4">
-              <p className="tiny-label">Estudiantes cubiertos</p>
-              <p className="mt-2 text-[28px] font-extrabold leading-none text-ink">{snapshot?.summary.studentsCovered ?? 0}</p>
-              <p className="mt-2 text-xs leading-5 text-muted">Matrículas activas con seguimiento de asistencia.</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-line bg-[#FAFBFC] p-4 sm:col-span-2 xl:col-span-1">
-              <p className="tiny-label">Seguimiento diario</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                La carga diaria mantiene vínculo directo con sección, periodo escolar y matrícula operativa de cada estudiante.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <PageHero
+        badge="Asistencia"
+        title="Asistencia por fecha y sección conectada con matrículas, estudiantes y operación académica real"
+        description="La experiencia mantiene la carga diaria existente y mejora la lectura de cobertura, filtros y seguimiento por fecha o sección."
+        metrics={[
+          { label: 'Asistencias', value: snapshot?.summary.records ?? 0, helper: 'Registros diarios ya trazables por sección.' },
+          { label: 'Estudiantes cubiertos', value: snapshot?.summary.studentsCovered ?? 0, helper: 'Matrículas activas con seguimiento de asistencia.' },
+        ]}
+        noteTitle="Seguimiento diario"
+        noteDescription="La carga diaria mantiene vínculo directo con sección, periodo escolar y matrícula operativa de cada estudiante."
+      />
 
       {canManage ? (
         <AttendanceWorkspace snapshot={snapshot} error={error} />
