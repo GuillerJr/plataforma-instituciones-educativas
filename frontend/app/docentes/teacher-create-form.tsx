@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import type { AssignmentScope, TeacherAcademicGrade, TeacherAcademicLevel, TeacherAcademicSection, TeacherStatus } from './page';
+import type { AssignmentScope, TeacherAcademicGrade, TeacherAcademicLevel, TeacherAcademicSection, TeacherRecord, TeacherStatus } from './page';
 
 type FormState = {
   success: boolean;
@@ -12,19 +12,22 @@ type FormState = {
 
 type TeacherFormModalProps = {
   open: boolean;
+  mode: 'create' | 'edit';
   onClose: () => void;
   levels: TeacherAcademicLevel[];
   grades: TeacherAcademicGrade[];
   sections: TeacherAcademicSection[];
+  initialValues?: TeacherRecord;
 };
 
-export function TeacherFormModal({ open, onClose, levels, grades, sections }: TeacherFormModalProps) {
+export function TeacherFormModal({ open, mode, onClose, levels, grades, sections, initialValues }: TeacherFormModalProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
   const [assignmentScope, setAssignmentScope] = useState<AssignmentScope | 'sin-asignacion'>('seccion');
   const [selectedLevelId, setSelectedLevelId] = useState(levels[0]?.id ?? '');
   const [selectedGradeId, setSelectedGradeId] = useState('');
+  const [selectedSectionId, setSelectedSectionId] = useState('');
 
   const visibleGrades = useMemo(() => grades.filter((grade) => grade.levelId === selectedLevelId), [grades, selectedLevelId]);
   const visibleSections = useMemo(() => sections.filter((section) => section.gradeId === selectedGradeId), [sections, selectedGradeId]);
@@ -37,10 +40,11 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
 
     setPending(false);
     setState({ success: false, message: null });
-    setAssignmentScope('seccion');
+    setAssignmentScope(mode === 'create' ? 'seccion' : 'sin-asignacion');
     setSelectedLevelId(defaultLevelId);
     setSelectedGradeId(defaultGradeId);
-  }, [open, levels, grades]);
+    setSelectedSectionId(sections.find((section) => section.gradeId === defaultGradeId)?.id ?? '');
+  }, [open, levels, grades, sections, mode, initialValues]);
 
   useEffect(() => {
     if (!selectedLevelId) {
@@ -54,6 +58,17 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
       setSelectedGradeId(nextGrade?.id ?? '');
     }
   }, [grades, selectedGradeId, selectedLevelId, visibleGrades]);
+
+  useEffect(() => {
+    if (!selectedGradeId) {
+      setSelectedSectionId('');
+      return;
+    }
+
+    if (!visibleSections.some((section) => section.id === selectedSectionId)) {
+      setSelectedSectionId(visibleSections[0]?.id ?? '');
+    }
+  }, [selectedGradeId, selectedSectionId, visibleSections]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -115,9 +130,15 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
       };
     }
 
+    if (mode === 'edit' && !initialValues?.id) {
+      setState({ success: false, message: 'No se pudo identificar el docente a actualizar.' });
+      setPending(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/backend/teachers', {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? '/api/backend/teachers' : `/api/backend/teachers/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -127,13 +148,13 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible crear el docente.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible crear el docente.' : 'No fue posible actualizar el docente.'));
       }
 
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear el docente.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar el docente.' });
     } finally {
       setPending(false);
     }
@@ -143,22 +164,24 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
     <ModalShell
       open={open}
       onClose={onClose}
-      title="Registrar docente"
-      description="Crea un docente real para la institución activa y, si ya corresponde, déjalo asignado a nivel, curso o sección dentro de la estructura académica disponible."
+      title={mode === 'create' ? 'Registrar docente' : 'Editar docente'}
+      description={mode === 'create'
+        ? 'Crea un docente real para la institución activa y, si ya corresponde, déjalo asignado a nivel, curso o sección dentro de la estructura académica disponible.'
+        : 'Actualiza datos base del docente y, si corresponde, registra una nueva asignación académica como carga más reciente.'}
     >
-      <form action={handleSubmit} className="space-y-5">
+      <form key={`${mode}:${initialValues?.id ?? 'new'}`} action={handleSubmit} className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nombre completo</span>
-            <input name="fullName" required minLength={3} maxLength={180} className="form-field" placeholder="Mariana Pérez" />
+            <input name="fullName" required minLength={3} maxLength={180} defaultValue={initialValues?.fullName ?? ''} className="form-field" placeholder="Mariana Pérez" />
           </label>
           <label className="block">
             <span className="field-label">Documento</span>
-            <input name="identityDocument" required minLength={3} maxLength={40} className="form-field" placeholder="DOC-004" />
+            <input name="identityDocument" required minLength={3} maxLength={40} defaultValue={initialValues?.identityDocument ?? ''} className="form-field" placeholder="DOC-004" />
           </label>
           <label className="block">
             <span className="field-label">Estado</span>
-            <select name="status" defaultValue="active" className="form-field">
+            <select name="status" defaultValue={initialValues?.status ?? 'active'} className="form-field">
               <option value="active">Activo</option>
               <option value="inactive">Inactivo</option>
               <option value="licencia">En licencia</option>
@@ -166,15 +189,15 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
           </label>
           <label className="block">
             <span className="field-label">Correo</span>
-            <input name="email" type="email" className="form-field" placeholder="mariana.perez@educa.demo" />
+            <input name="email" type="email" defaultValue={initialValues?.email ?? ''} className="form-field" placeholder="mariana.perez@educa.demo" />
           </label>
           <label className="block">
             <span className="field-label">Teléfono</span>
-            <input name="phone" maxLength={40} className="form-field" placeholder="+593999999999" />
+            <input name="phone" maxLength={40} defaultValue={initialValues?.phone ?? ''} className="form-field" placeholder="+593999999999" />
           </label>
           <label className="block md:col-span-2">
             <span className="field-label">Especialidad o área principal</span>
-            <input name="specialty" maxLength={140} className="form-field" placeholder="Lengua y Literatura" />
+            <input name="specialty" maxLength={140} defaultValue={initialValues?.specialty ?? ''} className="form-field" placeholder="Lengua y Literatura" />
           </label>
         </div>
 
@@ -182,7 +205,7 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="field-label">Asignación académica inicial</p>
-              <p className="mt-2 text-sm text-slate-500">Puede quedar registrada desde esta misma alta o dejarse para después.</p>
+              <p className="mt-2 text-sm text-slate-500">{mode === 'create' ? 'Puede quedar registrada desde esta misma alta o dejarse para después.' : 'Si no seleccionas una nueva asignación, se mantiene la carga académica actual.'}</p>
             </div>
             <span className="info-chip">Institución única</span>
           </div>
@@ -196,7 +219,7 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
                 onChange={(event) => setAssignmentScope(event.target.value as AssignmentScope | 'sin-asignacion')}
                 className="form-field"
               >
-                <option value="sin-asignacion">Registrar sin asignación por ahora</option>
+                <option value="sin-asignacion">{mode === 'create' ? 'Registrar sin asignación por ahora' : 'Mantener asignación actual'}</option>
                 <option value="nivel">Asignar a nivel</option>
                 <option value="curso">Asignar a curso o grado</option>
                 <option value="seccion">Asignar a sección</option>
@@ -234,7 +257,7 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
                 {assignmentScope === 'seccion' ? (
                   <label className="block md:col-span-2">
                     <span className="field-label">Sección</span>
-                    <select name="sectionId" className="form-field">
+                    <select name="sectionId" value={selectedSectionId} onChange={(event) => setSelectedSectionId(event.target.value)} className="form-field">
                       {visibleSections.length === 0 ? <option value="">No hay secciones para el curso seleccionado</option> : null}
                       {visibleSections.map((section) => (
                         <option key={section.id} value={section.id}>{section.gradeName} · {section.name} · {translateShift(section.shift)}</option>
@@ -261,7 +284,7 @@ export function TeacherFormModal({ open, onClose, levels, grades, sections }: Te
             disabled={pending || (assignmentScope !== 'sin-asignacion' && levels.length === 0)}
             className="primary-button disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {pending ? 'Creando docente...' : 'Crear docente'}
+            {pending ? (mode === 'create' ? 'Creando docente...' : 'Guardando cambios...') : (mode === 'create' ? 'Crear docente' : 'Guardar cambios')}
           </button>
         </div>
       </form>

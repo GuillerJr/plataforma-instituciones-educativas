@@ -24,6 +24,10 @@ const teacherSchema = z.object({
   }).nullable().optional(),
 });
 
+const teacherParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -367,6 +371,157 @@ router.post('/', requireAuth, async (request, response) => {
       assignmentTitle,
       assignmentScope,
       assignmentLabel,
+    }));
+  } catch (error) {
+    await client.query('ROLLBACK');
+
+    if (error instanceof Error && error.message.startsWith('Debe seleccionar')) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    if (error instanceof Error && error.message.includes('no existe en la institución actual')) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageTeaching(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar docentes.' });
+  }
+
+  const params = teacherParamsSchema.parse(request.params);
+  const payload = teacherSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const teacherResult = await client.query(
+      `
+        UPDATE edu_teachers
+        SET
+          full_name = $1,
+          identity_document = UPPER($2),
+          email = $3,
+          phone = $4,
+          specialty = $5,
+          status = $6,
+          updated_at = NOW()
+        WHERE id = $7 AND institution_id = $8
+        RETURNING
+          id,
+          full_name AS "fullName",
+          identity_document AS "identityDocument",
+          email,
+          phone,
+          specialty,
+          status,
+          created_at AS "createdAt"
+      `,
+      [
+        payload.fullName,
+        payload.identityDocument,
+        payload.email?.trim() || null,
+        payload.phone?.trim() || null,
+        payload.specialty?.trim() || null,
+        payload.status,
+        params.id,
+        institution.id,
+      ],
+    );
+
+    const updatedTeacher = teacherResult.rows[0] as {
+      id: string;
+      fullName: string;
+      identityDocument: string;
+      email?: string | null;
+      phone?: string | null;
+      specialty?: string | null;
+      status: string;
+    } | undefined;
+
+    if (!updatedTeacher) {
+      await client.query('ROLLBACK');
+      return response.status(404).json({ success: false, message: 'El docente seleccionado no existe en la institución actual.' });
+    }
+
+    if (payload.assignment) {
+      const assignmentContext = await resolveAssignmentContext(client, institution.id, payload.assignment);
+
+      await client.query(
+        `
+          INSERT INTO edu_teacher_assignments (
+            institution_id,
+            teacher_id,
+            level_id,
+            grade_id,
+            section_id,
+            assignment_title,
+            notes
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `,
+        [
+          institution.id,
+          updatedTeacher.id,
+          assignmentContext.levelId,
+          assignmentContext.gradeId,
+          assignmentContext.sectionId,
+          payload.assignment.assignmentTitle,
+          payload.assignment.notes?.trim() || null,
+        ],
+      );
+    }
+
+    const summaryResult = await client.query(
+      `
+        SELECT
+          COALESCE(assignments.total_assignments, 0)::int AS "assignmentsCount",
+          latest.assignment_title AS "assignmentTitle",
+          latest.scope AS "assignmentScope",
+          latest.reference_label AS "assignmentLabel"
+        FROM edu_teachers t
+        LEFT JOIN LATERAL (
+          SELECT COUNT(*) AS total_assignments
+          FROM edu_teacher_assignments ta
+          WHERE ta.teacher_id = t.id
+        ) assignments ON TRUE
+        LEFT JOIN LATERAL (
+          SELECT
+            ta.assignment_title,
+            CASE
+              WHEN ta.section_id IS NOT NULL THEN 'seccion'
+              WHEN ta.grade_id IS NOT NULL THEN 'curso'
+              ELSE 'nivel'
+            END AS scope,
+            CASE
+              WHEN ta.section_id IS NOT NULL THEN CONCAT(l.name, ' · ', g.name, ' · ', s.name)
+              WHEN ta.grade_id IS NOT NULL THEN CONCAT(l.name, ' · ', g.name)
+              ELSE l.name
+            END AS reference_label
+          FROM edu_teacher_assignments ta
+          LEFT JOIN edu_academic_levels l ON l.id = ta.level_id
+          LEFT JOIN edu_academic_grades g ON g.id = ta.grade_id
+          LEFT JOIN edu_academic_sections s ON s.id = ta.section_id
+          WHERE ta.teacher_id = t.id
+          ORDER BY ta.created_at DESC
+          LIMIT 1
+        ) latest ON TRUE
+        WHERE t.id = $1 AND t.institution_id = $2
+      `,
+      [updatedTeacher.id, institution.id],
+    );
+
+    await client.query('COMMIT');
+
+    return response.json(successResponse('Docente actualizado.', {
+      ...updatedTeacher,
+      ...summaryResult.rows[0],
     }));
   } catch (error) {
     await client.query('ROLLBACK');
