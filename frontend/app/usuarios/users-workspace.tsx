@@ -6,11 +6,8 @@ import { useRouter } from 'next/navigation';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionAnchor, ActionButton } from '../../components/system-action';
-import { getAccessToken } from '../lib/client-auth';
 import { UserFormModal, UserFormValues } from './user-create-form';
 import type { PublicRequestRecord } from './page';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type EduUser = UserFormValues & {
   id: string;
@@ -69,12 +66,10 @@ export function UsersWorkspace({ users, roles, institutions, publicRequests, err
     setRequestActionError(null);
 
     try {
-      const accessToken = await getAccessToken();
-      const response = await fetch(`${API_BASE_URL}/public-requests/${id}`, {
+      const response = await fetch(`/api/backend/public-requests/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ status }),
       });

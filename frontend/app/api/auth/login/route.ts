@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, SESSION_COOKIE_MAX_AGE, buildInstitutionalEmail } from '../../../../lib/auth-session';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
+const API_BASE_URL = process.env.BACKEND_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as { identifier?: string; password?: string } | null;
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   const isHttpsRequest = forwardedProto === 'https' || new URL(request.url).protocol === 'https:';
 
   const cookieOptions = {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: 'lax' as const,
     secure: isHttpsRequest,
     path: '/',

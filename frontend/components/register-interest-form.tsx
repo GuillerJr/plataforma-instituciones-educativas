@@ -7,8 +7,6 @@ type RegisterInterestFormProps = {
   context?: string;
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
-
 export function RegisterInterestForm({ requestType: initialRequestType, context }: RegisterInterestFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, setState] = useState<{ pending: boolean; success: string | null; error: string | null }>({
@@ -37,7 +35,7 @@ export function RegisterInterestForm({ requestType: initialRequestType, context 
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/public-requests`, {
+      const response = await fetch('/api/backend/public-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

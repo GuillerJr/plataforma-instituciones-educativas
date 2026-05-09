@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 
 import { ACCESS_TOKEN_COOKIE } from '../../lib/auth-session';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
+const API_BASE_URL = process.env.BACKEND_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type ApiPayload<T> = {
   success?: boolean;

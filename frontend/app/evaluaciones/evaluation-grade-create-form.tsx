@@ -3,10 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import { getAccessToken } from '../lib/client-auth';
 import type { GradeEvaluationOption, GradeStudentOption } from './page';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type FormState = {
   success: boolean;
@@ -80,12 +77,10 @@ export function EvaluationGradeFormModal({
     }
 
     try {
-      const accessToken = await getAccessToken();
-      const response = await fetch(`${API_BASE_URL}/evaluation-grades`, {
+      const response = await fetch('/api/backend/evaluation-grades', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
       });

@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import { getAccessToken } from '../lib/client-auth';
 
 type InstitutionOption = {
   id: string;
@@ -59,8 +58,6 @@ type FormState = {
   message: string | null;
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
-
 type UserFormModalProps = UserCreateFormProps & {
   open: boolean;
   mode: 'create' | 'edit';
@@ -101,12 +98,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
 
     (async () => {
       try {
-        const accessToken = await getAccessToken();
-        const response = await fetch(`${API_BASE_URL}/users/profile-options`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch('/api/backend/users/profile-options');
 
         const payload = await response.json().catch(() => null) as { data?: { teachers: ProfileTeacherOption[]; students: ProfileStudentOption[] }; message?: string } | null;
 
@@ -154,12 +146,10 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
     }
 
     try {
-      const accessToken = await getAccessToken();
-      const response = await fetch(mode === 'create' ? `${API_BASE_URL}/users` : `${API_BASE_URL}/users/${initialValues?.id}`, {
+      const response = await fetch(mode === 'create' ? '/api/backend/users' : `/api/backend/users/${initialValues?.id}`, {
         method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
       });

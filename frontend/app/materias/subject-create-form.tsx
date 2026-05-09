@@ -3,10 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import { getAccessToken } from '../lib/client-auth';
 import type { SubjectAcademicLevel, SubjectStatus } from './page';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type FormState = {
   success: boolean;
@@ -46,12 +43,10 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
     }
 
     try {
-      const accessToken = await getAccessToken();
-      const response = await fetch(`${API_BASE_URL}/subjects`, {
+      const response = await fetch('/api/backend/subjects', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
       });

@@ -3,10 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import { getAccessToken } from '../lib/client-auth';
 import type { AcademicGrade, AcademicLevel } from './page';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type FormState = {
   success: boolean;
@@ -28,12 +25,10 @@ function useAcademicModalState(open: boolean) {
 }
 
 async function postAcademicEntity(path: string, payload: unknown) {
-  const accessToken = await getAccessToken();
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await fetch(`/api/backend${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(payload),
   });

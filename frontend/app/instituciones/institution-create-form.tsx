@@ -3,14 +3,11 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import { getAccessToken } from '../lib/client-auth';
 
 type FormState = {
   success: boolean;
   message: string | null;
 };
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 export type InstitutionFormValues = {
   id?: string;
@@ -67,12 +64,10 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
     }
 
     try {
-      const accessToken = await getAccessToken();
-      const response = await fetch(`${API_BASE_URL}/institutions`, {
+      const response = await fetch('/api/backend/institutions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
       });
