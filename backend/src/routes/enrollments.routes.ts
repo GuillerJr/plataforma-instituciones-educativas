@@ -15,6 +15,10 @@ const enrollmentSchema = z.object({
   notes: z.string().max(500).optional().or(z.literal('')),
 });
 
+const enrollmentParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -327,6 +331,99 @@ router.post('/', requireAuth, async (request, response) => {
     await client.query('COMMIT');
 
     return response.status(201).json(successResponse('Matrícula creada.', {
+      ...result.rows[0],
+      studentName: student.fullName,
+      studentDocument: student.identityDocument,
+      studentEnrollmentCode: student.enrollmentCode,
+      levelId: section.levelId,
+      levelName: section.levelName,
+      gradeId: section.gradeId,
+      gradeName: section.gradeName,
+      sectionName: section.name,
+      shift: section.shift,
+      capacity: section.capacity,
+    }));
+  } catch (error) {
+    await client.query('ROLLBACK');
+
+    if (error instanceof Error && error.message.includes('no existe en la institución actual')) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar matrículas.' });
+  }
+
+  const params = enrollmentParamsSchema.parse(request.params);
+  const payload = enrollmentSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const student = await resolveStudent(client, institution.id, payload.studentId);
+    const section = await resolveSection(client, institution.id, payload.sectionId);
+    const result = await client.query(
+      `
+        UPDATE edu_enrollments
+        SET
+          student_id = $1,
+          section_id = $2,
+          enrollment_date = $3,
+          status = $4,
+          notes = $5,
+          updated_at = NOW()
+        WHERE id = $6 AND institution_id = $7
+        RETURNING
+          id,
+          student_id AS "studentId",
+          section_id AS "sectionId",
+          school_year_label AS "schoolYearLabel",
+          enrollment_date AS "enrollmentDate",
+          status,
+          notes,
+          created_at AS "createdAt"
+      `,
+      [
+        payload.studentId,
+        payload.sectionId,
+        payload.enrollmentDate ?? new Date().toISOString().slice(0, 10),
+        payload.status,
+        payload.notes?.trim() || null,
+        params.id,
+        institution.id,
+      ],
+    );
+
+    if (!result.rows[0]) {
+      await client.query('ROLLBACK');
+      return response.status(404).json({ success: false, message: 'La matrícula seleccionada no existe en la institución actual.' });
+    }
+
+    await client.query(
+      `
+        UPDATE edu_students
+        SET
+          level_id = $2,
+          grade_id = $3,
+          section_id = $4,
+          updated_at = NOW()
+        WHERE id = $1 AND institution_id = $5
+      `,
+      [payload.studentId, section.levelId, section.gradeId, section.id, institution.id],
+    );
+
+    await client.query('COMMIT');
+
+    return response.json(successResponse('Matrícula actualizada.', {
       ...result.rows[0],
       studentName: student.fullName,
       studentDocument: student.identityDocument,

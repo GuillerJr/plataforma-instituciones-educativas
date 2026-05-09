@@ -12,6 +12,7 @@ type FormState = {
 
 type EnrollmentFormModalProps = {
   open: boolean;
+  mode: 'create' | 'edit';
   onClose: () => void;
   activeSchoolYearLabel: string;
   students: EnrollmentStudent[];
@@ -19,14 +20,16 @@ type EnrollmentFormModalProps = {
   levels: EnrollmentAcademicLevel[];
   grades: EnrollmentAcademicGrade[];
   sections: EnrollmentAcademicSection[];
+  initialValues?: EnrollmentRecord;
 };
 
-export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, students, enrollments, levels, grades, sections }: EnrollmentFormModalProps) {
+export function EnrollmentFormModal({ open, mode, onClose, activeSchoolYearLabel, students, enrollments, levels, grades, sections, initialValues }: EnrollmentFormModalProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
   const [selectedLevelId, setSelectedLevelId] = useState(levels[0]?.id ?? '');
   const [selectedGradeId, setSelectedGradeId] = useState('');
+  const [selectedSectionId, setSelectedSectionId] = useState('');
 
   const enrolledStudentsForActiveYear = new Set(
     enrollments
@@ -34,21 +37,22 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
       .map((enrollment) => enrollment.studentId),
   );
 
-  const availableStudents = students.filter((student) => !enrolledStudentsForActiveYear.has(student.id));
+  const availableStudents = students.filter((student) => student.id === initialValues?.studentId || !enrolledStudentsForActiveYear.has(student.id));
   const visibleGrades = grades.filter((grade) => grade.levelId === selectedLevelId);
   const visibleSections = sections.filter((section) => section.gradeId === selectedGradeId);
 
   useEffect(() => {
     if (!open) return;
 
-    const defaultLevelId = levels[0]?.id ?? '';
-    const defaultGradeId = grades.find((grade) => grade.levelId === defaultLevelId)?.id ?? '';
+    const defaultLevelId = initialValues?.levelId ?? levels[0]?.id ?? '';
+    const defaultGradeId = initialValues?.gradeId ?? grades.find((grade) => grade.levelId === defaultLevelId)?.id ?? '';
 
     setPending(false);
     setState({ success: false, message: null });
     setSelectedLevelId(defaultLevelId);
     setSelectedGradeId(defaultGradeId);
-  }, [open, levels, grades]);
+    setSelectedSectionId(initialValues?.sectionId ?? sections.find((section) => section.gradeId === defaultGradeId)?.id ?? '');
+  }, [open, levels, grades, sections, initialValues]);
 
   useEffect(() => {
     if (!selectedLevelId) {
@@ -60,6 +64,17 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
       setSelectedGradeId(visibleGrades[0]?.id ?? '');
     }
   }, [selectedGradeId, selectedLevelId, visibleGrades]);
+
+  useEffect(() => {
+    if (!selectedGradeId) {
+      setSelectedSectionId('');
+      return;
+    }
+
+    if (!visibleSections.some((section) => section.id === selectedSectionId)) {
+      setSelectedSectionId(visibleSections[0]?.id ?? '');
+    }
+  }, [selectedGradeId, selectedSectionId, visibleSections]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -79,9 +94,15 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
       return;
     }
 
+    if (mode === 'edit' && !initialValues?.id) {
+      setState({ success: false, message: 'No se pudo identificar la matrícula a actualizar.' });
+      setPending(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/backend/enrollments', {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? '/api/backend/enrollments' : `/api/backend/enrollments/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -91,13 +112,13 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible crear la matrícula.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible crear la matrícula.' : 'No fue posible actualizar la matrícula.'));
       }
 
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear la matrícula.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar la matrícula.' });
     } finally {
       setPending(false);
     }
@@ -107,14 +128,16 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
     <ModalShell
       open={open}
       onClose={onClose}
-      title="Registrar matrícula"
-      description="Registra la inscripción del periodo activo enlazando un estudiante existente con una sección real de la estructura académica."
+      title={mode === 'create' ? 'Registrar matrícula' : 'Editar matrícula'}
+      description={mode === 'create'
+        ? 'Registra la inscripción del periodo activo enlazando un estudiante existente con una sección real de la estructura académica.'
+        : 'Actualiza estado, fecha, observación y sección de una matrícula ya registrada.'}
     >
-      <form action={handleSubmit} className="space-y-5">
+      <form key={`${mode}:${initialValues?.id ?? 'new'}`} action={handleSubmit} className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Estudiante</span>
-            <select name="studentId" className="form-field">
+            <select name="studentId" defaultValue={initialValues?.studentId ?? ''} className="form-field">
               {availableStudents.length === 0 ? <option value="">Todos los estudiantes ya tienen matrícula en el periodo activo</option> : null}
               {availableStudents.map((student) => (
                 <option key={student.id} value={student.id}>{student.fullName} · {student.enrollmentCode} · {student.gradeName} {student.sectionName}</option>
@@ -123,15 +146,15 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
           </label>
           <label className="block">
             <span className="field-label">Periodo escolar</span>
-            <input disabled value={activeSchoolYearLabel} className="form-field cursor-not-allowed opacity-60" />
+            <input disabled value={initialValues?.schoolYearLabel ?? activeSchoolYearLabel} className="form-field cursor-not-allowed opacity-60" />
           </label>
           <label className="block">
             <span className="field-label">Fecha de matrícula</span>
-            <input name="enrollmentDate" type="date" required defaultValue={new Date().toISOString().slice(0, 10)} className="form-field" />
+            <input name="enrollmentDate" type="date" required defaultValue={initialValues?.enrollmentDate?.slice(0, 10) ?? new Date().toISOString().slice(0, 10)} className="form-field" />
           </label>
           <label className="block md:col-span-2">
             <span className="field-label">Estado</span>
-            <select name="status" defaultValue="active" className="form-field">
+            <select name="status" defaultValue={initialValues?.status ?? 'active'} className="form-field">
               <option value="active">Activa</option>
               <option value="withdrawn">Retirada</option>
               <option value="cancelled">Anulada</option>
@@ -171,7 +194,7 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
 
             <label className="block md:col-span-2">
               <span className="field-label">Sección</span>
-              <select name="sectionId" className="form-field">
+              <select name="sectionId" value={selectedSectionId} onChange={(event) => setSelectedSectionId(event.target.value)} className="form-field">
                 {visibleSections.length === 0 ? <option value="">No hay secciones para el curso seleccionado</option> : null}
                 {visibleSections.map((section) => (
                   <option key={section.id} value={section.id}>{section.gradeName} · {section.name} · {translateShift(section.shift)}</option>
@@ -183,7 +206,7 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
 
         <label className="block">
           <span className="field-label">Observación</span>
-          <textarea name="notes" maxLength={500} rows={4} className="form-field min-h-[108px] resize-y" placeholder="Detalle administrativo o novedad de inscripción" />
+          <textarea name="notes" maxLength={500} rows={4} defaultValue={initialValues?.notes ?? ''} className="form-field min-h-[108px] resize-y" placeholder="Detalle administrativo o novedad de inscripción" />
         </label>
 
         {state.message ? <p className={`text-sm ${state.success ? 'status-good' : 'status-bad'}`}>{state.message}</p> : null}
@@ -195,7 +218,7 @@ export function EnrollmentFormModal({ open, onClose, activeSchoolYearLabel, stud
             disabled={pending || availableStudents.length === 0 || levels.length === 0 || visibleGrades.length === 0 || visibleSections.length === 0}
             className="primary-button disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {pending ? 'Creando matrícula...' : 'Crear matrícula'}
+            {pending ? (mode === 'create' ? 'Creando matrícula...' : 'Guardando cambios...') : (mode === 'create' ? 'Crear matrícula' : 'Guardar cambios')}
           </button>
         </div>
       </form>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Pencil } from 'lucide-react';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
@@ -34,6 +34,7 @@ type EnrollmentsWorkspaceProps = {
 
 export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingEnrollment, setEditingEnrollment] = useState<EnrollmentRecord | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const enrollments = snapshot?.enrollments ?? [];
@@ -97,6 +98,7 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
                       <th>Ubicación académica</th>
                       <th>Estado</th>
                       <th>Observación</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -120,6 +122,11 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
                         <td>
                           <p className="text-sm text-slate-600">{enrollment.notes || 'Sin observación adicional.'}</p>
                         </td>
+                        <td>
+                          <div className="table-actions">
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingEnrollment(enrollment)} />
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -140,7 +147,20 @@ export function EnrollmentsWorkspace({ snapshot, error }: EnrollmentsWorkspacePr
 
       <EnrollmentFormModal
         open={createOpen}
+        mode="create"
         onClose={() => setCreateOpen(false)}
+        activeSchoolYearLabel={snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}
+        students={students}
+        enrollments={enrollments}
+        levels={levels}
+        grades={grades}
+        sections={sections}
+      />
+      <EnrollmentFormModal
+        open={editingEnrollment !== null}
+        mode="edit"
+        initialValues={editingEnrollment ?? undefined}
+        onClose={() => setEditingEnrollment(null)}
         activeSchoolYearLabel={snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}
         students={students}
         enrollments={enrollments}
