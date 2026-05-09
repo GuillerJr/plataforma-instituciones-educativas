@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import type { GradeEvaluationOption, GradeStudentOption } from './page';
+import type { EvaluationGradeRecord, GradeEvaluationOption, GradeStudentOption } from './page';
 
 type FormState = {
   success: boolean;
@@ -12,19 +12,23 @@ type FormState = {
 
 export function EvaluationGradeFormModal({
   open,
+  mode,
   onClose,
   evaluations,
   students,
+  initialValues,
 }: {
   open: boolean;
+  mode: 'create' | 'edit';
   onClose: () => void;
   evaluations: GradeEvaluationOption[];
   students: GradeStudentOption[];
+  initialValues?: EvaluationGradeRecord;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
-  const [selectedEvaluationId, setSelectedEvaluationId] = useState(evaluations[0]?.id ?? '');
+  const [selectedEvaluationId, setSelectedEvaluationId] = useState(initialValues?.evaluationId ?? evaluations[0]?.id ?? '');
   const selectedEvaluation = useMemo(
     () => evaluations.find((evaluation) => evaluation.id === selectedEvaluationId) ?? evaluations[0],
     [evaluations, selectedEvaluationId],
@@ -47,16 +51,17 @@ export function EvaluationGradeFormModal({
 
     setPending(false);
     setState({ success: false, message: null });
-    setSelectedEvaluationId(evaluations[0]?.id ?? '');
-  }, [open, evaluations]);
+    setSelectedEvaluationId(initialValues?.evaluationId ?? evaluations[0]?.id ?? '');
+    setSelectedStudentId(initialValues?.studentId ?? '');
+  }, [open, evaluations, initialValues]);
 
   useEffect(() => {
     if (!open) return;
 
     if (!eligibleStudents.some((student) => student.id === selectedStudentId)) {
-      setSelectedStudentId(eligibleStudents[0]?.id ?? '');
+      setSelectedStudentId(initialValues?.studentId && eligibleStudents.some((student) => student.id === initialValues.studentId) ? initialValues.studentId : eligibleStudents[0]?.id ?? '');
     }
-  }, [eligibleStudents, open, selectedStudentId]);
+  }, [eligibleStudents, initialValues, open, selectedStudentId]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -76,9 +81,15 @@ export function EvaluationGradeFormModal({
       return;
     }
 
+    if (mode === 'edit' && !initialValues?.id) {
+      setState({ success: false, message: 'No se pudo identificar la calificación a actualizar.' });
+      setPending(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/backend/evaluation-grades', {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? '/api/backend/evaluation-grades' : `/api/backend/evaluation-grades/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -88,13 +99,13 @@ export function EvaluationGradeFormModal({
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible registrar la calificación.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible registrar la calificación.' : 'No fue posible actualizar la calificación.'));
       }
 
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible registrar la calificación.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar la calificación.' });
     } finally {
       setPending(false);
     }
@@ -104,10 +115,12 @@ export function EvaluationGradeFormModal({
     <ModalShell
       open={open}
       onClose={onClose}
-      title="Registrar calificación"
-      description="Asigna una nota a un estudiante que sí pertenezca a la cobertura y al periodo escolar de la evaluación seleccionada."
+      title={mode === 'create' ? 'Registrar calificación' : 'Editar calificación'}
+      description={mode === 'create'
+        ? 'Asigna una nota a un estudiante que sí pertenezca a la cobertura y al periodo escolar de la evaluación seleccionada.'
+        : 'Actualiza evaluación, estudiante, nota, fecha y retroalimentación con la misma validación de cobertura.'}
     >
-      <form action={handleSubmit} className="space-y-5">
+      <form key={`${mode}:${initialValues?.id ?? 'new'}`} action={handleSubmit} className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Evaluación</span>
@@ -142,11 +155,11 @@ export function EvaluationGradeFormModal({
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <label className="block">
               <span className="field-label">Nota obtenida</span>
-              <input name="score" type="number" min={0} max={selectedEvaluation?.maxScore ?? 100} step="0.01" className="form-field" placeholder="8.5" />
+              <input name="score" type="number" min={0} max={selectedEvaluation?.maxScore ?? 100} step="0.01" defaultValue={initialValues?.score ?? ''} className="form-field" placeholder="8.5" />
             </label>
             <label className="block">
               <span className="field-label">Fecha de registro</span>
-              <input name="gradedAt" type="date" className="form-field" />
+              <input name="gradedAt" type="date" defaultValue={initialValues?.gradedAt?.slice(0, 10) ?? ''} className="form-field" />
             </label>
             <label className="block">
               <span className="field-label">Puntaje máximo</span>
@@ -162,7 +175,7 @@ export function EvaluationGradeFormModal({
             </label>
             <label className="block md:col-span-2">
               <span className="field-label">Retroalimentación</span>
-              <textarea name="feedback" rows={3} maxLength={600} className="form-field min-h-[104px]" placeholder="Observaciones de avance, refuerzo o desempeño del estudiante" />
+              <textarea name="feedback" rows={3} maxLength={600} defaultValue={initialValues?.feedback ?? ''} className="form-field min-h-[104px]" placeholder="Observaciones de avance, refuerzo o desempeño del estudiante" />
             </label>
           </div>
         </div>
@@ -172,7 +185,7 @@ export function EvaluationGradeFormModal({
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">Cancelar</button>
           <button type="submit" disabled={pending || evaluations.length === 0 || eligibleStudents.length === 0} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-            {pending ? 'Registrando calificación...' : 'Registrar calificación'}
+            {pending ? (mode === 'create' ? 'Registrando calificación...' : 'Guardando cambios...') : (mode === 'create' ? 'Registrar calificación' : 'Guardar cambios')}
           </button>
         </div>
       </form>

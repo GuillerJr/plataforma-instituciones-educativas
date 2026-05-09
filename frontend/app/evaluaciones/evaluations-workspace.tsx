@@ -61,6 +61,7 @@ export function EvaluationsWorkspace({
   const [createEvaluationOpen, setCreateEvaluationOpen] = useState(false);
   const [editingEvaluation, setEditingEvaluation] = useState<EvaluationRecord | null>(null);
   const [createGradeOpen, setCreateGradeOpen] = useState(false);
+  const [editingGrade, setEditingGrade] = useState<EvaluationGradeRecord | null>(null);
   const [evaluationsPage, setEvaluationsPage] = useState(1);
   const [gradesPage, setGradesPage] = useState(1);
   const evaluationsPageSize = 6;
@@ -204,6 +205,7 @@ export function EvaluationsWorkspace({
                       <th>Materia y docente</th>
                       <th>Resultado</th>
                       <th>Retroalimentación</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -227,6 +229,11 @@ export function EvaluationsWorkspace({
                         </td>
                         <td>
                           <p className="text-sm text-slate-600">{grade.feedback || 'Sin retroalimentación adicional.'}</p>
+                        </td>
+                        <td>
+                          <div className="table-actions">
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingGrade(grade)} />
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -262,7 +269,16 @@ export function EvaluationsWorkspace({
 
       <EvaluationGradeFormModal
         open={createGradeOpen}
+        mode="create"
         onClose={() => setCreateGradeOpen(false)}
+        evaluations={evaluationOptions}
+        students={studentOptions}
+      />
+      <EvaluationGradeFormModal
+        open={editingGrade !== null}
+        mode="edit"
+        initialValues={editingGrade ?? undefined}
+        onClose={() => setEditingGrade(null)}
         evaluations={evaluationOptions}
         students={studentOptions}
       />

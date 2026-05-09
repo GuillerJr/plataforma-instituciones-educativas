@@ -16,6 +16,10 @@ const gradeSchema = z.object({
   gradedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().or(z.literal('')),
 });
 
+const gradeParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 const gradeFiltersSchema = z.object({
   evaluationId: z.string().uuid().optional(),
   studentId: z.string().uuid().optional(),
@@ -407,6 +411,107 @@ router.post('/', requireAuth, async (request, response) => {
     await client.query('COMMIT');
 
     return response.status(201).json(successResponse('Calificación registrada.', {
+      ...result.rows[0],
+      evaluationTitle: evaluation.title,
+      evaluationType: evaluation.evaluationType,
+      periodLabel: evaluation.periodLabel,
+      maxScore: evaluation.maxScore,
+      schoolYearLabel: evaluation.schoolYearLabel,
+      studentName: enrollment.studentName,
+      studentDocument: enrollment.studentDocument,
+      studentEnrollmentCode: enrollment.studentEnrollmentCode,
+      teacherId: evaluation.teacherId,
+      subjectId: evaluation.subjectId,
+      levelId: evaluation.levelId,
+      gradeId: evaluation.gradeId,
+      sectionId: evaluation.sectionId,
+      teacherName: evaluation.teacherName,
+      subjectName: evaluation.subjectName,
+      subjectCode: evaluation.subjectCode,
+      levelName: evaluation.levelName,
+      gradeName: evaluation.gradeName,
+      sectionName: evaluation.sectionName,
+    }));
+  } catch (error) {
+    await client.query('ROLLBACK');
+
+    if (error instanceof Error && (
+      error.message.includes('no existe en la institución actual')
+      || error.message.includes('no tiene una matrícula activa')
+      || error.message.includes('no pertenece')
+      || error.message.includes('no puede superar el puntaje máximo')
+    )) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canWorkOnEvaluations(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar calificaciones.' });
+  }
+
+  const params = gradeParamsSchema.parse(request.params);
+  const payload = gradeSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const evaluation = await resolveEvaluation(client, institution.id, payload.evaluationId);
+    const enrollment = await resolveEligibleEnrollment(client, institution.id, payload.studentId, evaluation);
+
+    if (payload.score > evaluation.maxScore) {
+      throw new Error(`La nota no puede superar el puntaje máximo de ${evaluation.maxScore}.`);
+    }
+
+    const result = await client.query(
+      `
+        UPDATE edu_evaluation_grades
+        SET
+          evaluation_id = $1,
+          student_id = $2,
+          enrollment_id = $3,
+          score = $4,
+          feedback = $5,
+          graded_at = $6,
+          updated_at = NOW()
+        WHERE id = $7 AND institution_id = $8
+        RETURNING
+          id,
+          evaluation_id AS "evaluationId",
+          student_id AS "studentId",
+          enrollment_id AS "enrollmentId",
+          score::float8 AS "score",
+          feedback,
+          graded_at AS "gradedAt",
+          created_at AS "createdAt"
+      `,
+      [
+        payload.evaluationId,
+        payload.studentId,
+        enrollment.enrollmentId,
+        payload.score,
+        payload.feedback?.trim() || null,
+        payload.gradedAt?.trim() || new Date().toISOString().slice(0, 10),
+        params.id,
+        institution.id,
+      ],
+    );
+
+    if (!result.rows[0]) {
+      await client.query('ROLLBACK');
+      return response.status(404).json({ success: false, message: 'La calificación seleccionada no existe en la institución actual.' });
+    }
+
+    await client.query('COMMIT');
+
+    return response.json(successResponse('Calificación actualizada.', {
       ...result.rows[0],
       evaluationTitle: evaluation.title,
       evaluationType: evaluation.evaluationType,
