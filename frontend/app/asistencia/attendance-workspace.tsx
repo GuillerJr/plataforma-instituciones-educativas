@@ -51,14 +51,14 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
   const enrollments = snapshot?.options.enrollments ?? [];
 
   const uniqueDates = useMemo(
-    () => Array.from(new Set(records.map((record) => record.attendanceDate))),
+    () => Array.from(new Set(records.map((record) => normalizeDateValue(record.attendanceDate)))),
     [records],
   );
 
   const filteredRecords = useMemo(
     () => records.filter((record) => {
       if (selectedSectionId !== 'all' && record.sectionId !== selectedSectionId) return false;
-      if (selectedDate !== 'all' && record.attendanceDate !== selectedDate) return false;
+      if (selectedDate !== 'all' && normalizeDateValue(record.attendanceDate) !== selectedDate) return false;
       return true;
     }),
     [records, selectedDate, selectedSectionId],
@@ -159,7 +159,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
                           <p className="mt-1 text-sm text-slate-500">{record.studentDocument} · {record.studentEnrollmentCode}</p>
                         </td>
                         <td>
-                          <p className="font-medium text-slate-950">{formatDate(record.attendanceDate)}</p>
+                          <p className="whitespace-nowrap font-medium text-slate-950">{formatDate(record.attendanceDate)}</p>
                           <p className="mt-1 text-sm text-slate-500">{record.schoolYearLabel}</p>
                         </td>
                         <td>
@@ -227,7 +227,11 @@ function translateShift(shift: AttendanceRecord['shift']) {
 }
 
 function formatDate(value: string) {
-  const [year, month, day] = value.split('-');
+  const [year, month, day] = normalizeDateValue(value).split('-');
   if (!year || !month || !day) return value;
   return `${day}/${month}/${year}`;
+}
+
+function normalizeDateValue(value: string) {
+  return value.split('T')[0] ?? value;
 }

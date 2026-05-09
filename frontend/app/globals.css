@@ -331,6 +331,9 @@ video {
 
   .info-chip {
     @apply inline-flex items-center rounded-full border border-slate-200/95 bg-white/90 px-2.5 py-1 text-[11px] font-semibold tracking-[0.02em] text-slate-600 shadow-[0_6px_16px_rgba(8,35,63,0.03)];
+    overflow-wrap: normal;
+    white-space: nowrap;
+    word-break: normal;
   }
 
   .action-button {
@@ -408,7 +411,7 @@ video {
   }
 
   .table-scroller.table-scroller-fluid {
-    overflow-x: clip;
+    overflow-x: auto;
   }
 
   .table-scroller::-webkit-scrollbar {
@@ -851,7 +854,7 @@ video {
   }
 
   .app-content-shell {
-    padding-top: calc(var(--app-topbar-offset, 7rem) + 1rem);
+    padding-top: 1rem;
   }
 
   .app-main > div::before {
@@ -1961,6 +1964,22 @@ video {
   font-weight: 700 !important;
 }
 
+.app-frame .workspace-prelude-primary :is(h2, .table-title) {
+  color: #ffffff !important;
+}
+
+.app-frame .workspace-prelude-primary p {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.app-frame .workspace-prelude-primary :is(.text-white, .text-white\/72, .text-white\/60, .text-white\/55) {
+  color: inherit !important;
+}
+
+.app-frame .workspace-prelude-primary .text-white {
+  color: #ffffff !important;
+}
+
 .app-frame .table-subtitle,
 .app-frame .section-copy,
 .app-frame .text-muted,
@@ -2219,7 +2238,7 @@ video {
   }
 
   .app-frame .app-content-shell {
-    padding-top: calc(var(--app-topbar-offset, 7rem) + 1rem);
+    padding-top: 1rem;
   }
 
   .app-frame :is(.workspace-hero, .section-grid-card, .surface-panel, .table-shell, .table-row-card, .modal-panel) {
@@ -2245,6 +2264,11 @@ video {
     font-size: 0.8125rem !important;
   }
 
+  .app-frame .data-table-fluid {
+    min-width: 42rem;
+    table-layout: auto;
+  }
+
   .app-frame .data-table thead th,
   .app-frame .data-table tbody td {
     padding-left: 0.875rem !important;
@@ -2266,13 +2290,13 @@ video {
 
 @media (min-width: 640px) {
   .app-frame .app-content-shell {
-    padding-top: calc(var(--app-topbar-offset, 7rem) + 1.25rem);
+    padding-top: 1.25rem;
   }
 }
 
 @media (min-width: 1024px) {
   .app-frame .app-content-shell {
-    padding-top: calc(var(--app-topbar-offset, 7rem) + 1.5rem);
+    padding-top: 1.5rem;
   }
 }
 
@@ -2323,10 +2347,6 @@ video {
 @media (min-width: 1024px) {
   .app-frame .app-sidebar-panel {
     width: var(--app-sidebar-width) !important;
-  }
-
-  .app-frame .app-main {
-    padding-left: var(--app-sidebar-width) !important;
   }
 
   .app-frame .topbar-surface {

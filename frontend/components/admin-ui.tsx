@@ -86,7 +86,7 @@ export function WorkspacePrelude({
 }) {
   return (
     <section className="grid gap-5 xl:grid-cols-[1.02fr_0.98fr]">
-      <div className="overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#0f223d_0%,#17345f_100%)] text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)]">
+      <div className="workspace-prelude-primary overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#0f223d_0%,#17345f_100%)] text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)]">
         <div className="border-b border-white/10 px-5 py-5 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>

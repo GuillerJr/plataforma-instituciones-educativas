@@ -65,7 +65,7 @@ export function AttendanceFormModal({ open, onClose, initialRecord, activeSchool
 
     setPending(false);
     setState({ success: false, message: null });
-    setAttendanceDate(initialRecord?.attendanceDate ?? new Date().toISOString().slice(0, 10));
+    setAttendanceDate(initialRecord ? normalizeDateValue(initialRecord.attendanceDate) : new Date().toISOString().slice(0, 10));
     setSelectedLevelId(defaultLevelId);
     setSelectedGradeId(defaultGradeId);
     setSelectedSectionId(initialRecord?.sectionId ?? defaultSectionId);
@@ -98,7 +98,7 @@ export function AttendanceFormModal({ open, onClose, initialRecord, activeSchool
     if (!open) return;
 
     const nextEntries = roster.map((enrollment) => {
-      const existingRecord = records.find((record) => record.enrollmentId === enrollment.enrollmentId && record.attendanceDate === attendanceDate);
+      const existingRecord = records.find((record) => record.enrollmentId === enrollment.enrollmentId && normalizeDateValue(record.attendanceDate) === attendanceDate);
 
       return {
         enrollmentId: enrollment.enrollmentId,
@@ -111,7 +111,7 @@ export function AttendanceFormModal({ open, onClose, initialRecord, activeSchool
   }, [attendanceDate, open, records, roster]);
 
   const selectedSection = sections.find((section) => section.id === selectedSectionId);
-  const existingRecordsCount = roster.filter((enrollment) => records.some((record) => record.enrollmentId === enrollment.enrollmentId && record.attendanceDate === attendanceDate)).length;
+  const existingRecordsCount = roster.filter((enrollment) => records.some((record) => record.enrollmentId === enrollment.enrollmentId && normalizeDateValue(record.attendanceDate) === attendanceDate)).length;
 
   function updateEntry(enrollmentId: string, patch: Partial<AttendanceDraftEntry>) {
     setEntries((current) => current.map((entry) => (entry.enrollmentId === enrollmentId ? { ...entry, ...patch } : entry)));
@@ -309,4 +309,8 @@ function translateShift(shift: AttendanceAcademicSection['shift']) {
   if (shift === 'matutina') return 'Matutina';
   if (shift === 'vespertina') return 'Vespertina';
   return 'Por definir';
+}
+
+function normalizeDateValue(value: string) {
+  return value.split('T')[0] ?? value;
 }
