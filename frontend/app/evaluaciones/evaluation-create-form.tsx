@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import type { EvaluationAssignmentOption, EvaluationType } from './page';
+import type { EvaluationAssignmentOption, EvaluationRecord, EvaluationType } from './page';
 
 type FormState = {
   success: boolean;
@@ -22,19 +22,23 @@ const evaluationTypeOptions: Array<{ value: EvaluationType; label: string }> = [
 
 export function EvaluationFormModal({
   open,
+  mode,
   onClose,
   assignments,
+  initialValues,
 }: {
   open: boolean;
+  mode: 'create' | 'edit';
   onClose: () => void;
   assignments: EvaluationAssignmentOption[];
+  initialValues?: EvaluationRecord;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
   const activeAssignments = useMemo(
-    () => assignments.filter((assignment) => assignment.teacherStatus === 'active' && assignment.subjectStatus === 'active'),
-    [assignments],
+    () => assignments.filter((assignment) => assignment.id === initialValues?.academicAssignmentId || (assignment.teacherStatus === 'active' && assignment.subjectStatus === 'active')),
+    [assignments, initialValues?.academicAssignmentId],
   );
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(activeAssignments[0]?.id ?? '');
 
@@ -48,8 +52,8 @@ export function EvaluationFormModal({
 
     setPending(false);
     setState({ success: false, message: null });
-    setSelectedAssignmentId(activeAssignments[0]?.id ?? '');
-  }, [open, activeAssignments]);
+    setSelectedAssignmentId(initialValues?.academicAssignmentId ?? activeAssignments[0]?.id ?? '');
+  }, [open, activeAssignments, initialValues]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -73,9 +77,15 @@ export function EvaluationFormModal({
       return;
     }
 
+    if (mode === 'edit' && !initialValues?.id) {
+      setState({ success: false, message: 'No se pudo identificar la evaluación a actualizar.' });
+      setPending(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/backend/evaluations', {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? '/api/backend/evaluations' : `/api/backend/evaluations/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -85,13 +95,13 @@ export function EvaluationFormModal({
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible crear la evaluación.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible crear la evaluación.' : 'No fue posible actualizar la evaluación.'));
       }
 
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear la evaluación.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar la evaluación.' });
     } finally {
       setPending(false);
     }
@@ -101,10 +111,12 @@ export function EvaluationFormModal({
     <ModalShell
       open={open}
       onClose={onClose}
-      title="Registrar evaluación"
-      description="Crea una evaluación directamente sobre una asignación académica ya existente para mantener coherencia con materia, docente y cobertura real."
+      title={mode === 'create' ? 'Registrar evaluación' : 'Editar evaluación'}
+      description={mode === 'create'
+        ? 'Crea una evaluación directamente sobre una asignación académica ya existente para mantener coherencia con materia, docente y cobertura real.'
+        : 'Actualiza asignación, título, periodo, puntaje y descripción del instrumento evaluativo.'}
     >
-      <form action={handleSubmit} className="space-y-5">
+      <form key={`${mode}:${initialValues?.id ?? 'new'}`} action={handleSubmit} className="space-y-5">
         <label className="block">
           <span className="field-label">Asignación académica</span>
           <select name="academicAssignmentId" value={selectedAssignmentId} onChange={(event) => setSelectedAssignmentId(event.target.value)} className="form-field">
@@ -127,11 +139,11 @@ export function EvaluationFormModal({
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <label className="block md:col-span-2">
               <span className="field-label">Título de la evaluación</span>
-              <input name="title" className="form-field" placeholder="Prueba parcial de Matemática" />
+              <input name="title" defaultValue={initialValues?.title ?? ''} className="form-field" placeholder="Prueba parcial de Matemática" />
             </label>
             <label className="block">
               <span className="field-label">Tipo</span>
-              <select name="evaluationType" defaultValue={evaluationTypeOptions[0]?.value} className="form-field">
+              <select name="evaluationType" defaultValue={initialValues?.evaluationType ?? evaluationTypeOptions[0]?.value} className="form-field">
                 {evaluationTypeOptions.map((option) => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
@@ -139,19 +151,19 @@ export function EvaluationFormModal({
             </label>
             <label className="block">
               <span className="field-label">Periodo</span>
-              <input name="periodLabel" className="form-field" placeholder="Primer quimestre" defaultValue="Primer quimestre" />
+              <input name="periodLabel" className="form-field" placeholder="Primer quimestre" defaultValue={initialValues?.periodLabel ?? 'Primer quimestre'} />
             </label>
             <label className="block">
               <span className="field-label">Fecha programada</span>
-              <input name="dueDate" type="date" className="form-field" />
+              <input name="dueDate" type="date" defaultValue={initialValues?.dueDate?.slice(0, 10) ?? ''} className="form-field" />
             </label>
             <label className="block">
               <span className="field-label">Puntaje máximo</span>
-              <input name="maxScore" type="number" min={1} max={100} step="0.01" className="form-field" placeholder="10" defaultValue="10" />
+              <input name="maxScore" type="number" min={1} max={100} step="0.01" className="form-field" placeholder="10" defaultValue={initialValues?.maxScore ?? 10} />
             </label>
             <label className="block">
               <span className="field-label">Peso porcentual</span>
-              <input name="weightPercentage" type="number" min={0} max={100} step="0.01" className="form-field" placeholder="20" />
+              <input name="weightPercentage" type="number" min={0} max={100} step="0.01" defaultValue={initialValues?.weightPercentage ?? ''} className="form-field" placeholder="20" />
             </label>
             <label className="block">
               <span className="field-label">Referencia</span>
@@ -163,7 +175,7 @@ export function EvaluationFormModal({
             </label>
             <label className="block md:col-span-2">
               <span className="field-label">Descripción</span>
-              <textarea name="description" rows={3} maxLength={600} className="form-field min-h-[104px]" placeholder="Contexto, objetivo o criterio visible para coordinación académica" />
+              <textarea name="description" rows={3} maxLength={600} defaultValue={initialValues?.description ?? ''} className="form-field min-h-[104px]" placeholder="Contexto, objetivo o criterio visible para coordinación académica" />
             </label>
           </div>
         </div>
@@ -173,7 +185,7 @@ export function EvaluationFormModal({
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">Cancelar</button>
           <button type="submit" disabled={pending || activeAssignments.length === 0} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-            {pending ? 'Creando evaluación...' : 'Crear evaluación'}
+            {pending ? (mode === 'create' ? 'Creando evaluación...' : 'Guardando cambios...') : (mode === 'create' ? 'Crear evaluación' : 'Guardar cambios')}
           </button>
         </div>
       </form>

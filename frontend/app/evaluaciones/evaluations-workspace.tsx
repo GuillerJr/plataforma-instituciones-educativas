@@ -59,6 +59,7 @@ export function EvaluationsWorkspace({
   gradesError,
 }: EvaluationsWorkspaceProps) {
   const [createEvaluationOpen, setCreateEvaluationOpen] = useState(false);
+  const [editingEvaluation, setEditingEvaluation] = useState<EvaluationRecord | null>(null);
   const [createGradeOpen, setCreateGradeOpen] = useState(false);
   const [evaluationsPage, setEvaluationsPage] = useState(1);
   const [gradesPage, setGradesPage] = useState(1);
@@ -127,6 +128,7 @@ export function EvaluationsWorkspace({
                       <th>Cobertura</th>
                       <th>Periodo</th>
                       <th>Progreso</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -151,6 +153,11 @@ export function EvaluationsWorkspace({
                         <td>
                           <p className="font-medium text-slate-950">{evaluation.registeredGrades} calificaciones</p>
                           <p className="mt-1 text-sm text-slate-500">{evaluation.weightPercentage ? `${evaluation.weightPercentage}% del periodo` : 'Peso por definir'}</p>
+                        </td>
+                        <td>
+                          <div className="table-actions">
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingEvaluation(evaluation)} />
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -241,7 +248,15 @@ export function EvaluationsWorkspace({
 
       <EvaluationFormModal
         open={createEvaluationOpen}
+        mode="create"
         onClose={() => setCreateEvaluationOpen(false)}
+        assignments={assignments}
+      />
+      <EvaluationFormModal
+        open={editingEvaluation !== null}
+        mode="edit"
+        initialValues={editingEvaluation ?? undefined}
+        onClose={() => setEditingEvaluation(null)}
         assignments={assignments}
       />
 

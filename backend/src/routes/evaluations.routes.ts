@@ -22,6 +22,10 @@ const evaluationSchema = z.object({
   description: z.string().max(600).optional().or(z.literal('')),
 });
 
+const evaluationParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -285,6 +289,97 @@ router.post('/', requireAuth, async (request, response) => {
       gradeName: assignment.gradeName,
       sectionName: assignment.sectionName,
       registeredGrades: 0,
+    }));
+  } catch (error) {
+    if (error instanceof Error && (
+      error.message.includes('no existe en la institución actual')
+      || error.message.includes('está inactiva')
+    )) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canWorkOnEvaluations(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar evaluaciones.' });
+  }
+
+  const params = evaluationParamsSchema.parse(request.params);
+  const payload = evaluationSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const client = await pool.connect();
+
+  try {
+    const assignment = await resolveAssignment(client, institution.id, payload.academicAssignmentId);
+    const result = await client.query(
+      `
+        UPDATE edu_evaluations
+        SET
+          academic_assignment_id = $1,
+          title = $2,
+          evaluation_type = $3,
+          period_label = $4,
+          due_date = $5,
+          max_score = $6,
+          weight_percentage = $7,
+          description = $8,
+          updated_at = NOW()
+        WHERE id = $9 AND institution_id = $10
+        RETURNING
+          id,
+          academic_assignment_id AS "academicAssignmentId",
+          school_year_label AS "schoolYearLabel",
+          title,
+          evaluation_type AS "evaluationType",
+          period_label AS "periodLabel",
+          due_date AS "dueDate",
+          max_score::float8 AS "maxScore",
+          weight_percentage::float8 AS "weightPercentage",
+          description,
+          created_at AS "createdAt"
+      `,
+      [
+        payload.academicAssignmentId,
+        payload.title.trim(),
+        payload.evaluationType,
+        payload.periodLabel.trim(),
+        payload.dueDate?.trim() || null,
+        payload.maxScore,
+        payload.weightPercentage ?? null,
+        payload.description?.trim() || null,
+        params.id,
+        institution.id,
+      ],
+    );
+
+    if (!result.rows[0]) {
+      return response.status(404).json({ success: false, message: 'La evaluación seleccionada no existe en la institución actual.' });
+    }
+
+    const gradesResult = await client.query(
+      `SELECT COUNT(*)::int AS total FROM edu_evaluation_grades WHERE evaluation_id = $1`,
+      [params.id],
+    );
+
+    return response.json(successResponse('Evaluación actualizada.', {
+      ...result.rows[0],
+      teacherId: assignment.teacherId,
+      subjectId: assignment.subjectId,
+      levelId: assignment.levelId,
+      gradeId: assignment.gradeId,
+      sectionId: assignment.sectionId,
+      teacherName: assignment.teacherName,
+      subjectName: assignment.subjectName,
+      subjectCode: assignment.subjectCode,
+      levelName: assignment.levelName,
+      gradeName: assignment.gradeName,
+      sectionName: assignment.sectionName,
+      registeredGrades: gradesResult.rows[0]?.total ?? 0,
     }));
   } catch (error) {
     if (error instanceof Error && (
