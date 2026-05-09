@@ -42,12 +42,6 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
     setPending(true);
     setState({ success: false, message: null });
 
-    if (mode === 'edit') {
-      setState({ success: false, message: 'La edición quedará habilitada cuando la API exponga actualización de la estructura institucional.' });
-      setPending(false);
-      return;
-    }
-
     const payload = {
       name: String(formData.get('name') ?? '').trim(),
       slug: String(formData.get('slug') ?? '').trim(),
@@ -63,9 +57,15 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
       return;
     }
 
+    if (mode === 'edit' && !initialValues?.id) {
+      setState({ success: false, message: 'No se pudo identificar el registro institucional a actualizar.' });
+      setPending(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/backend/institutions', {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? '/api/backend/institutions' : `/api/backend/institutions/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -75,14 +75,14 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible crear el registro.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible crear el registro.' : 'No fue posible actualizar el registro.'));
       }
 
-      setState({ success: true, message: 'Registro creado correctamente.' });
+      setState({ success: true, message: mode === 'create' ? 'Registro creado correctamente.' : 'Registro actualizado correctamente.' });
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear el registro.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar el registro.' });
     } finally {
       setPending(false);
     }
@@ -95,7 +95,7 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
       title={mode === 'create' ? 'Registrar sede o dato base' : 'Editar registro institucional'}
       description={mode === 'create'
         ? 'Completa los datos principales para crear un registro base o una sede y verlo de inmediato en la tabla actual.'
-        : 'La interfaz de edición ya quedó preparada dentro del modal para activarse apenas exista actualización de la estructura institucional en la API.'}
+        : 'Actualiza los datos principales del registro institucional y refleja el cambio de inmediato en la tabla.'}
     >
       <form action={handleSubmit} className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2">
@@ -129,30 +129,15 @@ export function InstitutionFormModal({ open, mode, onClose, initialValues }: Ins
           <textarea name="address" rows={3} defaultValue={initialValues?.address ?? ''} className="form-field" placeholder="Ciudad, sector y referencia principal" />
         </label>
 
-        {mode === 'edit' ? (
-          <div className="form-cluster border-dashed border-sky-200 text-sm text-slate-700">
-            <p className="font-semibold text-slate-950">Próxima fase</p>
-            <p className="mt-2 leading-6">
-              Este modal ya deja visible la edición con datos precargados. El guardado real se conectará cuando la API exponga el endpoint de actualización.
-            </p>
-          </div>
-        ) : null}
-
         {state.message ? <p className={`text-sm ${state.success ? 'status-good' : 'status-bad'}`}>{state.message}</p> : null}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">
-            {mode === 'create' ? 'Cancelar' : 'Cerrar'}
+            Cancelar
           </button>
-          {mode === 'create' ? (
-            <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-              {pending ? 'Creando registro...' : 'Crear registro'}
-            </button>
-          ) : (
-            <button type="button" disabled className="primary-button cursor-not-allowed opacity-60">
-              Disponible en próxima fase
-            </button>
-          )}
+          <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
+            {pending ? (mode === 'create' ? 'Creando registro...' : 'Guardando cambios...') : (mode === 'create' ? 'Crear registro' : 'Guardar cambios')}
+          </button>
         </div>
       </form>
     </ModalShell>

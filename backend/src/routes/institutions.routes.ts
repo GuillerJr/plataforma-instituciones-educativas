@@ -17,6 +17,10 @@ const institutionSchema = z.object({
   activeSchoolYearLabel: z.string().optional().or(z.literal('')),
 });
 
+const institutionParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 router.get('/', requireAuth, async (request, response) => {
   if (!canManageInstitution(request.auth?.roleCodes)) {
     return response.status(403).json({ success: false, message: 'No tienes permisos para consultar instituciones.' });
@@ -84,6 +88,57 @@ router.post('/', requireAuth, async (request, response) => {
   );
 
   return response.status(201).json(successResponse('Institución creada.', result.rows[0]));
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageInstitution(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar instituciones.' });
+  }
+
+  const params = institutionParamsSchema.parse(request.params);
+  const payload = institutionSchema.parse(request.body);
+  const result = await pool.query(
+    `
+      UPDATE edu_institutions
+      SET
+        name = $1,
+        slug = $2,
+        institution_type = $3,
+        contact_email = $4,
+        contact_phone = $5,
+        address = $6,
+        active_school_year_label = COALESCE(NULLIF($7, ''), active_school_year_label),
+        updated_at = NOW()
+      WHERE id = $8
+      RETURNING
+        id,
+        name,
+        slug,
+        institution_type AS "institutionType",
+        contact_email AS "contactEmail",
+        contact_phone AS "contactPhone",
+        address,
+        active_school_year_label AS "activeSchoolYearLabel",
+        created_at AS "createdAt",
+        updated_at AS "updatedAt"
+    `,
+    [
+      payload.name,
+      payload.slug,
+      payload.institutionType,
+      payload.contactEmail || null,
+      payload.contactPhone || null,
+      payload.address || null,
+      payload.activeSchoolYearLabel || null,
+      params.id,
+    ],
+  );
+
+  if (!result.rows[0]) {
+    return response.status(404).json({ success: false, message: 'La institución seleccionada no existe.' });
+  }
+
+  return response.json(successResponse('Institución actualizada.', result.rows[0]));
 });
 
 export default router;
