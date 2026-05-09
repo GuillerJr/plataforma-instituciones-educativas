@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { UserPlus } from 'lucide-react';
+import { Pencil, UserPlus } from 'lucide-react';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
@@ -32,6 +32,7 @@ type StudentsWorkspaceProps = {
 
 export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<StudentRecord | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const students = snapshot?.students ?? [];
@@ -102,6 +103,7 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
                       <th>Ubicación académica</th>
                       <th>Estado</th>
                       <th>Contacto</th>
+                      {canManage ? <th>Acciones</th> : null}
                     </tr>
                   </thead>
                   <tbody>
@@ -126,6 +128,13 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
                           <p className="text-sm text-slate-600">{student.email || 'Sin correo'}</p>
                           <p className="mt-1 text-sm text-slate-500">{student.phone || 'Sin teléfono'}</p>
                         </td>
+                        {canManage ? (
+                          <td>
+                            <div className="table-actions">
+                              <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingStudent(student)} />
+                            </div>
+                          </td>
+                        ) : null}
                       </tr>
                     ))}
                   </tbody>
@@ -145,13 +154,25 @@ export function StudentsWorkspace({ snapshot, error, canManage }: StudentsWorksp
       </div>
 
       {canManage ? (
-        <StudentFormModal
-          open={createOpen}
-          onClose={() => setCreateOpen(false)}
-          levels={levels}
-          grades={grades}
-          sections={sections}
-        />
+        <>
+          <StudentFormModal
+            open={createOpen}
+            mode="create"
+            onClose={() => setCreateOpen(false)}
+            levels={levels}
+            grades={grades}
+            sections={sections}
+          />
+          <StudentFormModal
+            open={editingStudent !== null}
+            mode="edit"
+            initialValues={editingStudent ?? undefined}
+            onClose={() => setEditingStudent(null)}
+            levels={levels}
+            grades={grades}
+            sections={sections}
+          />
+        </>
       ) : null}
     </>
   );

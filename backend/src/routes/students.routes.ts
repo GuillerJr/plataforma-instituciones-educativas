@@ -20,6 +20,10 @@ const studentSchema = z.object({
   sectionId: z.string().uuid(),
 });
 
+const studentParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -266,6 +270,85 @@ router.post('/', requireAuth, async (request, response) => {
     );
 
     return response.status(201).json(successResponse('Estudiante creado.', {
+      ...result.rows[0],
+      levelName: placement.levelName,
+      gradeName: placement.gradeName,
+      sectionName: placement.sectionName,
+    }));
+  } catch (error) {
+    if (error instanceof Error && (
+      error.message.includes('no existe en la institución actual')
+      || error.message.includes('no coincide con la sección seleccionada')
+    )) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar estudiantes.' });
+  }
+
+  const params = studentParamsSchema.parse(request.params);
+  const payload = studentSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const client = await pool.connect();
+
+  try {
+    const placement = await resolveAcademicPlacement(client, institution.id, payload);
+    const result = await client.query(
+      `
+        UPDATE edu_students
+        SET
+          level_id = $1,
+          grade_id = $2,
+          section_id = $3,
+          full_name = $4,
+          identity_document = UPPER($5),
+          enrollment_code = UPPER($6),
+          email = $7,
+          phone = $8,
+          status = $9,
+          updated_at = NOW()
+        WHERE id = $10 AND institution_id = $11
+        RETURNING
+          id,
+          full_name AS "fullName",
+          identity_document AS "identityDocument",
+          enrollment_code AS "enrollmentCode",
+          email,
+          phone,
+          status,
+          level_id AS "levelId",
+          grade_id AS "gradeId",
+          section_id AS "sectionId",
+          created_at AS "createdAt"
+      `,
+      [
+        placement.levelId,
+        placement.gradeId,
+        placement.sectionId,
+        payload.fullName,
+        payload.identityDocument,
+        payload.enrollmentCode,
+        payload.email?.trim() || null,
+        payload.phone?.trim() || null,
+        payload.status,
+        params.id,
+        institution.id,
+      ],
+    );
+
+    if (!result.rows[0]) {
+      return response.status(404).json({ success: false, message: 'El estudiante seleccionado no existe en la institución actual.' });
+    }
+
+    return response.json(successResponse('Estudiante actualizado.', {
       ...result.rows[0],
       levelName: placement.levelName,
       gradeName: placement.gradeName,
