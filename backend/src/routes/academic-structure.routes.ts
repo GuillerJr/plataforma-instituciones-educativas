@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canManageAcademic, canReadAcademic } from '../utils/access-control.js';
 
 const router = Router();
 
@@ -55,6 +56,10 @@ async function resolveInstitutionId(preferredInstitutionId?: string | null) {
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canReadAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar la estructura académica.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 
   const [levelsResult, gradesResult, sectionsResult] = await Promise.all([
@@ -134,6 +139,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/levels', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear niveles académicos.' });
+  }
+
   const payload = levelSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 
@@ -158,6 +167,10 @@ router.post('/levels', requireAuth, async (request, response) => {
 });
 
 router.post('/grades', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear cursos o grados.' });
+  }
+
   const payload = gradeSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 
@@ -191,6 +204,10 @@ router.post('/grades', requireAuth, async (request, response) => {
 });
 
 router.post('/sections', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear secciones.' });
+  }
+
   const payload = sectionSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 

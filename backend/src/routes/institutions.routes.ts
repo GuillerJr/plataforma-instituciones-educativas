@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canManageInstitution } from '../utils/access-control.js';
 
 const router = Router();
 
@@ -16,7 +17,11 @@ const institutionSchema = z.object({
   activeSchoolYearLabel: z.string().optional().or(z.literal('')),
 });
 
-router.get('/', requireAuth, async (_request, response) => {
+router.get('/', requireAuth, async (request, response) => {
+  if (!canManageInstitution(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar instituciones.' });
+  }
+
   const result = await pool.query(
     `
       SELECT
@@ -39,6 +44,10 @@ router.get('/', requireAuth, async (_request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canManageInstitution(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear instituciones.' });
+  }
+
   const payload = institutionSchema.parse(request.body);
   const result = await pool.query(
     `

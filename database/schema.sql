@@ -130,6 +130,28 @@ CREATE TABLE IF NOT EXISTS edu_students (
   UNIQUE (institution_id, email)
 );
 
+CREATE TABLE IF NOT EXISTS edu_user_profiles (
+  user_id UUID PRIMARY KEY REFERENCES edu_users(id) ON DELETE CASCADE,
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  teacher_id UUID UNIQUE REFERENCES edu_teachers(id) ON DELETE SET NULL,
+  student_id UUID UNIQUE REFERENCES edu_students(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CHECK (teacher_id IS NOT NULL OR student_id IS NOT NULL)
+);
+
+CREATE TABLE IF NOT EXISTS edu_student_guardians (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,
+  student_id UUID NOT NULL REFERENCES edu_students(id) ON DELETE CASCADE,
+  representative_user_id UUID NOT NULL REFERENCES edu_users(id) ON DELETE CASCADE,
+  relationship_label VARCHAR(80) NOT NULL DEFAULT 'Representante',
+  is_primary BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (student_id, representative_user_id)
+);
+
 CREATE TABLE IF NOT EXISTS edu_subjects (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   institution_id UUID NOT NULL REFERENCES edu_institutions(id) ON DELETE CASCADE,

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canManageAcademic } from '../utils/access-control.js';
 
 const router = Router();
 
@@ -129,6 +130,10 @@ async function resolveSection(client: Pick<typeof pool, 'query'>, institutionId:
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar matrículas.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 
   const [enrollmentsResult, studentsResult, levelsResult, gradesResult, sectionsResult] = await Promise.all([
@@ -259,6 +264,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear matrículas.' });
+  }
+
   const payload = enrollmentSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
   const schoolYearLabel = institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString();

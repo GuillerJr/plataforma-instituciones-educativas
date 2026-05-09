@@ -21,6 +21,7 @@ type ProfileTeacherOption = {
   fullName: string;
   email?: string | null;
   status: string;
+  institutionName?: string | null;
 };
 
 type ProfileStudentOption = {
@@ -28,6 +29,7 @@ type ProfileStudentOption = {
   fullName: string;
   enrollmentCode?: string | null;
   status: string;
+  institutionName?: string | null;
 };
 
 type UserCreateFormProps = {
@@ -71,18 +73,26 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
   const [profileOptions, setProfileOptions] = useState<{ teachers: ProfileTeacherOption[]; students: ProfileStudentOption[] }>({ teachers: [], students: [] });
+  const [selectedRoleCodes, setSelectedRoleCodes] = useState<string[]>(initialValues?.roleCodes ?? []);
 
-  const selectedRoles = initialValues?.roleCodes ?? [];
-  const showTeacherLink = useMemo(() => selectedRoles.includes('docente'), [selectedRoles]);
-  const showStudentLink = useMemo(() => selectedRoles.includes('estudiante'), [selectedRoles]);
-  const showRepresentativeLink = useMemo(() => selectedRoles.includes('representante'), [selectedRoles]);
+  const showTeacherLink = useMemo(() => selectedRoleCodes.includes('docente'), [selectedRoleCodes]);
+  const showStudentLink = useMemo(() => selectedRoleCodes.includes('estudiante'), [selectedRoleCodes]);
+  const showRepresentativeLink = useMemo(() => selectedRoleCodes.includes('representante'), [selectedRoleCodes]);
 
   useEffect(() => {
     if (open) {
       setPending(false);
       setState({ success: false, message: null });
+      setSelectedRoleCodes(initialValues?.roleCodes ?? []);
     }
   }, [open, mode, initialValues]);
+
+  function toggleRole(roleCode: string, checked: boolean) {
+    setSelectedRoleCodes((current) => {
+      if (checked) return Array.from(new Set([...current, roleCode]));
+      return current.filter((code) => code !== roleCode);
+    });
+  }
 
   useEffect(() => {
     if (!open || mode !== 'create') return;
@@ -227,7 +237,8 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
                   name="roleCodes"
                   type="checkbox"
                   value={role.code}
-                  defaultChecked={initialValues?.roleCodes.includes(role.code)}
+                  checked={selectedRoleCodes.includes(role.code)}
+                  onChange={(event) => toggleRole(role.code, event.target.checked)}
                   className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-sky-400"
                 />
                 <span>
@@ -252,7 +263,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
                 <select name="teacherId" defaultValue={initialValues?.teacherId ?? ''} className="form-field">
                   <option value="">Sin vínculo docente</option>
                   {profileOptions.teachers.map((teacher) => (
-                    <option key={teacher.id} value={teacher.id}>{teacher.fullName}</option>
+                    <option key={teacher.id} value={teacher.id}>{teacher.fullName}{teacher.institutionName ? ` · ${teacher.institutionName}` : ''}</option>
                   ))}
                 </select>
               </label>
@@ -264,7 +275,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
                 <select name="studentId" defaultValue={initialValues?.studentId ?? ''} className="form-field">
                   <option value="">Sin vínculo estudiantil</option>
                   {profileOptions.students.map((student) => (
-                    <option key={student.id} value={student.id}>{student.fullName} · {student.enrollmentCode ?? 'Sin código'}</option>
+                    <option key={student.id} value={student.id}>{student.fullName} · {student.enrollmentCode ?? 'Sin código'}{student.institutionName ? ` · ${student.institutionName}` : ''}</option>
                   ))}
                 </select>
               </label>
@@ -279,7 +290,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
                       <input name="representativeStudentIds" type="checkbox" value={student.id} className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-sky-400" />
                       <span>
                         <span className="block font-medium text-slate-900">{student.fullName}</span>
-                        <span className="mt-1 block text-xs text-slate-500">{student.enrollmentCode ?? 'Sin código de matrícula'}</span>
+                        <span className="mt-1 block text-xs text-slate-500">{student.enrollmentCode ?? 'Sin código de matrícula'}{student.institutionName ? ` · ${student.institutionName}` : ''}</span>
                       </span>
                     </label>
                   ))}

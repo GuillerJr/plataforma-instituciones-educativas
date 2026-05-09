@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canManageTeaching } from '../utils/access-control.js';
 
 const router = Router();
 
@@ -145,6 +146,10 @@ async function resolveAssignmentContext(
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canManageTeaching(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar docentes.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 
   const [teachersResult, levelsResult, gradesResult, sectionsResult] = await Promise.all([
@@ -266,6 +271,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canManageTeaching(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear docentes.' });
+  }
+
   const payload = teacherSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
   const client = await pool.connect();

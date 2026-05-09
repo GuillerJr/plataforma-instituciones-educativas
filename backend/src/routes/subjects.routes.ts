@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { pool } from '../db/pool.js';
 import { requireAuth } from '../middleware/require-auth.js';
 import { successResponse } from '../utils/api.js';
+import { canManageAcademic, canReadAcademic } from '../utils/access-control.js';
 
 const router = Router();
 
@@ -42,6 +43,10 @@ async function resolveInstitutionId(preferredInstitutionId?: string | null) {
 }
 
 router.get('/', requireAuth, async (request, response) => {
+  if (!canReadAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para consultar materias.' });
+  }
+
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 
   const [subjectsResult, levelsResult] = await Promise.all([
@@ -104,6 +109,10 @@ router.get('/', requireAuth, async (request, response) => {
 });
 
 router.post('/', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para crear materias.' });
+  }
+
   const payload = subjectSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
 

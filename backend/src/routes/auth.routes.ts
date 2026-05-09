@@ -43,13 +43,16 @@ router.post('/login', async (request, response) => {
         u.full_name,
         u.email,
         u.status,
+        up.teacher_id AS "teacherId",
+        up.student_id AS "studentId",
         COALESCE(array_agg(r.code) FILTER (WHERE r.code IS NOT NULL), '{}') AS role_codes
       FROM edu_users u
       LEFT JOIN edu_user_roles ur ON ur.user_id = u.id
       LEFT JOIN edu_roles r ON r.id = ur.role_id
+      LEFT JOIN edu_user_profiles up ON up.user_id = u.id
       WHERE u.email = $1
         AND u.password_hash = crypt($2, u.password_hash)
-      GROUP BY u.id
+      GROUP BY u.id, up.teacher_id, up.student_id
       LIMIT 1
     `,
     [email, payload.password],
@@ -62,6 +65,8 @@ router.post('/login', async (request, response) => {
     email: string;
     status: 'pending' | 'active' | 'blocked';
     role_codes: string[];
+    teacherId?: string | null;
+    studentId?: string | null;
   } | undefined;
 
   if (!user) {
@@ -77,6 +82,8 @@ router.post('/login', async (request, response) => {
     email: user.email,
     roleCodes: user.role_codes,
     institutionId: user.institution_id,
+    teacherId: user.teacherId ?? null,
+    studentId: user.studentId ?? null,
   };
 
   const accessToken = jwt.sign(tokenPayload, env.JWT_ACCESS_SECRET, { expiresIn: '8h' });
@@ -92,6 +99,8 @@ router.post('/login', async (request, response) => {
       status: user.status,
       roleCodes: user.role_codes,
       institutionId: user.institution_id,
+      teacherId: user.teacherId ?? null,
+      studentId: user.studentId ?? null,
     },
   }));
 });
@@ -105,12 +114,15 @@ router.get('/me', requireAuth, async (request, response) => {
         u.full_name,
         u.email,
         u.status,
+        up.teacher_id AS "teacherId",
+        up.student_id AS "studentId",
         COALESCE(array_agg(r.code) FILTER (WHERE r.code IS NOT NULL), '{}') AS role_codes
       FROM edu_users u
       LEFT JOIN edu_user_roles ur ON ur.user_id = u.id
       LEFT JOIN edu_roles r ON r.id = ur.role_id
+      LEFT JOIN edu_user_profiles up ON up.user_id = u.id
       WHERE u.id = $1
-      GROUP BY u.id
+      GROUP BY u.id, up.teacher_id, up.student_id
       LIMIT 1
     `,
     [request.auth?.sub],
@@ -129,6 +141,8 @@ router.get('/me', requireAuth, async (request, response) => {
     status: user.status,
     roleCodes: user.role_codes,
     institutionId: user.institution_id,
+    teacherId: user.teacherId ?? null,
+    studentId: user.studentId ?? null,
   }));
 });
 
