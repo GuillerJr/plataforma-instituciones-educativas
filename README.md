@@ -19,3 +19,16 @@ Proyecto en fase de bootstrap arquitectónico y técnico.
 
 ## Objetivo inmediato
 Levantar una primera base publicable en `educa.hacktrickstore.com` para ver avances reales mientras se construye el sistema.
+
+## Acceso local de desarrollo
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:4100`
+- Health API: `http://localhost:4100/api/system/health`
+
+## Usuarios demo
+
+- Superadmin: `admin@educa.local` / `Educa2026!`
+- Docente: `docente@educa.local` / `Docente2026!`
+- Estudiante: `estudiante@educa.local` / `Estudiante2026!`
+- Representante: `representante@educa.local` / `Representante2026!`

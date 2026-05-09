@@ -484,3 +484,88 @@ VALUES
     'Permiso médico informado por representante y validado por coordinación.'
   )
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO edu_users (
+  id,
+  institution_id,
+  full_name,
+  email,
+  password_hash,
+  status
+)
+VALUES
+  (
+    '20000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000001',
+    'Carlos Andrade',
+    'docente@educa.local',
+    crypt('Docente2026!', gen_salt('bf')),
+    'active'
+  ),
+  (
+    '20000000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000001',
+    'Sofía Cárdenas',
+    'estudiante@educa.local',
+    crypt('Estudiante2026!', gen_salt('bf')),
+    'active'
+  ),
+  (
+    '20000000-0000-0000-0000-000000000004',
+    '10000000-0000-0000-0000-000000000001',
+    'Familia Villacrés',
+    'representante@educa.local',
+    crypt('Representante2026!', gen_salt('bf')),
+    'active'
+  )
+ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO edu_user_roles (user_id, role_id)
+SELECT '20000000-0000-0000-0000-000000000002', r.id
+FROM edu_roles r
+WHERE r.code = 'docente'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO edu_user_roles (user_id, role_id)
+SELECT '20000000-0000-0000-0000-000000000003', r.id
+FROM edu_roles r
+WHERE r.code = 'estudiante'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO edu_user_roles (user_id, role_id)
+SELECT '20000000-0000-0000-0000-000000000004', r.id
+FROM edu_roles r
+WHERE r.code = 'representante'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO edu_user_profiles (user_id, institution_id, teacher_id, student_id)
+VALUES
+  (
+    '20000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000001',
+    '33000000-0000-0000-0000-000000000002',
+    NULL
+  ),
+  (
+    '20000000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000001',
+    NULL,
+    '35000000-0000-0000-0000-000000000001'
+  )
+ON CONFLICT (user_id) DO NOTHING;
+
+INSERT INTO edu_student_guardians (
+  institution_id,
+  student_id,
+  representative_user_id,
+  relationship_label,
+  is_primary
+)
+VALUES (
+  '10000000-0000-0000-0000-000000000001',
+  '35000000-0000-0000-0000-000000000002',
+  '20000000-0000-0000-0000-000000000004',
+  'Representante familiar',
+  TRUE
+)
+ON CONFLICT (student_id, representative_user_id) DO NOTHING;
