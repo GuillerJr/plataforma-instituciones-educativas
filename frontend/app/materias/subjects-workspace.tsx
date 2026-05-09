@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Pencil } from 'lucide-react';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
@@ -29,6 +29,7 @@ type SubjectsWorkspaceProps = {
 
 export function SubjectsWorkspace({ snapshot, error }: SubjectsWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingSubject, setEditingSubject] = useState<SubjectRecord | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const subjects = snapshot?.subjects ?? [];
@@ -89,6 +90,7 @@ export function SubjectsWorkspace({ snapshot, error }: SubjectsWorkspaceProps) {
                       <th>Nivel</th>
                       <th>Carga referencial</th>
                       <th>Estado</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -111,6 +113,11 @@ export function SubjectsWorkspace({ snapshot, error }: SubjectsWorkspaceProps) {
                         <td>
                           <span className="info-chip h-fit">{translateSubjectStatus(subject.status)}</span>
                         </td>
+                        <td>
+                          <div className="table-actions">
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingSubject(subject)} />
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -129,7 +136,14 @@ export function SubjectsWorkspace({ snapshot, error }: SubjectsWorkspaceProps) {
         </DataSection>
       </div>
 
-      <SubjectFormModal open={createOpen} onClose={() => setCreateOpen(false)} levels={levels} />
+      <SubjectFormModal open={createOpen} mode="create" onClose={() => setCreateOpen(false)} levels={levels} />
+      <SubjectFormModal
+        open={editingSubject !== null}
+        mode="edit"
+        initialValues={editingSubject ?? undefined}
+        onClose={() => setEditingSubject(null)}
+        levels={levels}
+      />
     </>
   );
 }

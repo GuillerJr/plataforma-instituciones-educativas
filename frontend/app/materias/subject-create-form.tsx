@@ -3,14 +3,22 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ModalShell } from '../../components/modal-shell';
-import type { SubjectAcademicLevel, SubjectStatus } from './page';
+import type { SubjectAcademicLevel, SubjectRecord, SubjectStatus } from './page';
 
 type FormState = {
   success: boolean;
   message: string | null;
 };
 
-export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onClose: () => void; levels: SubjectAcademicLevel[] }) {
+type SubjectFormModalProps = {
+  open: boolean;
+  mode: 'create' | 'edit';
+  onClose: () => void;
+  levels: SubjectAcademicLevel[];
+  initialValues?: SubjectRecord;
+};
+
+export function SubjectFormModal({ open, mode, onClose, levels, initialValues }: SubjectFormModalProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
@@ -20,7 +28,7 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
 
     setPending(false);
     setState({ success: false, message: null });
-  }, [open]);
+  }, [open, mode, initialValues]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
@@ -42,9 +50,15 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
       return;
     }
 
+    if (mode === 'edit' && !initialValues?.id) {
+      setState({ success: false, message: 'No se pudo identificar la materia a actualizar.' });
+      setPending(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/backend/subjects', {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? '/api/backend/subjects' : `/api/backend/subjects/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,13 +68,13 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible crear la materia.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible crear la materia.' : 'No fue posible actualizar la materia.'));
       }
 
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear la materia.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar la materia.' });
     } finally {
       setPending(false);
     }
@@ -70,33 +84,35 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
     <ModalShell
       open={open}
       onClose={onClose}
-      title="Registrar materia"
-      description="Crea una materia real para la institución activa y, si corresponde, relaciónala con un nivel para facilitar la asignación académica posterior."
+      title={mode === 'create' ? 'Registrar materia' : 'Editar materia'}
+      description={mode === 'create'
+        ? 'Crea una materia real para la institución activa y, si corresponde, relaciónala con un nivel para facilitar la asignación académica posterior.'
+        : 'Actualiza nombre, código, estado, nivel sugerido y carga horaria del catálogo curricular.'}
     >
-      <form action={handleSubmit} className="space-y-5">
+      <form key={`${mode}:${initialValues?.id ?? 'new'}`} action={handleSubmit} className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="field-label">Nombre de la materia</span>
-            <input name="name" required minLength={3} maxLength={140} className="form-field" placeholder="Matemática" />
+            <input name="name" required minLength={3} maxLength={140} defaultValue={initialValues?.name ?? ''} className="form-field" placeholder="Matemática" />
           </label>
           <label className="block">
             <span className="field-label">Código</span>
-            <input name="code" required minLength={2} maxLength={40} className="form-field" placeholder="MAT" />
+            <input name="code" required minLength={2} maxLength={40} defaultValue={initialValues?.code ?? ''} className="form-field" placeholder="MAT" />
           </label>
           <label className="block">
             <span className="field-label">Estado</span>
-            <select name="status" defaultValue="active" className="form-field">
+            <select name="status" defaultValue={initialValues?.status ?? 'active'} className="form-field">
               <option value="active">Activa</option>
               <option value="inactive">Inactiva</option>
             </select>
           </label>
           <label className="block md:col-span-2">
             <span className="field-label">Área</span>
-            <input name="area" maxLength={120} className="form-field" placeholder="Ciencias exactas" />
+            <input name="area" maxLength={120} defaultValue={initialValues?.area ?? ''} className="form-field" placeholder="Ciencias exactas" />
           </label>
           <label className="block">
             <span className="field-label">Nivel sugerido</span>
-            <select name="levelId" defaultValue="" className="form-field">
+            <select name="levelId" defaultValue={initialValues?.levelId ?? ''} className="form-field">
               <option value="">Aplicable a toda la institución</option>
               {levels.map((level) => (
                 <option key={level.id} value={level.id}>{level.name}</option>
@@ -105,7 +121,7 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
           </label>
           <label className="block">
             <span className="field-label">Horas semanales referenciales</span>
-            <input name="weeklyHours" type="number" min={1} max={60} className="form-field" placeholder="5" />
+            <input name="weeklyHours" type="number" min={1} max={60} defaultValue={initialValues?.weeklyHours ?? ''} className="form-field" placeholder="5" />
           </label>
         </div>
 
@@ -114,7 +130,7 @@ export function SubjectFormModal({ open, onClose, levels }: { open: boolean; onC
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">Cancelar</button>
           <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-            {pending ? 'Creando materia...' : 'Crear materia'}
+            {pending ? (mode === 'create' ? 'Creando materia...' : 'Guardando cambios...') : (mode === 'create' ? 'Crear materia' : 'Guardar cambios')}
           </button>
         </div>
       </form>

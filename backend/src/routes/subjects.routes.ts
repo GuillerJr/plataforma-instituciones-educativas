@@ -19,6 +19,10 @@ const subjectSchema = z.object({
   status: z.enum(['active', 'inactive']).default('active'),
 });
 
+const subjectParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -158,6 +162,79 @@ router.post('/', requireAuth, async (request, response) => {
   );
 
   return response.status(201).json(successResponse('Materia creada.', {
+    ...result.rows[0],
+    levelName,
+  }));
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar materias.' });
+  }
+
+  const params = subjectParamsSchema.parse(request.params);
+  const payload = subjectSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+
+  let levelName: string | null = null;
+
+  if (payload.levelId) {
+    const levelResult = await pool.query(
+      `SELECT id, name FROM edu_academic_levels WHERE id = $1 AND institution_id = $2 LIMIT 1`,
+      [payload.levelId, institution.id],
+    );
+
+    if (!levelResult.rows[0]) {
+      return response.status(400).json({ success: false, message: 'El nivel seleccionado no existe en la institución actual.' });
+    }
+
+    levelName = levelResult.rows[0].name as string;
+  }
+
+  const result = await pool.query(
+    `
+      UPDATE edu_subjects
+      SET
+        level_id = $1,
+        name = $2,
+        code = UPPER($3),
+        area = $4,
+        weekly_hours = $5,
+        status = $6,
+        updated_at = NOW()
+      WHERE id = $7 AND institution_id = $8
+      RETURNING
+        id,
+        level_id AS "levelId",
+        name,
+        code,
+        area,
+        weekly_hours AS "weeklyHours",
+        status,
+        (
+          SELECT COUNT(*)::int
+          FROM edu_academic_assignments aa
+          WHERE aa.subject_id = edu_subjects.id
+        ) AS "assignmentsCount",
+        created_at AS "createdAt"
+    `,
+    [
+      payload.levelId || null,
+      payload.name,
+      payload.code,
+      payload.area?.trim() || null,
+      payload.weeklyHours ?? null,
+      payload.status,
+      params.id,
+      institution.id,
+    ],
+  );
+
+  if (!result.rows[0]) {
+    return response.status(404).json({ success: false, message: 'La materia seleccionada no existe en la institución actual.' });
+  }
+
+  return response.json(successResponse('Materia actualizada.', {
     ...result.rows[0],
     levelName,
   }));
