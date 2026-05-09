@@ -20,6 +20,10 @@ const assignmentSchema = z.object({
   notes: z.string().max(500).optional().or(z.literal('')),
 });
 
+const assignmentParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -332,6 +336,84 @@ router.post('/', requireAuth, async (request, response) => {
     );
 
     return response.status(201).json(successResponse('Asignación académica creada.', {
+      ...result.rows[0],
+      teacherName: assignmentContext.teacherName,
+      subjectName: assignmentContext.subjectName,
+      subjectCode: assignmentContext.subjectCode,
+      levelName: assignmentContext.levelName,
+      gradeName: assignmentContext.gradeName,
+      sectionName: assignmentContext.sectionName,
+    }));
+  } catch (error) {
+    if (error instanceof Error && (
+      error.message.includes('no existe')
+      || error.message.includes('no coincide')
+      || error.message.includes('pertenece a otro nivel')
+      || error.message.includes('no corresponde al curso o grado indicado')
+    )) {
+      return response.status(400).json({ success: false, message: error.message });
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar asignaciones académicas.' });
+  }
+
+  const params = assignmentParamsSchema.parse(request.params);
+  const payload = assignmentSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const client = await pool.connect();
+
+  try {
+    const assignmentContext = await resolveAssignmentReferences(client, institution.id, payload);
+    const result = await client.query(
+      `
+        UPDATE edu_academic_assignments
+        SET
+          teacher_id = $1,
+          subject_id = $2,
+          level_id = $3,
+          grade_id = $4,
+          section_id = $5,
+          weekly_hours = $6,
+          notes = $7,
+          updated_at = NOW()
+        WHERE id = $8 AND institution_id = $9
+        RETURNING
+          id,
+          teacher_id AS "teacherId",
+          subject_id AS "subjectId",
+          level_id AS "levelId",
+          grade_id AS "gradeId",
+          section_id AS "sectionId",
+          weekly_hours AS "weeklyHours",
+          notes,
+          created_at AS "createdAt"
+      `,
+      [
+        payload.teacherId,
+        payload.subjectId,
+        assignmentContext.levelId,
+        assignmentContext.gradeId,
+        assignmentContext.sectionId,
+        payload.weeklyHours ?? null,
+        payload.notes?.trim() || null,
+        params.id,
+        institution.id,
+      ],
+    );
+
+    if (!result.rows[0]) {
+      return response.status(404).json({ success: false, message: 'La asignación académica seleccionada no existe en la institución actual.' });
+    }
+
+    return response.json(successResponse('Asignación académica actualizada.', {
       ...result.rows[0],
       teacherName: assignmentContext.teacherName,
       subjectName: assignmentContext.subjectName,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Link2 } from 'lucide-react';
+import { Link2, Pencil } from 'lucide-react';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
@@ -40,6 +40,7 @@ type AcademicAssignmentsWorkspaceProps = {
 
 export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssignmentsWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingAssignment, setEditingAssignment] = useState<AcademicAssignmentRecord | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const assignments = snapshot?.assignments ?? [];
@@ -104,6 +105,7 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
                       <th>Cobertura académica</th>
                       <th>Horas</th>
                       <th>Notas</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -127,6 +129,11 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
                         <td>
                           <p className="text-sm text-slate-600">{assignment.notes || 'Sin notas adicionales'}</p>
                         </td>
+                        <td>
+                          <div className="table-actions">
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingAssignment(assignment)} />
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -147,7 +154,19 @@ export function AcademicAssignmentsWorkspace({ snapshot, error }: AcademicAssign
 
       <AcademicAssignmentFormModal
         open={createOpen}
+        mode="create"
         onClose={() => setCreateOpen(false)}
+        teachers={teachers}
+        subjects={subjects}
+        levels={levels}
+        grades={grades}
+        sections={sections}
+      />
+      <AcademicAssignmentFormModal
+        open={editingAssignment !== null}
+        mode="edit"
+        initialValues={editingAssignment ?? undefined}
+        onClose={() => setEditingAssignment(null)}
         teachers={teachers}
         subjects={subjects}
         levels={levels}
