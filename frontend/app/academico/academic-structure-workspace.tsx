@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { CalendarRange, GraduationCap, School } from 'lucide-react';
+import { CalendarRange, GraduationCap, Pencil, School } from 'lucide-react';
 import { DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
@@ -32,6 +32,9 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
   const [levelOpen, setLevelOpen] = useState(false);
   const [gradeOpen, setGradeOpen] = useState(false);
   const [sectionOpen, setSectionOpen] = useState(false);
+  const [editingLevel, setEditingLevel] = useState<AcademicLevel | null>(null);
+  const [editingGrade, setEditingGrade] = useState<AcademicGrade | null>(null);
+  const [editingSection, setEditingSection] = useState<AcademicSection | null>(null);
   const [levelsPage, setLevelsPage] = useState(1);
   const [gradesPage, setGradesPage] = useState(1);
   const [sectionsPage, setSectionsPage] = useState(1);
@@ -107,6 +110,7 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                 <th>Etapa</th>
                 <th>Orden</th>
                 <th>Cobertura</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -124,6 +128,11 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                   </td>
                   <td>
                     <p className="text-sm text-slate-600">{level.gradesCount} cursos o grados · {level.sectionsCount} secciones</p>
+                  </td>
+                  <td>
+                    <div className="table-actions">
+                      <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingLevel(level)} />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -153,6 +162,7 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                 <th>Nivel</th>
                 <th>Orden</th>
                 <th>Secciones</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -170,6 +180,11 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                   </td>
                   <td>
                     <span className="info-chip h-fit">{grade.sectionsCount} activas</span>
+                  </td>
+                  <td>
+                    <div className="table-actions">
+                      <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingGrade(grade)} />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -200,6 +215,7 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                 <th>Nivel</th>
                 <th>Jornada</th>
                 <th>Capacidad</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -221,6 +237,11 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
                   <td>
                     <p className="text-sm text-slate-600">{section.capacity ?? 'Por definir'}</p>
                   </td>
+                  <td>
+                    <div className="table-actions">
+                      <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingSection(section)} />
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -228,9 +249,29 @@ export function AcademicStructureWorkspace({ snapshot, error }: AcademicStructur
         </EntityTable>
       </div>
 
-      <LevelFormModal open={levelOpen} onClose={() => setLevelOpen(false)} />
-      <GradeFormModal open={gradeOpen} onClose={() => setGradeOpen(false)} levels={levels} />
-      <SectionFormModal open={sectionOpen} onClose={() => setSectionOpen(false)} grades={grades} />
+      <LevelFormModal open={levelOpen} mode="create" onClose={() => setLevelOpen(false)} />
+      <LevelFormModal
+        open={editingLevel !== null}
+        mode="edit"
+        initialValues={editingLevel ?? undefined}
+        onClose={() => setEditingLevel(null)}
+      />
+      <GradeFormModal open={gradeOpen} mode="create" onClose={() => setGradeOpen(false)} levels={levels} />
+      <GradeFormModal
+        open={editingGrade !== null}
+        mode="edit"
+        initialValues={editingGrade ?? undefined}
+        onClose={() => setEditingGrade(null)}
+        levels={levels}
+      />
+      <SectionFormModal open={sectionOpen} mode="create" onClose={() => setSectionOpen(false)} grades={grades} />
+      <SectionFormModal
+        open={editingSection !== null}
+        mode="edit"
+        initialValues={editingSection ?? undefined}
+        onClose={() => setEditingSection(null)}
+        grades={grades}
+      />
     </>
   );
 }

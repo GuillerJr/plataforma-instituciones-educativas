@@ -32,6 +32,10 @@ const sectionSchema = z.object({
   ).optional(),
 });
 
+const academicEntityParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 async function resolveInstitutionId(preferredInstitutionId?: string | null) {
   if (preferredInstitutionId) {
     const institution = await pool.query(
@@ -98,7 +102,7 @@ router.get('/', requireAuth, async (request, response) => {
         INNER JOIN edu_academic_levels l ON l.id = g.level_id
         LEFT JOIN edu_academic_sections s ON s.grade_id = g.id
         WHERE g.institution_id = $1
-        GROUP BY g.id, l.name
+        GROUP BY g.id, l.name, l.sort_order
         ORDER BY l.sort_order ASC, g.sort_order ASC, g.created_at ASC
       `,
       [institution.id],
@@ -166,6 +170,54 @@ router.post('/levels', requireAuth, async (request, response) => {
   return response.status(201).json(successResponse('Nivel creado.', result.rows[0]));
 });
 
+router.patch('/levels/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar niveles académicos.' });
+  }
+
+  const params = academicEntityParamsSchema.parse(request.params);
+  const payload = levelSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+
+  const result = await pool.query(
+    `
+      UPDATE edu_academic_levels
+      SET
+        name = $1,
+        code = UPPER($2),
+        educational_stage = $3,
+        sort_order = $4,
+        updated_at = NOW()
+      WHERE id = $5 AND institution_id = $6
+      RETURNING
+        id,
+        name,
+        code,
+        educational_stage AS "educationalStage",
+        sort_order AS "sortOrder",
+        (
+          SELECT COUNT(*)::int
+          FROM edu_academic_grades g
+          WHERE g.level_id = edu_academic_levels.id
+        ) AS "gradesCount",
+        (
+          SELECT COUNT(*)::int
+          FROM edu_academic_sections s
+          INNER JOIN edu_academic_grades g ON g.id = s.grade_id
+          WHERE g.level_id = edu_academic_levels.id
+        ) AS "sectionsCount",
+        created_at AS "createdAt"
+    `,
+    [payload.name, payload.code, payload.educationalStage, payload.sortOrder, params.id, institution.id],
+  );
+
+  if (!result.rows[0]) {
+    return response.status(404).json({ success: false, message: 'El nivel seleccionado no existe en la institución actual.' });
+  }
+
+  return response.json(successResponse('Nivel actualizado.', result.rows[0]));
+});
+
 router.post('/grades', requireAuth, async (request, response) => {
   if (!canManageAcademic(request.auth?.roleCodes)) {
     return response.status(403).json({ success: false, message: 'No tienes permisos para crear cursos o grados.' });
@@ -201,6 +253,58 @@ router.post('/grades', requireAuth, async (request, response) => {
   );
 
   return response.status(201).json(successResponse('Curso o grado creado.', result.rows[0]));
+});
+
+router.patch('/grades/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar cursos o grados.' });
+  }
+
+  const params = academicEntityParamsSchema.parse(request.params);
+  const payload = gradeSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+
+  const levelResult = await pool.query(
+    `SELECT id, name FROM edu_academic_levels WHERE id = $1 AND institution_id = $2 LIMIT 1`,
+    [payload.levelId, institution.id],
+  );
+
+  if (!levelResult.rows[0]) {
+    return response.status(400).json({ success: false, message: 'El nivel seleccionado no existe en la institución actual.' });
+  }
+
+  const result = await pool.query(
+    `
+      UPDATE edu_academic_grades
+      SET
+        level_id = $1,
+        name = $2,
+        code = UPPER($3),
+        sort_order = $4,
+        updated_at = NOW()
+      WHERE id = $5 AND institution_id = $6
+      RETURNING
+        id,
+        level_id AS "levelId",
+        $7::text AS "levelName",
+        name,
+        code,
+        sort_order AS "sortOrder",
+        (
+          SELECT COUNT(*)::int
+          FROM edu_academic_sections s
+          WHERE s.grade_id = edu_academic_grades.id
+        ) AS "sectionsCount",
+        created_at AS "createdAt"
+    `,
+    [payload.levelId, payload.name, payload.code, payload.sortOrder, params.id, institution.id, levelResult.rows[0].name],
+  );
+
+  if (!result.rows[0]) {
+    return response.status(404).json({ success: false, message: 'El curso o grado seleccionado no existe en la institución actual.' });
+  }
+
+  return response.json(successResponse('Curso o grado actualizado.', result.rows[0]));
 });
 
 router.post('/sections', requireAuth, async (request, response) => {
@@ -257,6 +361,75 @@ router.post('/sections', requireAuth, async (request, response) => {
   );
 
   return response.status(201).json(successResponse('Sección creada.', result.rows[0]));
+});
+
+router.patch('/sections/:id', requireAuth, async (request, response) => {
+  if (!canManageAcademic(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar secciones.' });
+  }
+
+  const params = academicEntityParamsSchema.parse(request.params);
+  const payload = sectionSchema.parse(request.body);
+  const institution = await resolveInstitutionId(request.auth?.institutionId);
+
+  const gradeResult = await pool.query(
+    `
+      SELECT
+        g.id,
+        g.name,
+        l.name AS "levelName"
+      FROM edu_academic_grades g
+      INNER JOIN edu_academic_levels l ON l.id = g.level_id
+      WHERE g.id = $1 AND g.institution_id = $2
+      LIMIT 1
+    `,
+    [payload.gradeId, institution.id],
+  );
+
+  if (!gradeResult.rows[0]) {
+    return response.status(400).json({ success: false, message: 'El curso o grado seleccionado no existe en la institución actual.' });
+  }
+
+  const result = await pool.query(
+    `
+      UPDATE edu_academic_sections
+      SET
+        grade_id = $1,
+        name = UPPER($2),
+        code = UPPER($3),
+        shift = $4,
+        capacity = $5,
+        updated_at = NOW()
+      WHERE id = $6 AND institution_id = $7
+      RETURNING
+        id,
+        grade_id AS "gradeId",
+        $8::text AS "gradeName",
+        $9::text AS "levelName",
+        name,
+        code,
+        shift,
+        capacity,
+        created_at AS "createdAt"
+    `,
+    [
+      payload.gradeId,
+      payload.name,
+      payload.code,
+      payload.shift || null,
+      payload.capacity ?? null,
+      params.id,
+      institution.id,
+      gradeResult.rows[0].name,
+      gradeResult.rows[0].levelName,
+    ],
+  );
+
+  if (!result.rows[0]) {
+    return response.status(404).json({ success: false, message: 'La sección seleccionada no existe en la institución actual.' });
+  }
+
+  return response.json(successResponse('Sección actualizada.', result.rows[0]));
 });
 
 export default router;
