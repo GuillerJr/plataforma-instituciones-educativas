@@ -12,7 +12,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const params = await searchParams;
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f3f7fb_0%,#eaf0f6_100%)] px-4 py-8 sm:px-8 lg:px-12 lg:py-12">
+    <main className="auth-page-v2 min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f3f7fb_0%,#eaf0f6_100%)] px-4 py-8 sm:px-8 lg:px-12 lg:py-12">
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
           <div className="glass-panel relative overflow-hidden p-5 sm:p-7">

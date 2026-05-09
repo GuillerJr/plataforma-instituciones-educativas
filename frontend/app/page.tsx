@@ -112,7 +112,7 @@ export default function HomePage() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f4f7fb_0%,#eef3f8_38%,#f8fafc_100%)] text-slate-900">
+    <main className="public-page-v2 min-h-screen bg-[linear-gradient(180deg,#f4f7fb_0%,#eef3f8_38%,#f8fafc_100%)] text-slate-900">
       <header className="sticky top-0 z-50 border-b border-white/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <Link href="#inicio" className="flex items-center gap-3" aria-label="Ir al inicio">

@@ -3023,3 +3023,593 @@ body::before {
 :root[data-theme='dark'] .primary-button {
   color: #0f172a;
 }
+
+/* Aurora product redesign */
+:root {
+  --aurora-bg: #edf2f7;
+  --aurora-ink: #111827;
+  --aurora-muted: #64748b;
+  --aurora-card: rgba(255, 255, 255, 0.88);
+  --aurora-card-strong: #ffffff;
+  --aurora-line: rgba(148, 163, 184, 0.32);
+  --aurora-line-strong: rgba(100, 116, 139, 0.24);
+  --aurora-navy: #101827;
+  --aurora-navy-soft: #172235;
+  --aurora-blue: #2563eb;
+  --aurora-cyan: #06b6d4;
+  --aurora-mint: #10b981;
+  --aurora-amber: #f59e0b;
+  --aurora-shadow: 0 24px 80px rgba(15, 23, 42, 0.10);
+  --aurora-shadow-soft: 0 16px 42px rgba(15, 23, 42, 0.075);
+  --aurora-radius: 1.65rem;
+  --aurora-radius-lg: 2.2rem;
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(37, 99, 235, 0.14), transparent 30rem),
+    radial-gradient(circle at 88% 8%, rgba(6, 182, 212, 0.16), transparent 28rem),
+    linear-gradient(180deg, #f8fafc 0%, var(--aurora-bg) 44%, #e8eef6 100%);
+  color: var(--aurora-ink);
+  font-family: Inter, Aptos, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+}
+
+body::before {
+  background:
+    linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+  opacity: 0.42;
+  mask-image: linear-gradient(180deg, black 0%, transparent 72%);
+}
+
+:is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.34) !important;
+  outline-offset: 3px;
+}
+
+.app-frame {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 28rem 4rem, rgba(37, 99, 235, 0.12), transparent 26rem),
+    radial-gradient(circle at calc(100% - 10rem) 8rem, rgba(16, 185, 129, 0.13), transparent 25rem),
+    linear-gradient(180deg, #f8fafc 0%, #edf3f9 46%, #e7eef6 100%) !important;
+  color: var(--aurora-ink);
+}
+
+.app-frame .app-sidebar-panel {
+  width: var(--app-sidebar-width) !important;
+  border-right: 0 !important;
+  background:
+    radial-gradient(circle at 0 0, rgba(37, 99, 235, 0.34), transparent 16rem),
+    radial-gradient(circle at 100% 18rem, rgba(6, 182, 212, 0.14), transparent 16rem),
+    linear-gradient(180deg, #0f172a 0%, #101827 54%, #0b1120 100%) !important;
+  box-shadow: 18px 0 60px rgba(15, 23, 42, 0.18) !important;
+  color: #dbeafe;
+  padding: 1rem 0.85rem;
+}
+
+.app-frame .sidebar-brand-panel,
+.app-frame .sidebar-footer-panel,
+.app-frame .sidebar-context-card {
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  border-radius: 1.45rem !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+  backdrop-filter: blur(18px);
+}
+
+.app-frame .sidebar-brand-mark {
+  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 52%, #7c3aed 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 42px rgba(37, 99, 235, 0.36) !important;
+}
+
+.app-frame .sidebar-brand-kicker,
+.app-frame .sidebar-section-label,
+.app-frame .sidebar-context-card .tiny-label {
+  color: rgba(219, 234, 254, 0.58) !important;
+}
+
+.app-frame .app-sidebar-panel :is(h1, p, span) {
+  color: inherit;
+}
+
+.app-frame .app-sidebar-panel .text-slate-950,
+.app-frame .app-sidebar-panel .font-semibold {
+  color: #ffffff !important;
+}
+
+.app-frame .app-sidebar-panel .text-slate-500,
+.app-frame .app-sidebar-panel .text-slate-400 {
+  color: rgba(219, 234, 254, 0.58) !important;
+}
+
+.app-frame .app-sidebar-link {
+  min-height: 3.25rem;
+  border: 1px solid transparent !important;
+  border-radius: 1.15rem !important;
+  color: rgba(219, 234, 254, 0.74) !important;
+  padding: 0.72rem 0.78rem !important;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.app-frame .app-sidebar-link:hover {
+  border-color: rgba(147, 197, 253, 0.18) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  transform: translateX(2px);
+}
+
+.app-frame .app-sidebar-link-active {
+  border-color: rgba(125, 211, 252, 0.34) !important;
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.32), rgba(6, 182, 212, 0.16)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+.app-frame .sidebar-link-icon {
+  border-color: rgba(147, 197, 253, 0.16) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(219, 234, 254, 0.8) !important;
+  box-shadow: none !important;
+}
+
+.app-frame .sidebar-link-icon-active {
+  border-color: rgba(125, 211, 252, 0.56) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
+.app-frame .topbar-surface {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18) !important;
+  background: rgba(248, 250, 252, 0.78) !important;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06) !important;
+  backdrop-filter: blur(24px);
+}
+
+.app-frame .topbar-panel {
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  border-radius: 1.45rem !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07) !important;
+  backdrop-filter: blur(18px);
+}
+
+.app-frame .app-content-shell {
+  padding-top: 1.35rem !important;
+}
+
+.app-frame .app-content-shell > div {
+  padding-bottom: 3rem !important;
+}
+
+.app-frame .page-hero-v2,
+.app-frame .surface-panel,
+.app-frame .glass-panel,
+.app-frame .table-shell,
+.app-frame .data-section-v2,
+.app-frame .workspace-prelude-side,
+.app-frame .side-note-card,
+.app-frame .metric-card,
+.app-frame .section-grid-card,
+.app-frame .table-row-card {
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  border-radius: var(--aurora-radius-lg) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.86) 100%) !important;
+  box-shadow: var(--aurora-shadow-soft) !important;
+  backdrop-filter: blur(18px);
+}
+
+.app-frame .page-hero-v2 {
+  padding: clamp(1.35rem, 3vw, 2.25rem) !important;
+  background:
+    radial-gradient(circle at 8% 18%, rgba(37, 99, 235, 0.12), transparent 20rem),
+    radial-gradient(circle at 86% 0%, rgba(16, 185, 129, 0.13), transparent 18rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(241, 245, 249, 0.88)) !important;
+}
+
+.app-frame .page-hero-v2 h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 4vw, 3.55rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.app-frame .page-hero-v2 aside > div > div,
+.app-frame .page-hero-v2 aside > div,
+.app-frame .workspace-prelude-side .rounded-\[1\.25rem\],
+.app-frame .surface-muted,
+.app-frame .form-cluster,
+.app-frame .choice-card,
+.app-frame .summary-item,
+.app-frame .metric-tile,
+.app-frame .rounded-2xl.border,
+.app-frame .rounded-xl.border {
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: rgba(255, 255, 255, 0.66) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+}
+
+.app-frame .page-hero-v2 aside > div:first-child {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame .page-hero-v2 aside > div:first-child > div,
+.app-frame .page-hero-v2 aside > div:last-child {
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  border-radius: 1.45rem !important;
+  background: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+}
+
+.app-frame .page-hero-v2 aside > div:last-child > div {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-frame .workspace-prelude-primary {
+  border: 0 !important;
+  border-radius: var(--aurora-radius-lg) !important;
+  background:
+    radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.25), transparent 20rem),
+    radial-gradient(circle at 90% 12%, rgba(124, 58, 237, 0.22), transparent 20rem),
+    linear-gradient(135deg, #0f172a 0%, #172554 56%, #0e7490 150%) !important;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.22) !important;
+}
+
+.app-frame .workspace-prelude-primary :is(h2, .table-title) {
+  color: #ffffff !important;
+  letter-spacing: -0.05em !important;
+}
+
+.app-frame .workspace-prelude-primary p {
+  color: rgba(226, 232, 240, 0.78) !important;
+}
+
+.app-frame .workspace-prelude-primary .grid > div {
+  border-radius: 1.35rem !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.app-frame .table-toolbar {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  padding: 1.15rem 1.35rem !important;
+}
+
+.app-frame .table-title,
+.app-frame .data-section-v2 h2 {
+  font-size: clamp(1.2rem, 2.2vw, 1.75rem) !important;
+  letter-spacing: -0.04em !important;
+}
+
+.app-frame .eyebrow,
+.app-frame .tiny-label,
+.app-frame .summary-label,
+.app-frame .field-label {
+  color: #5b6b82 !important;
+  font-size: 0.71rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase;
+}
+
+.app-frame .badge,
+.app-frame .info-chip {
+  border: 1px solid rgba(37, 99, 235, 0.18) !important;
+  background: linear-gradient(180deg, rgba(239, 246, 255, 0.94), rgba(255, 255, 255, 0.76)) !important;
+  color: #1e3a8a !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 8px 18px rgba(37, 99, 235, 0.06) !important;
+  white-space: nowrap;
+}
+
+.app-frame .primary-button,
+.app-frame .btn-primary {
+  min-height: 2.85rem !important;
+  border: 0 !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 54%, #0e7490 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 38px rgba(37, 99, 235, 0.28) !important;
+  font-weight: 800 !important;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.app-frame .primary-button:hover,
+.app-frame .btn-primary:hover {
+  filter: saturate(1.08) brightness(1.03);
+  transform: translateY(-1px) !important;
+  box-shadow: 0 22px 48px rgba(37, 99, 235, 0.34) !important;
+}
+
+.app-frame .secondary-button,
+.app-frame .compact-button,
+.app-frame .btn-secondary,
+.app-frame .icon-button {
+  min-height: 2.65rem !important;
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+  border-radius: 1rem !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #243044 !important;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.055) !important;
+  font-weight: 760 !important;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.app-frame :is(.secondary-button, .compact-button, .btn-secondary, .icon-button):hover {
+  border-color: rgba(37, 99, 235, 0.32) !important;
+  background: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+.app-frame .data-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  color: #334155 !important;
+}
+
+.app-frame .data-table thead th {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: rgba(241, 245, 249, 0.72) !important;
+  color: #64748b !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.14em !important;
+  padding: 1rem 1.25rem !important;
+}
+
+.app-frame .data-table tbody td {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.72) !important;
+  padding: 1rem 1.25rem !important;
+}
+
+.app-frame .data-table tbody tr:hover td {
+  background: rgba(239, 246, 255, 0.48) !important;
+}
+
+.app-frame :is(input:not([type='checkbox']):not([type='radio']), select, textarea),
+.app-frame .form-field,
+.app-frame .input-field {
+  min-height: 2.85rem !important;
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+  border-radius: 1rem !important;
+  background: rgba(255, 255, 255, 0.84) !important;
+  color: #111827 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76) !important;
+}
+
+.app-frame :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus,
+.app-frame .form-field:focus,
+.app-frame .input-field:focus {
+  border-color: rgba(37, 99, 235, 0.58) !important;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.12) !important;
+}
+
+.app-frame .modal-backdrop {
+  background: rgba(2, 6, 23, 0.66) !important;
+  backdrop-filter: blur(14px);
+}
+
+.app-frame .modal-panel {
+  border: 1px solid rgba(226, 232, 240, 0.72) !important;
+  border-radius: 2rem !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  box-shadow: 0 36px 120px rgba(2, 6, 23, 0.34) !important;
+}
+
+.app-frame .modal-hero-shell {
+  border: 0 !important;
+  border-radius: 1.6rem !important;
+  background:
+    radial-gradient(circle at 100% 0, rgba(6, 182, 212, 0.25), transparent 12rem),
+    linear-gradient(135deg, #111827 0%, #1e3a8a 100%) !important;
+  color: #ffffff;
+}
+
+.app-frame .modal-hero-shell :is(h2, p, .eyebrow) {
+  color: #ffffff !important;
+}
+
+.app-frame .pagination-bar {
+  border-top: 1px solid rgba(148, 163, 184, 0.2) !important;
+  background: rgba(248, 250, 252, 0.66) !important;
+}
+
+.app-frame .table-empty {
+  margin: 1rem;
+  border: 1px dashed rgba(148, 163, 184, 0.34);
+  border-radius: 1.35rem;
+  background: rgba(248, 250, 252, 0.72);
+  color: #64748b;
+}
+
+.auth-page-v2,
+.public-page-v2 {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(37, 99, 235, 0.18), transparent 28rem),
+    radial-gradient(circle at 90% 12%, rgba(6, 182, 212, 0.20), transparent 26rem),
+    linear-gradient(180deg, #f8fafc 0%, #edf4fb 48%, #e7eef7 100%) !important;
+}
+
+.auth-page-v2 {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(37, 99, 235, 0.34), transparent 28rem),
+    radial-gradient(circle at 92% 8%, rgba(6, 182, 212, 0.26), transparent 27rem),
+    linear-gradient(135deg, #08111f 0%, #0f172a 42%, #12263f 100%) !important;
+  color: #e5edf8;
+}
+
+.auth-page-v2::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 68%);
+}
+
+.auth-page-v2 .glass-panel,
+.auth-page-v2 .surface-panel,
+.public-page-v2 :is(.rounded-3xl, .rounded-\[2rem\], .rounded-\[1\.6rem\]) {
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: var(--aurora-shadow) !important;
+  backdrop-filter: blur(20px);
+}
+
+.auth-page-v2 .glass-panel {
+  background:
+    radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.30), transparent 18rem),
+    radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.16), transparent 16rem),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.86)) !important;
+  border-color: rgba(148, 163, 184, 0.20) !important;
+  color: #e5edf8 !important;
+}
+
+.auth-page-v2 .surface-panel {
+  position: relative;
+  border-radius: 2rem !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 249, 0.92)) !important;
+  overflow: hidden;
+}
+
+.auth-page-v2 .surface-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0.35rem;
+  background: linear-gradient(90deg, #2563eb, #06b6d4, #10b981);
+}
+
+.auth-page-v2 .glass-panel :is(h1, h2, h3, .text-slate-950, .font-semibold) {
+  color: #ffffff !important;
+}
+
+.auth-page-v2 .glass-panel :is(p, .text-slate-500, .text-slate-600) {
+  color: rgba(226, 232, 240, 0.72) !important;
+}
+
+.auth-page-v2 .glass-panel .surface-muted {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  color: #e5edf8 !important;
+}
+
+.auth-page-v2 .form-field,
+.auth-page-v2 input,
+.auth-page-v2 select,
+.auth-page-v2 textarea {
+  min-height: 3rem !important;
+  border-color: rgba(148, 163, 184, 0.34) !important;
+  border-radius: 1rem !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.auth-page-v2 .surface-panel .bg-\[linear-gradient\(135deg\,\#18345f_0\%\,\#0f223d_100\%\)\] {
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%) !important;
+}
+
+.auth-page-v2 .primary-button,
+.public-page-v2 .primary-button {
+  border: 0 !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 65%, #0e7490 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 20px 42px rgba(37, 99, 235, 0.28) !important;
+}
+
+.auth-page-v2 .secondary-button,
+.public-page-v2 .secondary-button {
+  border-color: rgba(148, 163, 184, 0.32) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #243044 !important;
+}
+
+.public-page-v2 header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.055);
+}
+
+.public-page-v2 h1 {
+  letter-spacing: -0.07em;
+}
+
+:root[data-theme='dark'] .app-frame {
+  background:
+    radial-gradient(circle at 28rem 4rem, rgba(37, 99, 235, 0.18), transparent 26rem),
+    linear-gradient(180deg, #080d18 0%, #101827 100%) !important;
+}
+
+:root[data-theme='dark'] .app-frame .topbar-surface {
+  background: rgba(8, 13, 24, 0.78) !important;
+}
+
+:root[data-theme='dark'] .app-frame :is(.page-hero-v2, .surface-panel, .glass-panel, .table-shell, .data-section-v2, .workspace-prelude-side, .topbar-panel) {
+  border-color: rgba(71, 85, 105, 0.42) !important;
+  background: rgba(15, 23, 42, 0.78) !important;
+}
+
+:root[data-theme='dark'] .app-frame :is(.data-table thead th, .table-toolbar, .pagination-bar) {
+  background: rgba(15, 23, 42, 0.68) !important;
+}
+
+@media (min-width: 1024px) {
+  .app-frame .topbar-surface {
+    left: var(--app-sidebar-width) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .app-frame .app-sidebar-panel {
+    max-width: min(22rem, calc(100vw - 1rem)) !important;
+    border-radius: 0 1.8rem 1.8rem 0;
+  }
+
+  .app-frame .topbar-surface {
+    background: rgba(248, 250, 252, 0.92) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-frame .app-content-shell > div {
+    padding: 1rem !important;
+  }
+
+  .app-frame .page-hero-v2,
+  .app-frame .surface-panel,
+  .app-frame .glass-panel,
+  .app-frame .table-shell,
+  .app-frame .data-section-v2,
+  .app-frame .workspace-prelude-primary,
+  .app-frame .workspace-prelude-side {
+    border-radius: 1.45rem !important;
+  }
+
+  .app-frame .page-hero-v2 h1 {
+    max-width: none;
+    font-size: clamp(1.9rem, 9vw, 2.55rem) !important;
+  }
+
+  .app-frame .table-toolbar {
+    padding: 1rem !important;
+  }
+
+  .app-frame .data-table-fluid {
+    min-width: 44rem !important;
+  }
+
+  .auth-page-v2 {
+    padding: 1rem !important;
+  }
+}

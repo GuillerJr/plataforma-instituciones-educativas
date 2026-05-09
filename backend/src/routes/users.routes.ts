@@ -76,7 +76,7 @@ router.get('/', requireAuth, async (request, response) => {
         up.teacher_id AS "teacherId",
         up.student_id AS "studentId",
         COALESCE(array_agg(r.code) FILTER (WHERE r.code IS NOT NULL), '{}') AS "roleCodes",
-        COALESCE(guardians.guardianships, '[]'::json) AS guardianships,
+        COALESCE(guardians.guardianships, '[]'::jsonb) AS guardianships,
         u.created_at AS "createdAt"
       FROM edu_users u
       LEFT JOIN edu_institutions i ON i.id = u.institution_id
@@ -84,7 +84,7 @@ router.get('/', requireAuth, async (request, response) => {
       LEFT JOIN edu_roles r ON r.id = ur.role_id
       LEFT JOIN edu_user_profiles up ON up.user_id = u.id
       LEFT JOIN LATERAL (
-        SELECT json_agg(json_build_object(
+        SELECT jsonb_agg(jsonb_build_object(
           'studentId', sg.student_id,
           'studentName', st.full_name,
           'relationshipLabel', sg.relationship_label,

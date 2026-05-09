@@ -3,7 +3,7 @@ import { LoginForm } from '../../components/login-form';
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f3f7fb_0%,#eaf0f6_100%)] px-4 py-8 sm:px-8 lg:px-12 lg:py-12">
+    <main className="auth-page-v2 min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f3f7fb_0%,#eaf0f6_100%)] px-4 py-8 sm:px-8 lg:px-12 lg:py-12">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl items-center gap-8 lg:grid-cols-[1fr_0.92fr]">
         <section className="hidden lg:block">
           <div className="glass-panel relative overflow-hidden p-8 xl:p-10">

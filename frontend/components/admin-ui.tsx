@@ -26,7 +26,7 @@ export function PageHero({
   noteDescription: ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f2f6fb_100%)] p-6 shadow-[0_28px_80px_rgba(15,23,42,0.08)] lg:p-7">
+    <section className="page-hero-v2 relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f2f6fb_100%)] p-6 shadow-[0_28px_80px_rgba(15,23,42,0.08)] lg:p-7">
       <div aria-hidden="true" className="absolute right-0 top-0 h-56 w-56 rounded-full bg-sky-100/70 blur-3xl" />
       <div aria-hidden="true" className="absolute bottom-0 left-16 h-40 w-40 rounded-full bg-emerald-100/60 blur-3xl" />
 
@@ -85,7 +85,7 @@ export function WorkspacePrelude({
   sideContent?: ReactNode;
 }) {
   return (
-    <section className="grid gap-5 xl:grid-cols-[1.02fr_0.98fr]">
+    <section className="workspace-prelude-v2 grid gap-5 xl:grid-cols-[1.02fr_0.98fr]">
       <div className="workspace-prelude-primary overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#0f223d_0%,#17345f_100%)] text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)]">
         <div className="border-b border-white/10 px-5 py-5 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -118,7 +118,7 @@ export function WorkspacePrelude({
         </div>
       </div>
 
-      <aside className="overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fc_100%)] shadow-[0_24px_70px_rgba(15,23,42,0.07)]">
+      <aside className="workspace-prelude-side overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f6f9fc_100%)] shadow-[0_24px_70px_rgba(15,23,42,0.07)]">
         <div className="border-b border-slate-200/80 px-5 py-5 sm:px-6">
           <p className="eyebrow">{sideLabel}</p>
           <h3 className="mt-3 text-xl font-semibold tracking-tight text-slate-950">{sideTitle}</h3>
@@ -145,7 +145,7 @@ export function DataSection({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f7f9fc_100%)] shadow-[0_24px_70px_rgba(15,23,42,0.07)]">
+    <section className="data-section-v2 overflow-hidden rounded-[1.9rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f7f9fc_100%)] shadow-[0_24px_70px_rgba(15,23,42,0.07)]">
       <div className="border-b border-slate-200/80 px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
