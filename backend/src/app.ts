@@ -15,6 +15,7 @@ import academicAssignmentsRoutes from './routes/academic-assignments.routes.js';
 import evaluationsRoutes from './routes/evaluations.routes.js';
 import evaluationGradesRoutes from './routes/evaluation-grades.routes.js';
 import attendanceRoutes from './routes/attendance.routes.js';
+import publicRequestsRoutes from './routes/public-requests.routes.js';
 
 export function createApp() {
   const app = express();
@@ -39,6 +40,7 @@ export function createApp() {
   app.use('/api/evaluations', evaluationsRoutes);
   app.use('/api/evaluation-grades', evaluationGradesRoutes);
   app.use('/api/attendance', attendanceRoutes);
+  app.use('/api/public-requests', publicRequestsRoutes);
   app.use(errorHandler);
 
   return app;

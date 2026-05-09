@@ -13,6 +13,20 @@ CREATE TABLE IF NOT EXISTS edu_institutions (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS edu_public_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  institution_id UUID REFERENCES edu_institutions(id) ON DELETE SET NULL,
+  full_name VARCHAR(180) NOT NULL,
+  email VARCHAR(180) NOT NULL,
+  relationship VARCHAR(40) NOT NULL CHECK (relationship IN ('familia', 'docente', 'administrativo', 'aspirante')),
+  request_type VARCHAR(40) NOT NULL CHECK (request_type IN ('acceso', 'admision', 'informacion')),
+  message TEXT,
+  source_context VARCHAR(120),
+  status VARCHAR(30) NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'in_review', 'resolved', 'discarded')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS edu_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code VARCHAR(80) NOT NULL UNIQUE,
