@@ -95,7 +95,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
   }
 
   useEffect(() => {
-    if (!open || mode !== 'create') return;
+    if (!open) return;
 
     let cancelled = false;
 
@@ -127,23 +127,18 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
     return () => {
       cancelled = true;
     };
-  }, [open, mode]);
+  }, [open]);
 
   async function handleSubmit(formData: FormData) {
     setPending(true);
     setState({ success: false, message: null });
 
-    if (mode === 'edit') {
-      setState({ success: false, message: 'La edición quedará habilitada cuando la API exponga actualización de usuarios.' });
-      setPending(false);
-      return;
-    }
-
     const roleCodes = formData.getAll('roleCodes').map((value) => String(value).trim()).filter(Boolean);
+    const password = String(formData.get('password') ?? '').trim();
     const payload = {
       fullName: String(formData.get('fullName') ?? '').trim(),
       email: String(formData.get('email') ?? '').trim(),
-      password: String(formData.get('password') ?? '').trim(),
+      ...(password ? { password } : {}),
       status: String(formData.get('status') ?? '').trim(),
       institutionId: String(formData.get('institutionId') ?? '').trim() || null,
       roleCodes,
@@ -152,16 +147,16 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       representativeStudentIds: formData.getAll('representativeStudentIds').map((value) => String(value).trim()).filter(Boolean),
     };
 
-    if (!payload.fullName || !payload.email || !payload.password || !payload.status || payload.roleCodes.length === 0) {
-      setState({ success: false, message: 'Nombre, correo, clave, estado y al menos un rol son obligatorios.' });
+    if (!payload.fullName || !payload.email || !payload.status || payload.roleCodes.length === 0 || (mode === 'create' && !password)) {
+      setState({ success: false, message: 'Nombre, correo, estado, roles y clave inicial son obligatorios para crear usuarios.' });
       setPending(false);
       return;
     }
 
     try {
       const accessToken = await getAccessToken();
-      const response = await fetch(`${API_BASE_URL}/users`, {
-        method: 'POST',
+      const response = await fetch(mode === 'create' ? `${API_BASE_URL}/users` : `${API_BASE_URL}/users/${initialValues?.id}`, {
+        method: mode === 'create' ? 'POST' : 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -172,14 +167,14 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       const responsePayload = await response.json().catch(() => null) as { message?: string } | null;
 
       if (!response.ok) {
-        throw new Error(responsePayload?.message ?? 'No fue posible crear el usuario.');
+        throw new Error(responsePayload?.message ?? (mode === 'create' ? 'No fue posible crear el usuario.' : 'No fue posible actualizar el usuario.'));
       }
 
-      setState({ success: true, message: 'Usuario creado correctamente.' });
+      setState({ success: true, message: mode === 'create' ? 'Usuario creado correctamente.' : 'Usuario actualizado correctamente.' });
       onClose();
       router.refresh();
     } catch (error) {
-      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible crear el usuario.' });
+      setState({ success: false, message: error instanceof Error ? error.message : 'No fue posible guardar el usuario.' });
     } finally {
       setPending(false);
     }
@@ -192,7 +187,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
       title={mode === 'create' ? 'Registrar usuario' : 'Editar usuario'}
       description={mode === 'create'
         ? 'Crea usuarios reales, define su estado, asigna roles y vincula el perfil académico cuando corresponda.'
-        : 'La interacción de edición ya quedó preparada en modal para activarse apenas exista actualización de usuarios en la API.'}
+        : 'Actualiza datos base, estado, roles y vínculos académicos del usuario seleccionado.'}
     >
       <form action={handleSubmit} className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2">
@@ -250,7 +245,7 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
           </div>
         </fieldset>
 
-        {mode === 'create' ? (
+        {showTeacherLink || showStudentLink || showRepresentativeLink ? (
           <section className="form-cluster space-y-4">
             <div>
               <p className="text-sm font-semibold text-slate-950">Vinculación académica</p>
@@ -287,7 +282,13 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
                   {profileOptions.students.map((student) => (
                     <label key={student.id} className="choice-card">
-                      <input name="representativeStudentIds" type="checkbox" value={student.id} className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-sky-400" />
+                      <input
+                        name="representativeStudentIds"
+                        type="checkbox"
+                        value={student.id}
+                        defaultChecked={initialValues?.guardianships?.some((guardian) => guardian.studentId === student.id)}
+                        className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-sky-400"
+                      />
                       <span>
                         <span className="block font-medium text-slate-900">{student.fullName}</span>
                         <span className="mt-1 block text-xs text-slate-500">{student.enrollmentCode ?? 'Sin código de matrícula'}{student.institutionName ? ` · ${student.institutionName}` : ''}</span>
@@ -300,30 +301,15 @@ export function UserFormModal({ institutions, roles, open, mode, onClose, initia
           </section>
         ) : null}
 
-        {mode === 'edit' ? (
-          <div className="form-cluster border-dashed border-sky-200 text-sm text-slate-700">
-            <p className="font-semibold text-slate-950">Próxima fase</p>
-            <p className="mt-2 leading-6">
-              La edición visual del usuario ya quedó integrada en este modal. El guardado real se activará cuando exista el endpoint de actualización en backend.
-            </p>
-          </div>
-        ) : null}
-
         {state.message ? <p className={`text-sm ${state.success ? 'status-good' : 'status-bad'}`}>{state.message}</p> : null}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button type="button" onClick={onClose} className="secondary-button">
             {mode === 'create' ? 'Cancelar' : 'Cerrar'}
           </button>
-          {mode === 'create' ? (
-            <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
-              {pending ? 'Creando usuario...' : 'Crear usuario'}
-            </button>
-          ) : (
-            <button type="button" disabled className="primary-button cursor-not-allowed opacity-60">
-              Disponible en próxima fase
-            </button>
-          )}
+          <button type="submit" disabled={pending} className="primary-button disabled:cursor-not-allowed disabled:opacity-60">
+            {pending ? 'Guardando usuario...' : mode === 'create' ? 'Crear usuario' : 'Guardar cambios'}
+          </button>
         </div>
       </form>
     </ModalShell>

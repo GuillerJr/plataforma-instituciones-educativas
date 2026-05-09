@@ -19,6 +19,14 @@ const userSchema = z.object({
   representativeStudentIds: z.array(z.string().uuid()).optional().default([]),
 });
 
+const userUpdateSchema = userSchema.extend({
+  password: z.string().min(8).optional().or(z.literal('')),
+});
+
+const userParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 function isSuperAdmin(roleCodes: string[] | undefined) {
   return (roleCodes ?? []).includes('superadmin');
 }
@@ -215,6 +223,172 @@ router.post('/', requireAuth, async (request, response) => {
 
     return response.status(201).json(successResponse('Usuario creado.', {
       ...createdUser,
+      roleCodes: roleRows.rows.map((row) => row.code),
+      teacherId: payload.teacherId ?? null,
+      studentId: payload.studentId ?? null,
+      guardianships: payload.representativeStudentIds.map((studentId) => ({
+        studentId,
+        relationshipLabel: 'Representante',
+        isPrimary: false,
+      })),
+    }));
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!ensureCanManageUsers(request.auth?.roleCodes, response)) return;
+
+  const params = userParamsSchema.parse(request.params);
+  const payload = userUpdateSchema.parse(request.body);
+  const targetInstitutionId = getScopedInstitutionId(
+    isSuperAdmin(request.auth?.roleCodes) ? null : request.auth?.institutionId,
+    payload.institutionId,
+  );
+
+  if (!isSuperAdmin(request.auth?.roleCodes) && payload.institutionId && payload.institutionId !== request.auth?.institutionId) {
+    return response.status(403).json({ success: false, message: 'No puedes editar usuarios fuera de tu institución.' });
+  }
+
+  if ((payload.teacherId || payload.studentId || payload.representativeStudentIds.length > 0) && !targetInstitutionId) {
+    return response.status(400).json({ success: false, message: 'Selecciona una institución para vincular perfiles académicos.' });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const scopedUserResult = await client.query(
+      `
+        SELECT id
+        FROM edu_users
+        WHERE id = $1
+          AND ($2::uuid IS NULL OR institution_id = $2::uuid)
+        LIMIT 1
+      `,
+      [params.id, isSuperAdmin(request.auth?.roleCodes) ? null : request.auth?.institutionId],
+    );
+
+    if (!scopedUserResult.rows[0]) {
+      await client.query('ROLLBACK');
+      return response.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+    }
+
+    if (payload.teacherId && targetInstitutionId) {
+      const teacherExists = await assertProfileBelongsToInstitution(client, 'edu_teachers', payload.teacherId, targetInstitutionId);
+
+      if (!teacherExists) {
+        await client.query('ROLLBACK');
+        return response.status(400).json({ success: false, message: 'El docente seleccionado no existe en la institución indicada.' });
+      }
+    }
+
+    if (payload.studentId && targetInstitutionId) {
+      const studentExists = await assertProfileBelongsToInstitution(client, 'edu_students', payload.studentId, targetInstitutionId);
+
+      if (!studentExists) {
+        await client.query('ROLLBACK');
+        return response.status(400).json({ success: false, message: 'El estudiante seleccionado no existe en la institución indicada.' });
+      }
+    }
+
+    if (payload.representativeStudentIds.length > 0 && targetInstitutionId) {
+      const studentsResult = await client.query(
+        `SELECT id FROM edu_students WHERE institution_id = $1 AND id = ANY($2::uuid[])`,
+        [targetInstitutionId, payload.representativeStudentIds],
+      );
+
+      if (studentsResult.rows.length !== payload.representativeStudentIds.length) {
+        await client.query('ROLLBACK');
+        return response.status(400).json({ success: false, message: 'Uno o más estudiantes asociados no existen en la institución indicada.' });
+      }
+    }
+
+    const updatedUser = await client.query(
+      payload.password?.trim()
+        ? `
+          UPDATE edu_users
+          SET
+            institution_id = $2,
+            full_name = $3,
+            email = $4,
+            password_hash = crypt($5, gen_salt('bf')),
+            status = $6,
+            updated_at = NOW()
+          WHERE id = $1
+          RETURNING id, institution_id AS "institutionId", full_name AS "fullName", email, status, created_at AS "createdAt"
+        `
+        : `
+          UPDATE edu_users
+          SET
+            institution_id = $2,
+            full_name = $3,
+            email = $4,
+            status = $5,
+            updated_at = NOW()
+          WHERE id = $1
+          RETURNING id, institution_id AS "institutionId", full_name AS "fullName", email, status, created_at AS "createdAt"
+        `,
+      payload.password?.trim()
+        ? [params.id, targetInstitutionId, payload.fullName, payload.email.trim().toLowerCase(), payload.password, payload.status]
+        : [params.id, targetInstitutionId, payload.fullName, payload.email.trim().toLowerCase(), payload.status],
+    );
+
+    const roleRows = await client.query(
+      `SELECT id, code FROM edu_roles WHERE code = ANY($1::text[])`,
+      [payload.roleCodes],
+    );
+
+    if (roleRows.rows.length !== payload.roleCodes.length) {
+      await client.query('ROLLBACK');
+      return response.status(400).json({ success: false, message: 'Uno o más roles no existen.' });
+    }
+
+    await client.query(`DELETE FROM edu_user_roles WHERE user_id = $1`, [params.id]);
+
+    for (const role of roleRows.rows) {
+      await client.query(
+        `INSERT INTO edu_user_roles (user_id, role_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+        [params.id, role.id],
+      );
+    }
+
+    await client.query(`DELETE FROM edu_user_profiles WHERE user_id = $1`, [params.id]);
+
+    if (targetInstitutionId && (payload.teacherId || payload.studentId)) {
+      await client.query(
+        `
+          INSERT INTO edu_user_profiles (user_id, institution_id, teacher_id, student_id)
+          VALUES ($1, $2, $3, $4)
+        `,
+        [params.id, targetInstitutionId, payload.teacherId ?? null, payload.studentId ?? null],
+      );
+    }
+
+    await client.query(`DELETE FROM edu_student_guardians WHERE representative_user_id = $1`, [params.id]);
+
+    if (targetInstitutionId && payload.representativeStudentIds.length > 0) {
+      for (const studentId of payload.representativeStudentIds) {
+        await client.query(
+          `
+            INSERT INTO edu_student_guardians (institution_id, student_id, representative_user_id, relationship_label, is_primary)
+            VALUES ($1, $2, $3, 'Representante', FALSE)
+            ON CONFLICT (student_id, representative_user_id) DO NOTHING
+          `,
+          [targetInstitutionId, studentId, params.id],
+        );
+      }
+    }
+
+    await client.query('COMMIT');
+
+    return response.json(successResponse('Usuario actualizado.', {
+      ...updatedUser.rows[0],
       roleCodes: roleRows.rows.map((row) => row.code),
       teacherId: payload.teacherId ?? null,
       studentId: payload.studentId ?? null,
