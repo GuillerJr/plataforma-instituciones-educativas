@@ -16,6 +16,14 @@ const publicRequestSchema = z.object({
   sourceContext: z.string().max(120).optional().or(z.literal('')),
 });
 
+const publicRequestStatusSchema = z.object({
+  status: z.enum(['new', 'in_review', 'resolved', 'discarded']),
+});
+
+const publicRequestParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
 function isSuperAdmin(roleCodes: string[] | undefined) {
   return (roleCodes ?? []).includes('superadmin');
 }
@@ -95,6 +103,46 @@ router.get('/', requireAuth, async (request, response) => {
   );
 
   return response.json(successResponse('Solicitudes públicas cargadas.', result.rows));
+});
+
+router.patch('/:id', requireAuth, async (request, response) => {
+  if (!canManageUsers(request.auth?.roleCodes)) {
+    return response.status(403).json({ success: false, message: 'No tienes permisos para actualizar solicitudes públicas.' });
+  }
+
+  const params = publicRequestParamsSchema.parse(request.params);
+  const payload = publicRequestStatusSchema.parse(request.body);
+  const scopedInstitutionId = isSuperAdmin(request.auth?.roleCodes) ? null : request.auth?.institutionId;
+  const scopeClause = scopedInstitutionId ? 'AND pr.institution_id = $3' : '';
+  const values = scopedInstitutionId ? [payload.status, params.id, scopedInstitutionId] : [payload.status, params.id];
+
+  const result = await pool.query(
+    `
+      UPDATE edu_public_requests pr
+      SET status = $1, updated_at = NOW()
+      WHERE pr.id = $2
+        ${scopeClause}
+      RETURNING
+        pr.id,
+        pr.institution_id AS "institutionId",
+        pr.full_name AS "fullName",
+        pr.email,
+        pr.relationship,
+        pr.request_type AS "requestType",
+        pr.message,
+        pr.source_context AS "sourceContext",
+        pr.status,
+        pr.created_at AS "createdAt",
+        pr.updated_at AS "updatedAt"
+    `,
+    values,
+  );
+
+  if (!result.rows[0]) {
+    return response.status(404).json({ success: false, message: 'Solicitud pública no encontrada.' });
+  }
+
+  return response.json(successResponse('Estado de solicitud actualizado.', result.rows[0]));
 });
 
 export default router;

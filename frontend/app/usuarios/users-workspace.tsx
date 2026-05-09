@@ -1,12 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Mail, Pencil, UserPlus } from 'lucide-react';
+import { CheckCircle2, Clock3, Mail, Pencil, UserPlus, XCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionAnchor, ActionButton } from '../../components/system-action';
+import { getAccessToken } from '../lib/client-auth';
 import { UserFormModal, UserFormValues } from './user-create-form';
 import type { PublicRequestRecord } from './page';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4100/api';
 
 type EduUser = UserFormValues & {
   id: string;
@@ -34,10 +38,13 @@ type UsersWorkspaceProps = {
 };
 
 export function UsersWorkspace({ users, roles, institutions, publicRequests, error }: UsersWorkspaceProps) {
+  const router = useRouter();
   const [createOpen, setCreateOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<EduUser | null>(null);
   const [page, setPage] = useState(1);
   const [requestsPage, setRequestsPage] = useState(1);
+  const [requestAction, setRequestAction] = useState<{ id: string; status: PublicRequestRecord['status'] } | null>(null);
+  const [requestActionError, setRequestActionError] = useState<string | null>(null);
   const pageSize = 10;
   const requestsPageSize = 6;
   const totalPages = Math.max(1, Math.ceil(users.length / pageSize));
@@ -56,6 +63,34 @@ export function UsersWorkspace({ users, roles, institutions, publicRequests, err
     inReview: publicRequests.filter((request) => request.status === 'in_review').length,
     closed: publicRequests.filter((request) => request.status === 'resolved' || request.status === 'discarded').length,
   }), [publicRequests]);
+
+  async function updateRequestStatus(id: string, status: PublicRequestRecord['status']) {
+    setRequestAction({ id, status });
+    setRequestActionError(null);
+
+    try {
+      const accessToken = await getAccessToken();
+      const response = await fetch(`${API_BASE_URL}/public-requests/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+      const payload = await response.json().catch(() => null) as { message?: string } | null;
+
+      if (!response.ok) {
+        throw new Error(payload?.message ?? 'No fue posible actualizar la solicitud.');
+      }
+
+      router.refresh();
+    } catch (error) {
+      setRequestActionError(error instanceof Error ? error.message : 'No fue posible actualizar la solicitud.');
+    } finally {
+      setRequestAction(null);
+    }
+  }
 
   return (
     <>
@@ -129,6 +164,7 @@ export function UsersWorkspace({ users, roles, institutions, publicRequests, err
                       <th>Vinculación</th>
                       <th>Estado</th>
                       <th>Mensaje</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -152,6 +188,34 @@ export function UsersWorkspace({ users, roles, institutions, publicRequests, err
                         <td>
                           <p className="line-clamp-2 text-sm leading-6 text-slate-600">{request.message || 'Sin mensaje adicional.'}</p>
                         </td>
+                        <td>
+                          <div className="table-actions">
+                            {request.status !== 'in_review' ? (
+                              <ActionButton
+                                label="Marcar en revisión"
+                                icon={Clock3}
+                                disabled={requestAction?.id === request.id}
+                                onClick={() => updateRequestStatus(request.id, 'in_review')}
+                              />
+                            ) : null}
+                            {request.status !== 'resolved' ? (
+                              <ActionButton
+                                label="Marcar resuelta"
+                                icon={CheckCircle2}
+                                disabled={requestAction?.id === request.id}
+                                onClick={() => updateRequestStatus(request.id, 'resolved')}
+                              />
+                            ) : null}
+                            {request.status !== 'discarded' ? (
+                              <ActionButton
+                                label="Descartar"
+                                icon={XCircle}
+                                disabled={requestAction?.id === request.id}
+                                onClick={() => updateRequestStatus(request.id, 'discarded')}
+                              />
+                            ) : null}
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -165,6 +229,7 @@ export function UsersWorkspace({ users, roles, institutions, publicRequests, err
                 itemLabel="solicitudes"
                 onPageChange={setRequestsPage}
               />
+              {requestActionError ? <div className="px-5 pb-5 text-sm text-rose-700">{requestActionError}</div> : null}
             </>
           )}
         </DataSection>
