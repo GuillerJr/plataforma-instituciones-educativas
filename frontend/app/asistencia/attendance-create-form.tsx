@@ -19,6 +19,7 @@ type AttendanceDraftEntry = {
 type AttendanceFormModalProps = {
   open: boolean;
   onClose: () => void;
+  initialRecord?: AttendanceRecord | null;
   activeSchoolYearLabel: string;
   records: AttendanceRecord[];
   levels: AttendanceAcademicLevel[];
@@ -27,8 +28,9 @@ type AttendanceFormModalProps = {
   enrollments: AttendanceEnrollmentOption[];
 };
 
-export function AttendanceFormModal({ open, onClose, activeSchoolYearLabel, records, levels, grades, sections, enrollments }: AttendanceFormModalProps) {
+export function AttendanceFormModal({ open, onClose, initialRecord, activeSchoolYearLabel, records, levels, grades, sections, enrollments }: AttendanceFormModalProps) {
   const router = useRouter();
+  const mode = initialRecord ? 'edit' : 'create';
   const [pending, setPending] = useState(false);
   const [state, setState] = useState<FormState>({ success: false, message: null });
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().slice(0, 10));
@@ -55,19 +57,19 @@ export function AttendanceFormModal({ open, onClose, activeSchoolYearLabel, reco
   useEffect(() => {
     if (!open) return;
 
-    const defaultLevelId = levels[0]?.id ?? '';
-    const defaultGradeId = grades.find((grade) => grade.levelId === defaultLevelId)?.id ?? '';
+    const defaultLevelId = initialRecord?.levelId ?? levels[0]?.id ?? '';
+    const defaultGradeId = initialRecord?.gradeId ?? grades.find((grade) => grade.levelId === defaultLevelId)?.id ?? '';
     const defaultSectionId = sections.find((section) => section.gradeId === defaultGradeId && section.activeEnrollments > 0)?.id
       ?? sections.find((section) => section.gradeId === defaultGradeId)?.id
       ?? '';
 
     setPending(false);
     setState({ success: false, message: null });
-    setAttendanceDate(new Date().toISOString().slice(0, 10));
+    setAttendanceDate(initialRecord?.attendanceDate ?? new Date().toISOString().slice(0, 10));
     setSelectedLevelId(defaultLevelId);
     setSelectedGradeId(defaultGradeId);
-    setSelectedSectionId(defaultSectionId);
-  }, [open, levels, grades, sections]);
+    setSelectedSectionId(initialRecord?.sectionId ?? defaultSectionId);
+  }, [initialRecord, open, levels, grades, sections]);
 
   useEffect(() => {
     if (!selectedLevelId) {
@@ -157,8 +159,10 @@ export function AttendanceFormModal({ open, onClose, activeSchoolYearLabel, reco
     <ModalShell
       open={open}
       onClose={onClose}
-      title="Registrar asistencia"
-      description="Selecciona una sección real y marca la asistencia diaria de estudiantes con matrícula activa en el periodo escolar vigente."
+      title={mode === 'create' ? 'Registrar asistencia' : 'Editar asistencia'}
+      description={mode === 'create'
+        ? 'Selecciona una sección real y marca la asistencia diaria de estudiantes con matrícula activa en el periodo escolar vigente.'
+        : 'Actualiza la toma diaria de la sección y fecha seleccionadas reutilizando los registros existentes.'}
     >
       <div className="space-y-5">
         <div className="form-cluster grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -293,7 +297,7 @@ export function AttendanceFormModal({ open, onClose, activeSchoolYearLabel, reco
             disabled={pending || roster.length === 0 || entries.length === 0}
             className="primary-button disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {pending ? 'Registrando asistencia...' : 'Guardar asistencia del día'}
+            {pending ? (mode === 'create' ? 'Registrando asistencia...' : 'Guardando cambios...') : (mode === 'create' ? 'Guardar asistencia del día' : 'Guardar cambios')}
           </button>
         </div>
       </div>

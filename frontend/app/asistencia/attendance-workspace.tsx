@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ClipboardCheck } from 'lucide-react';
+import { ClipboardCheck, Pencil } from 'lucide-react';
 import { DataSection, DetailList, WorkspacePrelude } from '../../components/admin-ui';
 import { PaginationControls } from '../../components/pagination-controls';
 import { ActionButton } from '../../components/system-action';
@@ -38,6 +38,7 @@ type AttendanceWorkspaceProps = {
 
 export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
   const [page, setPage] = useState(1);
   const [selectedSectionId, setSelectedSectionId] = useState('all');
   const [selectedDate, setSelectedDate] = useState('all');
@@ -147,6 +148,7 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
                       <th>Ubicación académica</th>
                       <th>Estado</th>
                       <th>Observación</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -170,6 +172,11 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
                         <td>
                           <p className="text-sm text-slate-600">{record.notes || 'Sin novedad adicional.'}</p>
                         </td>
+                        <td>
+                          <div className="table-actions">
+                            <ActionButton label="Editar" icon={Pencil} onClick={() => setEditingRecord(record)} />
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -189,8 +196,12 @@ export function AttendanceWorkspace({ snapshot, error }: AttendanceWorkspaceProp
       </div>
 
       <AttendanceFormModal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
+        open={createOpen || editingRecord !== null}
+        onClose={() => {
+          setCreateOpen(false);
+          setEditingRecord(null);
+        }}
+        initialRecord={editingRecord}
         activeSchoolYearLabel={snapshot?.institution.activeSchoolYearLabel ?? 'Periodo activo'}
         records={records}
         levels={levels}

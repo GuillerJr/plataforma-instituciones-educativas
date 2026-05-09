@@ -140,7 +140,7 @@ router.get('/', requireAuth, async (request, response) => {
           s.code,
           s.shift,
           s.capacity,
-          COUNT(e.id) FILTER (WHERE e.status = 'active' AND e.school_year_label = $2)::int AS "activeEnrollments"
+          COUNT(DISTINCT e.id) FILTER (WHERE e.status = 'active' AND e.school_year_label = $2)::int AS "activeEnrollments"
         FROM edu_academic_sections s
         INNER JOIN edu_academic_grades g ON g.id = s.grade_id
         INNER JOIN edu_academic_levels l ON l.id = g.level_id
@@ -148,7 +148,7 @@ router.get('/', requireAuth, async (request, response) => {
         LEFT JOIN edu_academic_assignments aa ON aa.section_id = s.id
         WHERE s.institution_id = $1
           AND ($3::boolean = FALSE OR aa.teacher_id = $4::uuid)
-        GROUP BY s.id, g.level_id, l.name, g.name
+        GROUP BY s.id, g.level_id, l.name, g.name, l.sort_order, g.sort_order
         ORDER BY l.sort_order ASC, g.sort_order ASC, s.name ASC, s.created_at ASC
       `,
       [institution.id, institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString(), scope.isTeacher && Boolean(scope.teacherId) && !scope.isGlobalScope, scope.teacherId ?? null],
@@ -235,6 +235,7 @@ router.post('/', requireAuth, async (request, response) => {
 
   const payload = attendanceBatchSchema.parse(request.body);
   const institution = await resolveInstitutionId(request.auth?.institutionId);
+  const scope = await resolveAcademicIdentityScope(request.auth, institution.id);
   const schoolYearLabel = institution.activeSchoolYearLabel?.trim() || new Date().getFullYear().toString();
   const client = await pool.connect();
 
@@ -268,6 +269,30 @@ router.post('/', requireAuth, async (request, response) => {
 
     if (!section) {
       throw new Error('La sección seleccionada no existe en la institución actual.');
+    }
+
+    if (scope.isTeacher && !scope.isGlobalScope) {
+      if (!scope.teacherId) {
+        await client.query('ROLLBACK');
+        return response.status(403).json({ success: false, message: 'No se pudo identificar el perfil docente para registrar asistencia.' });
+      }
+
+      const assignmentResult = await client.query(
+        `
+          SELECT id
+          FROM edu_academic_assignments
+          WHERE institution_id = $1
+            AND section_id = $2
+            AND teacher_id = $3
+          LIMIT 1
+        `,
+        [institution.id, payload.sectionId, scope.teacherId],
+      );
+
+      if (!assignmentResult.rows[0]) {
+        await client.query('ROLLBACK');
+        return response.status(403).json({ success: false, message: 'No tienes una asignación docente activa para registrar asistencia en esta sección.' });
+      }
     }
 
     const duplicates = new Set<string>();
