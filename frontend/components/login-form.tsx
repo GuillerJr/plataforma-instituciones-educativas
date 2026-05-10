@@ -50,16 +50,16 @@ export function LoginForm() {
   }
 
   return (
-    <section className="surface-panel w-full max-w-[520px] p-5 shadow-[0_30px_80px_rgba(15,23,42,0.14)] sm:p-7">
+    <section className="surface-panel w-full max-w-[520px] p-5 sm:p-7">
       <div className="flex min-w-0 items-center gap-3">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#18345f_0%,#0f223d_100%)] text-sm font-semibold text-white shadow-[0_18px_38px_rgba(15,34,61,0.28)] sm:h-12 sm:w-12">ED</span>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-fg text-sm font-semibold text-surface sm:h-12 sm:w-12">RA</span>
         <div className="min-w-0">
           <p className="eyebrow">Acceso institucional</p>
-          <h1 className="mt-1 text-[clamp(1.35rem,4vw,1.5rem)] font-semibold leading-tight tracking-tight text-slate-950">Ingresa al sistema institucional</h1>
+          <h1 className="mt-1 text-[clamp(1.35rem,4vw,1.5rem)]">Ingresa al sistema institucional</h1>
         </div>
       </div>
 
-      <p className="mt-4 text-sm leading-6 text-slate-600">
+      <p className="mt-4 text-sm leading-6">
         Accede con tu usuario institucional o con tu correo. Si escribes solo el usuario, el sistema completará el dominio interno del colegio.
       </p>
 
@@ -75,7 +75,7 @@ export function LoginForm() {
         </label>
 
         <div className="flex items-center justify-end">
-          <Link href={recoveryHref} className="text-sm font-semibold text-sky-700 transition hover:text-sky-800 hover:underline">
+          <Link href={recoveryHref} className="text-sm font-semibold text-fg underline-offset-4 transition hover:underline">
             Olvidé mi contraseña
           </Link>
         </div>
@@ -87,8 +87,8 @@ export function LoginForm() {
         </button>
       </form>
 
-      <div className="mt-6 rounded-[1.4rem] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] p-4 text-sm text-slate-600">
-        <p className="font-semibold text-slate-950">¿Necesitas acceso?</p>
+      <div className="surface-muted mt-6 p-4 text-sm">
+        <p className="font-semibold text-fg">¿Necesitas acceso?</p>
         <p className="mt-2 leading-6">Si todavía no tienes credenciales o necesitas recuperar el acceso, registra tu solicitud y el equipo institucional la validará antes de habilitar el ingreso.</p>
         <Link href="/registro" className="secondary-button mt-4 w-full sm:w-auto">
           Solicitar acceso

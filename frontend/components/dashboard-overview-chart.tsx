@@ -13,18 +13,18 @@ type DashboardOverviewChartProps = {
 
 export function DashboardOverviewChart({ data }: DashboardOverviewChartProps) {
   return (
-    <div className="h-[280px] w-full min-w-0 rounded-[1.5rem] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f4f8fc_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] sm:h-[320px] sm:p-4">
+    <div className="surface-muted h-[280px] w-full min-w-0 p-3 sm:h-[320px] sm:p-4">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 8 }}>
-          <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#DCE5EF" />
-          <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: '#607086', fontSize: 12, fontWeight: 700 }} />
-          <YAxis tickLine={false} axisLine={false} tick={{ fill: '#607086', fontSize: 12, fontWeight: 700 }} allowDecimals={false} />
+          <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="oklch(92% 0.005 250)" />
+          <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: 'oklch(54% 0.012 250)', fontSize: 12, fontWeight: 650 }} />
+          <YAxis tickLine={false} axisLine={false} tick={{ fill: 'oklch(54% 0.012 250)', fontSize: 12, fontWeight: 650 }} allowDecimals={false} />
           <Tooltip
-            cursor={{ fill: 'rgba(18, 58, 104, 0.06)' }}
+            cursor={{ fill: 'oklch(97% 0.003 250)' }}
             formatter={(value) => [String(value ?? 0), 'Registros']}
-            contentStyle={{ borderRadius: 16, border: '1px solid #DCE5EF', boxShadow: '0 18px 42px rgba(15,23,42,.12)', fontWeight: 700 }}
+            contentStyle={{ borderRadius: 12, border: 0, boxShadow: '0 18px 50px rgba(0,0,0,.12), rgba(0,0,0,.08) 0 0 0 1px', fontWeight: 650 }}
           />
-          <Bar dataKey="value" radius={[10, 10, 4, 4]}>
+          <Bar dataKey="value" radius={[6, 6, 3, 3]}>
             {data.map((entry) => (
               <Cell key={entry.key} fill={entry.color} />
             ))}

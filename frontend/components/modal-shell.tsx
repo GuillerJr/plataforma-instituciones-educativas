@@ -48,21 +48,20 @@ export function ModalShell({ open, title, description, onClose, children }: Moda
           <X aria-hidden="true" className="h-4 w-4" />
         </button>
 
-        <div className="modal-hero-shell relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#eef4fb_100%)] p-5 pr-12 sm:pr-14">
-          <div aria-hidden="true" className="modal-hero-glow absolute -right-14 -top-16 h-36 w-36 rounded-full bg-sky-200/70 blur-2xl" />
-          <div className="modal-hero-content relative">
+        <div className="modal-hero-shell">
+          <div className="modal-hero-content">
             <div className="flex flex-wrap items-center gap-2">
               <p className="eyebrow">Formulario</p>
               <span className="info-chip">Edición operativa</span>
             </div>
-            <h2 id="modal-title" className="mt-3 text-[clamp(1.35rem,4vw,1.5rem)] font-semibold leading-tight text-slate-950">{title}</h2>
-            <p id="modal-description" className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+            <h2 id="modal-title" className="mt-3 text-[clamp(1.35rem,4vw,1.5rem)]">{title}</h2>
+            <p id="modal-description" className="mt-3 max-w-2xl text-sm leading-7">
               {description}
             </p>
           </div>
         </div>
 
-        <div className="modal-content-shell mt-5 rounded-[1.5rem] border border-slate-200/90 bg-white/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] sm:p-5">{children}</div>
+        <div className="modal-content-shell">{children}</div>
       </div>
     </div>
   );

@@ -123,11 +123,11 @@ export default async function PanelPage() {
   const isRepresentativeView = Boolean(dashboard?.scope.isRepresentative && !dashboard.scope.isInstitutionAdmin && !dashboard.scope.isSuperAdmin);
   const chartData = dashboard
     ? [
-        { key: 'students', label: 'Estudiantes', value: dashboard.metrics.students, color: '#2563EB' },
-        { key: 'teachers', label: 'Docentes', value: dashboard.metrics.teachers, color: '#0F766E' },
-        { key: 'enrollments', label: 'Matrículas', value: dashboard.metrics.enrollments, color: '#7C3AED' },
-        { key: 'evaluations', label: 'Evaluaciones', value: dashboard.metrics.evaluations, color: '#EA580C' },
-        { key: 'attendance', label: 'Asistencias', value: dashboard.metrics.attendanceRecords, color: '#16A34A' },
+        { key: 'students', label: 'Estudiantes', value: dashboard.metrics.students, color: 'oklch(58% 0.18 255)' },
+        { key: 'teachers', label: 'Docentes', value: dashboard.metrics.teachers, color: 'oklch(58% 0.15 150)' },
+        { key: 'enrollments', label: 'Matrículas', value: dashboard.metrics.enrollments, color: 'oklch(68% 0.15 70)' },
+        { key: 'evaluations', label: 'Evaluaciones', value: dashboard.metrics.evaluations, color: 'oklch(58% 0.18 25)' },
+        { key: 'attendance', label: 'Asistencias', value: dashboard.metrics.attendanceRecords, color: 'oklch(54% 0.012 250)' },
       ]
     : [];
 
@@ -157,10 +157,10 @@ export default async function PanelPage() {
       ) : (
         <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Estudiantes" value={dashboard.metrics.students} helper="Registros visibles" accent="blue" />
-            <MetricCard label="Matrículas activas" value={dashboard.metrics.activeEnrollments} helper="Periodo operativo" accent="green" />
-            <MetricCard label="Docentes" value={dashboard.metrics.teachers} helper="Planta académica" accent="violet" />
-            <MetricCard label="Asistencias" value={dashboard.metrics.attendanceRecords} helper="Control diario" accent="amber" />
+            <MetricCard label="Estudiantes" value={dashboard.metrics.students} helper="Registros visibles" />
+            <MetricCard label="Matrículas activas" value={dashboard.metrics.activeEnrollments} helper="Periodo operativo" />
+            <MetricCard label="Docentes" value={dashboard.metrics.teachers} helper="Planta académica" />
+            <MetricCard label="Asistencias" value={dashboard.metrics.attendanceRecords} helper="Control diario" />
           </section>
 
           <section className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
@@ -458,29 +458,22 @@ function translateUserStatus(status: string) {
   return status;
 }
 
-function MetricCard({ label, value, helper, accent }: { label: string; value: number; helper: string; accent: 'blue' | 'green' | 'violet' | 'amber' }) {
-  const tones = {
-    blue: 'bg-blue-50 border-blue-100',
-    green: 'bg-emerald-50 border-emerald-100',
-    violet: 'bg-violet-50 border-violet-100',
-    amber: 'bg-amber-50 border-amber-100',
-  } as const;
-
+function MetricCard({ label, value, helper }: { label: string; value: number; helper: string }) {
   return (
-    <div className={`rounded-xl border p-4 ${tones[accent]}`}>
+    <div className="summary-item">
       <p className="summary-label">{label}</p>
-      <p className="mt-2 text-[28px] font-extrabold leading-none text-slate-950">{value}</p>
-      <p className="mt-2 text-xs leading-5 text-slate-500">{helper}</p>
+      <p className="summary-value">{value}</p>
+      <p className="mt-2 text-xs leading-5">{helper}</p>
     </div>
   );
 }
 
 function MiniMetric({ label, value, helper }: { label: string; value: string; helper: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
-      <p className="mt-2 text-xs leading-5 text-slate-500">{helper}</p>
+    <div className="summary-item">
+      <p className="summary-label">{label}</p>
+      <p className="summary-value text-2xl">{value}</p>
+      <p className="mt-2 text-xs leading-5">{helper}</p>
     </div>
   );
 }

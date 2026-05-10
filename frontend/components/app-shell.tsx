@@ -338,7 +338,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
     >
       <div
         aria-hidden="true"
-        className={`mobile-sidebar-overlay fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+        className={`mobile-sidebar-overlay fixed inset-0 z-40 bg-black/20 transition-opacity duration-300 md:hidden ${
           mobileSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={() => setMobileSidebarOpen(false)}

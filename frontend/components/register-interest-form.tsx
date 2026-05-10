@@ -70,9 +70,9 @@ export function RegisterInterestForm({ requestType: initialRequestType, context 
   }
 
   return (
-    <form ref={formRef} action={handleSubmit} className="surface-panel w-full max-w-[760px] p-5 shadow-[0_30px_80px_rgba(15,23,42,0.14)] sm:p-7">
+    <form ref={formRef} action={handleSubmit} className="surface-panel w-full max-w-[760px] p-5 sm:p-7">
       {isRecoveryRequest ? (
-        <div className="mb-5 rounded-[1.4rem] border border-sky-200 bg-sky-50 px-4 py-4 text-sm leading-6 text-sky-900">
+        <div className="surface-muted mb-5 px-4 py-4 text-sm leading-6">
           Indica tus datos institucionales y describe que necesitas recuperar tu contraseña. Este flujo queda preparado para que el equipo administrativo gestione la solicitud en la siguiente fase.
         </div>
       ) : null}
@@ -116,20 +116,20 @@ export function RegisterInterestForm({ requestType: initialRequestType, context 
       </label>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm leading-6 text-slate-500">La solicitud quedará registrada para revisión administrativa y trazabilidad institucional.</p>
+        <p className="text-sm leading-6">La solicitud quedará registrada para revisión administrativa y trazabilidad institucional.</p>
         <button type="submit" disabled={state.pending} className="primary-button w-full disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto">
           {state.pending ? 'Registrando...' : 'Enviar solicitud'}
         </button>
       </div>
 
       {state.error ? (
-        <div className="mt-5 rounded-[1.4rem] border border-rose-200 bg-rose-50 px-4 py-4 text-sm leading-6 text-rose-800">
+        <div className="mt-5 rounded-xl px-4 py-4 text-sm leading-6 status-bad shadow-line">
           {state.error}
         </div>
       ) : null}
 
       {state.success ? (
-        <div className="mt-5 rounded-[1.4rem] border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm leading-6 text-emerald-800">
+        <div className="mt-5 rounded-xl px-4 py-4 text-sm leading-6 status-good shadow-line">
           {state.success}
         </div>
       ) : null}

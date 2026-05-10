@@ -28,7 +28,7 @@ function ActionContent({ label, icon: Icon, showLabel = false, className }: Shar
 
   return (
     <>
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border border-slate-200/80 bg-white/90 text-slate-600 transition group-hover:border-slate-300 group-hover:text-slate-900">
+      <span>
         <Icon aria-hidden="true" className="h-3.5 w-3.5" />
       </span>
       <span className={showLabel ? 'truncate' : showMobileLabel ? 'truncate text-left sm:sr-only' : 'sr-only'}>{label}</span>
