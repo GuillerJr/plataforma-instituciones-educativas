@@ -23,19 +23,25 @@ import {
 } from 'lucide-react';
 import type { CurrentUser } from '../lib/current-user';
 import { LogoutButton } from './logout-button';
-import { ThemeToggle } from './theme-toggle';
 
 const APP_SIDEBAR_VISIBILITY_KEY = 'edu-app-sidebar-visible';
-const DESKTOP_SIDEBAR_WIDTH = 308;
-const DESKTOP_SIDEBAR_COLLAPSED_WIDTH = 110;
+const DESKTOP_SIDEBAR_WIDTH = 280;
+const DESKTOP_SIDEBAR_COLLAPSED_WIDTH = 82;
 
 const navigationItems = [
   {
     href: '/sistema/panel',
-    label: 'Panel',
+    label: 'Panel institucional',
     Icon: LayoutDashboard,
     description: 'Resumen operativo',
     roles: ['superadmin', 'admin_institucional', 'docente', 'estudiante', 'representante'],
+  },
+  {
+    href: '/sistema/instituciones',
+    label: 'Instituciones',
+    Icon: School,
+    description: 'Sedes y datos base',
+    roles: ['superadmin', 'admin_institucional'],
   },
   {
     href: '/sistema/estudiantes',
@@ -257,11 +263,34 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
   const primaryRoleLabel = useMemo(() => formatRoleLabel(currentUser?.roleCodes?.[0]), [currentUser?.roleCodes]);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const mobileSidebarLabel = mobileSidebarOpen ? 'Cerrar navegación principal' : 'Abrir navegación principal';
 
   useEffect(() => {
     setMobileSidebarOpen(false);
+    setAccountMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!accountMenuOpen) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target?.closest('[data-account-menu]')) setAccountMenuOpen(false);
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setAccountMenuOpen(false);
+    }
+
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [accountMenuOpen]);
 
   useEffect(() => {
     if (!mobileSidebarOpen) return;
@@ -318,9 +347,9 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
       <aside
         id="sidebar"
         aria-label="Navegación principal"
-        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[308px] max-w-[calc(100vw-1rem)] flex-col transition-[width,transform] duration-300 ease-out lg:translate-x-0 ${
+        className={`app-sidebar-panel fixed inset-y-0 left-0 z-50 flex w-[308px] max-w-[calc(100vw-1rem)] flex-col transition-[width,transform] duration-300 ease-out md:translate-x-0 ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${sidebarVisible ? 'lg:w-[308px]' : 'lg:w-[110px]'}`}
+        } ${sidebarVisible ? 'lg:w-[280px]' : 'lg:w-[82px]'}`}
       >
         <div className="sidebar-brand-panel flex items-start justify-between gap-3">
           <Link
@@ -331,7 +360,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
             <div className="sidebar-brand-mark flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-semibold text-white">
               E
             </div>
-            <div className={`min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
+            <div className={`sidebar-copy min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
               <p className="sidebar-brand-kicker">Sistema institucional</p>
               <h1 className="truncate text-base font-semibold leading-none text-slate-950">Educa</h1>
               <p className="mt-1 truncate text-xs text-slate-500">Gestión académica y administrativa</p>
@@ -358,7 +387,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
         ) : null}
 
         <nav className="sidebar-scroll min-h-0 flex-1 space-y-1 pr-1">
-          {sidebarVisible ? <p className="sidebar-section-label px-3 pb-2 pt-1">Módulos</p> : null}
+          {sidebarVisible ? <p className="sidebar-section-label sidebar-copy px-3 pb-2 pt-1">Módulos</p> : null}
           {allowedNavigationItems.map((item) => {
             const isActive = isActiveNavigationItem(pathname, item.href);
             const Icon = item.Icon;
@@ -375,7 +404,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
                 <span className={`sidebar-link-icon ${isActive ? 'sidebar-link-icon-active' : ''}`}>
                   <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
                 </span>
-                <span className={`min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
+                <span className={`sidebar-copy min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
                   <span className="block truncate">{item.label}</span>
                   <span className={`mt-0.5 hidden truncate text-[11px] xl:block ${isActive ? 'text-slate-500' : 'text-slate-400'}`}>
                     {item.description}
@@ -402,7 +431,7 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-slate-200/80 bg-white font-semibold text-slate-700">
               {userInitials}
             </div>
-            <div className={`min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
+            <div className={`sidebar-copy min-w-0 ${sidebarVisible ? '' : 'lg:hidden'}`}>
               <p className="truncate text-sm font-semibold text-slate-950">{currentUser?.fullName ?? 'Acceso institucional'}</p>
               <p className="mt-1 truncate text-[11px] text-slate-500">{primaryRoleLabel}</p>
             </div>
@@ -410,73 +439,93 @@ export function AppShell({ children, currentUser }: Readonly<{ children: ReactNo
         </div>
       </aside>
 
-      <div className="transition-[padding] duration-300 lg:pl-[var(--app-sidebar-width)]">
+      <div className="transition-[padding] duration-300 md:pl-[82px] lg:pl-[var(--app-sidebar-width)]">
         <main className="app-main min-h-screen min-w-0 overflow-x-hidden">
-          <header className="topbar-surface sticky top-0 z-30 px-4 py-4 sm:px-5 lg:px-6">
-            <div className="mx-auto flex w-full max-w-[1480px] min-w-0 flex-col gap-4">
-              <div className="flex min-w-0 items-start justify-between gap-3">
-                <div className="flex min-w-0 items-start gap-3">
-                  <button
-                    type="button"
-                    className="icon-button lg:hidden"
-                    onClick={() => setMobileSidebarOpen((value) => !value)}
-                    aria-label={mobileSidebarLabel}
-                    title={mobileSidebarLabel}
-                    aria-controls="sidebar"
-                    aria-expanded={mobileSidebarOpen}
-                  >
-                    {mobileSidebarOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
-                  </button>
+          <header className="topbar-surface sticky top-0 z-30">
+            <div className="topbar mx-auto flex w-full max-w-[1480px] items-center gap-2 px-3 py-2 lg:px-5">
+              <button
+                type="button"
+                className="icon-button md:hidden"
+                onClick={() => setMobileSidebarOpen((value) => !value)}
+                aria-label={mobileSidebarLabel}
+                title={mobileSidebarLabel}
+                aria-controls="sidebar"
+                aria-expanded={mobileSidebarOpen}
+              >
+                {mobileSidebarOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
+              </button>
 
-                  <div className="min-w-0">
-                    <div className="flex min-w-0 flex-wrap items-center gap-2 text-xs font-medium text-slate-500">
-                      {breadcrumbs.map((crumb, index) => (
-                        <span key={`${crumb}-${index}`} className="inline-flex items-center gap-2">
-                          {index > 0 ? <span className="text-slate-300">/</span> : null}
-                          <span>{crumb}</span>
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
-                      <span className="info-chip">{activePage.section}</span>
-                      <span className="info-chip">{primaryRoleLabel}</span>
-                      <span className="info-chip">{getUserStatusLabel(currentUser?.status)}</span>
-                    </div>
-                    <h2 className="mt-3 text-[clamp(1.4rem,3vw,2rem)] font-semibold tracking-tight text-slate-950">
-                      {activePage.title}
-                    </h2>
-                    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 sm:text-[15px]">{activePage.subtitle}</p>
-                  </div>
+              <button
+                type="button"
+                className="icon-button hidden md:inline-flex"
+                onClick={() => setSidebarVisible((value) => !value)}
+                aria-label={sidebarVisible ? 'Colapsar navegación lateral' : 'Expandir navegación lateral'}
+                title={sidebarVisible ? 'Colapsar navegación lateral' : 'Expandir navegación lateral'}
+              >
+                <Menu aria-hidden="true" className="h-4 w-4" />
+              </button>
+
+              <div className="topbar-context" aria-label="Contexto institucional">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-ok shadow-[0_0_0_3px_color-mix(in_oklch,oklch(58%_.15_150)_14%,white)]" aria-hidden="true" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-fg">{activePage.title}</p>
+                  <p className="truncate text-[11px] text-muted">{breadcrumbs.join(' / ')}</p>
                 </div>
-
-                <button
-                  type="button"
-                  className="icon-button hidden lg:inline-flex"
-                  onClick={() => setSidebarVisible((value) => !value)}
-                  aria-label={sidebarVisible ? 'Colapsar navegación lateral' : 'Expandir navegación lateral'}
-                  title={sidebarVisible ? 'Colapsar navegación lateral' : 'Expandir navegación lateral'}
-                >
-                  <Menu aria-hidden="true" className="h-4 w-4" />
-                </button>
+                <span className="period-pill ml-1 hidden rounded-md bg-[oklch(97%_.003_250)] px-2 py-1 font-mono text-[10px] uppercase tracking-[.08em] text-muted sm:inline-flex">
+                  2026
+                </span>
               </div>
 
-              <div className="topbar-panel flex flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200/80 bg-slate-50 font-semibold text-slate-700">
-                    {userInitials}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-slate-950">{currentUser?.fullName ?? 'Acceso institucional'}</p>
-                    <p className="mt-1 truncate text-xs text-slate-500">{currentUser?.email ?? primaryRoleLabel}</p>
-                  </div>
-                </div>
+              <label className="header-search hidden min-w-0 flex-1 lg:flex" aria-label="Buscar">
+                <span className="sr-only">Buscar registro académico</span>
+                <input placeholder="Buscar registro académico" />
+              </label>
 
-                <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-                  <Link href="/" className="secondary-button w-full sm:w-auto">
-                    Sitio público
-                  </Link>
-                  <ThemeToggle />
-                  <LogoutButton className="secondary-button w-full sm:w-auto" />
+              <div className="ml-auto flex min-w-0 shrink-0 items-center justify-end gap-2">
+                <Link href="/" className="icon-button" aria-label="Ir al sitio público" title="Ir al sitio público">
+                  <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+                <div className="account-menu relative" data-account-menu>
+                  <button
+                    type="button"
+                    className="user-menu"
+                    onClick={() => setAccountMenuOpen((value) => !value)}
+                    aria-label="Abrir menú de usuario"
+                    aria-haspopup="menu"
+                    aria-expanded={accountMenuOpen}
+                  >
+                    <span className="avatar">{userInitials}</span>
+                    <span className="user-copy hidden min-w-0 gap-px xl:grid">
+                      <strong className="truncate text-xs leading-none">{currentUser?.fullName ?? 'Acceso institucional'}</strong>
+                      <small className="truncate text-[11px] text-muted">{primaryRoleLabel}</small>
+                    </span>
+                  </button>
+                  {accountMenuOpen ? (
+                    <div className="account-popover" role="menu" aria-label="Opciones de usuario">
+                      <div className="mb-1 grid gap-2 p-2.5 shadow-[rgba(0,0,0,.08)_0_1px_0]">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className="avatar soft">{userInitials}</span>
+                          <span className="grid min-w-0 gap-[3px]">
+                            <strong className="truncate text-sm tracking-[-.02em]">{currentUser?.fullName ?? 'Acceso institucional'}</strong>
+                            <small className="truncate text-xs text-muted">{currentUser?.email ?? primaryRoleLabel}</small>
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <span className="badge badge-success justify-center">{getUserStatusLabel(currentUser?.status)}</span>
+                          <span className="badge badge-blue justify-center">Periodo 2026</span>
+                        </div>
+                      </div>
+                      <button type="button" className="account-option" role="menuitem">
+                        <span>Configuración</span>
+                        <small className="text-xs text-muted">Preferencias</small>
+                      </button>
+                      <button type="button" className="account-option" role="menuitem">
+                        <span>Cuenta</span>
+                        <small className="text-xs text-muted">Perfil y acceso</small>
+                      </button>
+                      <LogoutButton className="account-option danger" />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>

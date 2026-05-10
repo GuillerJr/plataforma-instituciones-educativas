@@ -8,6 +8,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        bg: 'oklch(99% 0.002 240)',
+        surface: 'oklch(100% 0 0)',
+        fg: 'oklch(18% 0.012 250)',
+        muted: 'oklch(54% 0.012 250)',
+        border: 'oklch(92% 0.005 250)',
+        accent: 'oklch(58% 0.18 255)',
+        ok: 'oklch(58% 0.15 150)',
+        warn: 'oklch(68% 0.15 70)',
+        danger: 'oklch(58% 0.18 25)',
         brand: {
           50: '#EAF4FF',
           100: '#D8ECFF',
@@ -34,6 +43,9 @@ module.exports = {
         eduSoft: '#F6F9FC',
       },
       boxShadow: {
+        line: 'rgba(0,0,0,.08) 0 0 0 1px',
+        card: 'rgba(0,0,0,.08) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 2px, rgba(0,0,0,.04) 0 8px 8px -8px, #fafafa 0 0 0 1px inset',
+        float: '0 18px 50px rgba(0,0,0,.12), rgba(0,0,0,.08) 0 0 0 1px',
         soft: '0 14px 38px rgba(8, 35, 63, 0.10)',
         premium: '0 28px 80px rgba(8, 35, 63, 0.16)',
         glow: '0 18px 45px rgba(29, 91, 255, 0.25)',
@@ -41,6 +53,11 @@ module.exports = {
       borderRadius: {
         '4xl': '1.5rem',
         '5xl': '1.75rem',
+      },
+      fontFamily: {
+        body: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'system-ui', 'sans-serif'],
+        display: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'system-ui', 'sans-serif'],
+        mono: ['ui-monospace', 'SF Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
     },
   },

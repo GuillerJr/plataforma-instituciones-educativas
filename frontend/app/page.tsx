@@ -2,452 +2,196 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import {
-  ArrowRight,
-  BookOpen,
-  Building2,
-  ClipboardCheck,
-  GraduationCap,
-  IdCard,
-  Layers3,
-  Link2,
-  Menu,
-  School,
-  ShieldCheck,
-  UsersRound,
-  X,
-} from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
-const navItems = [
-  { label: 'Producto', href: '#producto' },
-  { label: 'Módulos', href: '#modulos' },
-  { label: 'Flujos', href: '#flujos' },
-  { label: 'Roles', href: '#roles' },
-  { label: 'Acceso', href: '#acceso' },
+const modules = [
+  'Usuarios',
+  'Instituciones',
+  'Estudiantes',
+  'Docentes',
+  'Materias',
+  'Matrículas',
+  'Asignaciones',
+  'Estructura',
+  'Evaluaciones',
+  'Calificaciones',
+  'Asistencia',
 ];
 
-const productModules = [
-  {
-    title: 'Instituciones y sedes',
-    description: 'Registro base de institución, tipo, contacto y sedes visibles dentro del sistema.',
-    icon: Building2,
-  },
-  {
-    title: 'Usuarios y roles',
-    description: 'Perfiles, estados de cuenta y gobierno de acceso para la operación institucional.',
-    icon: IdCard,
-  },
-  {
-    title: 'Estructura académica',
-    description: 'Niveles, cursos y secciones que sostienen la operación escolar y la matrícula.',
-    icon: Layers3,
-  },
-  {
-    title: 'Docentes y estudiantes',
-    description: 'Altas, datos base, ubicación académica y lectura rápida de actividad.',
-    icon: UsersRound,
-  },
-  {
-    title: 'Matrículas y materias',
-    description: 'Inscripciones del periodo activo y catálogo curricular enlazado con la institución.',
-    icon: BookOpen,
-  },
-  {
-    title: 'Asignaciones, evaluaciones y asistencia',
-    description: 'Carga docente, calificaciones y control diario sobre datos académicos reales.',
-    icon: ClipboardCheck,
-  },
-];
-
-const operatingFlows = [
-  {
-    step: '01',
-    title: 'Acceso institucional seguro',
-    description: 'Inicio de sesión privado para operación administrativa, docente, estudiantil y de representación familiar.',
-  },
-  {
-    step: '02',
-    title: 'Solicitud pública unificada',
-    description: 'El sistema ya contempla solicitudes de acceso, información institucional y admisión desde la capa pública.',
-  },
-  {
-    step: '03',
-    title: 'Gestión académica conectada',
-    description: 'La estructura, matrícula, evaluación y asistencia trabajan sobre relaciones reales entre módulos.',
-  },
+const areas = [
+  ['Comunidad', 'Estudiantes y representantes', 'La institución acompaña el proceso escolar con datos de matrícula, seguimiento académico y solicitudes de acceso.'],
+  ['Docencia', 'Equipo docente', 'Los docentes sostienen la planificación, la carga de asistencia, las evaluaciones y las calificaciones asignadas.'],
+  ['Academia', 'Materias y asignaciones', 'Cada periodo relaciona materias, cursos, secciones y docentes para mantener una organización académica consistente.'],
+  ['Estructura', 'Niveles, grados y secciones', 'Inicial, primaria y media se ordenan por grados, secciones y periodos de trabajo institucional.'],
+  ['Evaluación', 'Calificaciones', 'El colegio registra evaluaciones y resultados para que la trayectoria del estudiante sea consultable y trazable.'],
+  ['Asistencia', 'Jornada diaria', 'El registro de asistencia permite acompañar la presencia del estudiante y detectar pendientes de forma oportuna.'],
 ];
 
 const roles = [
-  {
-    title: 'Superadministración',
-    description: 'Visión transversal de instituciones, usuarios, estructura académica y operación general.',
-  },
-  {
-    title: 'Administración institucional',
-    description: 'Gestión operativa del colegio: estructura, personal, estudiantes, matrículas y seguimiento.',
-  },
-  {
-    title: 'Docencia',
-    description: 'Acceso a materias, estructura visible, evaluaciones y control de asistencia según su alcance.',
-  },
-  {
-    title: 'Estudiante',
-    description: 'Consulta de rendimiento y asistencia construida sobre sus registros vinculados.',
-  },
-  {
-    title: 'Representación familiar',
-    description: 'Seguimiento de estudiantes asociados y lectura directa de su situación académica.',
-  },
-];
-
-const systemPillars = [
-  'Permisos por rol ya definidos en código',
-  'Módulos conectados entre sí sin duplicar datos',
-  'Panel privado separado del sitio público',
-  'Flujos preparados para acceso, información y admisión',
+  ['Dirección', 'Supervisa instituciones, usuarios y lineamientos generales del periodo escolar.'],
+  ['Administración', 'Gestiona matrículas, estructura académica, docentes, estudiantes y solicitudes.'],
+  ['Docentes', 'Registran asistencia, evaluaciones y calificaciones de sus asignaciones.'],
+  ['Estudiantes', 'Consultan su información académica según los permisos definidos por la institución.'],
+  ['Representantes', 'Dan seguimiento a estudiantes asociados y a solicitudes vinculadas al colegio.'],
 ];
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const currentYear = new Date().getFullYear();
 
   return (
-    <main className="public-page-v2 min-h-screen bg-[linear-gradient(180deg,#f4f7fb_0%,#eef3f8_38%,#f8fafc_100%)] text-slate-900">
-      <header className="sticky top-0 z-50 border-b border-white/70 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="#inicio" className="flex items-center gap-3" aria-label="Ir al inicio">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#18345f_0%,#0f223d_100%)] text-sm font-semibold text-white shadow-[0_18px_40px_rgba(15,34,61,0.25)]">
-              ED
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sistema educativo</p>
-              <p className="text-base font-semibold text-slate-950">Educa Plataforma</p>
-            </div>
-          </Link>
+    <main className="public-page-v2 min-h-screen bg-bg text-fg">
+      <header className="sticky top-0 z-50 flex items-center justify-between gap-4 px-[clamp(16px,5vw,56px)] py-3.5">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 font-semibold tracking-[-.02em]" aria-label="Ir al inicio">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-fg text-[13px] text-white">RA</span>
+          <span className="truncate">Registro Académico</span>
+        </Link>
 
-          <nav className="hidden items-center gap-6 lg:flex">
-            {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="text-sm font-medium text-slate-600 transition hover:text-slate-950">
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+        <nav className="hidden flex-wrap items-center gap-2 sm:flex" aria-label="Navegación pública">
+          <Link className="rounded-md bg-surface px-2.5 py-2 text-sm font-medium text-fg shadow-line" href="/">Home</Link>
+          <Link className="rounded-md px-2.5 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-fg hover:shadow-line" href="/login">Login</Link>
+          <Link className="rounded-md px-2.5 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-fg hover:shadow-line" href="/registro?requestType=acceso&context=landing-nav">Solicitud de acceso</Link>
+          <Link className="rounded-md px-2.5 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-fg hover:shadow-line" href="/sistema/panel">Panel privado</Link>
+        </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <Link href="/registro?requestType=informacion&context=landing-header" className="secondary-button px-5 py-3 text-sm">
-              Solicitar información
-            </Link>
-            <Link href="/login" className="primary-button px-5 py-3 text-sm">
-              Ingresar al sistema
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 lg:hidden"
-            aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            onClick={() => setMobileMenuOpen((value) => !value)}
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-
-        {mobileMenuOpen ? (
-          <div className="border-t border-slate-200 bg-white px-4 py-4 lg:hidden">
-            <nav className="flex flex-col gap-3">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="rounded-2xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50" onClick={() => setMobileMenuOpen(false)}>
-                  {item.label}
-                </Link>
-              ))}
-              <Link href="/registro?requestType=informacion&context=landing-mobile" className="secondary-button mt-2 w-full" onClick={() => setMobileMenuOpen(false)}>
-                Solicitar información
-              </Link>
-              <Link href="/login" className="primary-button w-full" onClick={() => setMobileMenuOpen(false)}>
-                Ingresar al sistema
-              </Link>
-            </nav>
-          </div>
-        ) : null}
+        <button
+          type="button"
+          className="inline-grid h-10 w-10 place-items-center rounded-lg bg-surface text-fg shadow-line sm:hidden"
+          aria-label={mobileMenuOpen ? 'Cerrar menú público' : 'Abrir menú público'}
+          onClick={() => setMobileMenuOpen((value) => !value)}
+        >
+          {mobileMenuOpen ? <X aria-hidden="true" className="h-4 w-4" /> : <Menu aria-hidden="true" className="h-4 w-4" />}
+        </button>
       </header>
 
-      <section id="inicio" className="px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-24 lg:pt-16">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
-              <ShieldCheck className="h-4 w-4 text-sky-700" />
-              Plataforma institucional con acceso privado
-            </span>
+      {mobileMenuOpen ? (
+        <nav className="grid gap-2 border-b border-border bg-surface px-4 py-3 sm:hidden" aria-label="Navegación pública móvil">
+          <Link className="rounded-md px-3 py-2 text-sm font-semibold" href="/login" onClick={() => setMobileMenuOpen(false)}>Login</Link>
+          <Link className="rounded-md px-3 py-2 text-sm font-semibold" href="/registro?requestType=acceso&context=landing-mobile" onClick={() => setMobileMenuOpen(false)}>Solicitud de acceso</Link>
+          <Link className="rounded-md px-3 py-2 text-sm font-semibold" href="/sistema/panel" onClick={() => setMobileMenuOpen(false)}>Panel privado</Link>
+        </nav>
+      ) : null}
 
-            <h1 className="mt-6 max-w-4xl text-[clamp(2.6rem,6vw,5.2rem)] font-semibold leading-[1.02] tracking-tight text-slate-950">
-              Gestión educativa con estructura real, permisos por rol y operación conectada de extremo a extremo.
-            </h1>
-
-            <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-              Educa organiza usuarios, sedes, estructura académica, docentes, estudiantes, matrículas, materias,
-              asignaciones, evaluaciones, calificaciones y asistencia dentro de una experiencia institucional sólida,
-              confiable y orientada al trabajo diario.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Link href="/login" className="primary-button px-6 py-4">
-                Acceder al panel
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/registro?requestType=acceso&context=landing-hero" className="secondary-button px-6 py-4">
-                Solicitar acceso
-              </Link>
-            </div>
-
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.07)]">
-                <p className="text-3xl font-semibold text-slate-950">{roles.length}</p>
-                <p className="mt-2 text-sm text-slate-500">roles ya contemplados</p>
-              </div>
-              <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.07)]">
-                <p className="text-3xl font-semibold text-slate-950">{productModules.length}</p>
-                <p className="mt-2 text-sm text-slate-500">bloques funcionales visibles</p>
-              </div>
-              <div className="rounded-3xl border border-white bg-white/90 p-5 shadow-[0_18px_40px_rgba(15,23,42,0.07)]">
-                <p className="text-3xl font-semibold text-slate-950">{operatingFlows.length}</p>
-                <p className="mt-2 text-sm text-slate-500">flujos públicos y privados</p>
-              </div>
-            </div>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[1.6rem] border border-slate-200 bg-white/85 p-5 shadow-[0_18px_44px_rgba(15,23,42,0.06)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Qué resuelve hoy</p>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  Centraliza la operación académica y administrativa sin separar los módulos en islas ni duplicar información entre áreas.
-                </p>
-              </div>
-              <div className="rounded-[1.6rem] border border-slate-200 bg-white/85 p-5 shadow-[0_18px_44px_rgba(15,23,42,0.06)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Cómo se accede</p>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  Sitio público para solicitudes y panel privado para trabajo real del personal institucional, docentes, estudiantes y representantes.
-                </p>
-              </div>
-            </div>
+      <section className="mx-auto grid max-w-[1180px] grid-cols-1 items-start gap-10 px-[clamp(18px,5vw,56px)] pb-14 pt-14 xl:grid-cols-[minmax(0,.98fr)_minmax(340px,.72fr)] xl:gap-14 xl:pt-[88px]">
+        <div className="min-w-0 max-w-[760px]">
+          <div className="eyebrow">Institución educativa</div>
+          <h1 className="max-w-[720px] text-[clamp(42px,5.7vw,72px)] font-[650] leading-[.98] tracking-[-.045em]">
+            Colegio Central: formación académica con acompañamiento, orden y comunidad.
+          </h1>
+          <p className="mt-4 max-w-[60ch] text-[19px] leading-[1.65] text-muted">
+            Somos una institución dedicada a formar estudiantes con criterio, responsabilidad y continuidad académica. Familias, docentes y equipo administrativo trabajan sobre una misma base: seguimiento claro, comunicación responsable y procesos escolares bien organizados.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-2.5">
+            <Link href="/registro?requestType=acceso&context=landing-hero" className="primary-button px-4 py-2.5">Solicitar acceso</Link>
+            <Link href="/login" className="secondary-button px-4 py-2.5">Ingresar al portal</Link>
           </div>
-
-          <div className="relative">
-            <div className="absolute inset-x-12 -top-10 h-40 rounded-full bg-sky-200/40 blur-3xl" aria-hidden="true" />
-            <div className="absolute -bottom-10 left-10 h-40 w-40 rounded-full bg-emerald-200/35 blur-3xl" aria-hidden="true" />
-
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/92 p-4 shadow-[0_28px_90px_rgba(15,23,42,0.12)] sm:p-6">
-              <div className="grid gap-4 rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,#f7fafc_0%,#eef3f8_100%)] p-5">
-                <div className="rounded-[1.35rem] bg-slate-950 px-5 py-5 text-white shadow-[0_18px_50px_rgba(2,6,23,0.22)]">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.16em] text-white/55">Mapa operativo</p>
-                      <p className="mt-1 text-lg font-semibold">Panel institucional conectado por capas reales</p>
-                    </div>
-                    <School className="h-6 w-6 text-sky-300" />
-                  </div>
-                  <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                    {[
-                      ['Acceso', 'Roles y permisos'],
-                      ['Académico', 'Estructura y matrícula'],
-                      ['Seguimiento', 'Notas y asistencia'],
-                    ].map(([label, value]) => (
-                      <div key={label} className="rounded-2xl border border-white/10 bg-white/8 p-4">
-                        <p className="text-[11px] uppercase tracking-[0.14em] text-white/45">{label}</p>
-                        <p className="mt-2 text-sm font-semibold text-white">{value}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-[1.1fr_0.9fr]">
-                  <div className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Cobertura funcional existente</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {['Instituciones', 'Usuarios', 'Docentes', 'Estudiantes', 'Matrículas', 'Materias', 'Asignaciones', 'Evaluaciones', 'Asistencia'].map((item) => (
-                        <span key={item} className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Rutas activas</p>
-                    <div className="mt-3 space-y-2 text-sm text-slate-600">
-                      <p><code>/login</code> acceso institucional</p>
-                      <p><code>/registro</code> solicitudes públicas</p>
-                      <p><code>/sistema/*</code> módulos privados</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    ['Usuarios y roles', 'Accesos, estados y gobierno institucional'],
-                    ['Estructura académica', 'Niveles, cursos, secciones y relaciones operativas'],
-                    ['Docentes y estudiantes', 'Base humana del periodo y ubicación escolar'],
-                    ['Evaluaciones y asistencia', 'Seguimiento académico sobre datos reales'],
-                  ].map(([title, copy]) => (
-                    <article key={title} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_12px_34px_rgba(15,23,42,0.05)]">
-                      <p className="text-sm font-semibold text-slate-950">{title}</p>
-                      <p className="mt-2 text-sm leading-6 text-slate-500">{copy}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div className="mt-4 flex flex-wrap gap-2" aria-label="Comunidad educativa">
+            {['Inicial', 'Primaria', 'Media', 'Docentes', 'Familias'].map((item) => <span key={item} className="badge">{item}</span>)}
           </div>
         </div>
-      </section>
 
-      <section id="producto" className="border-y border-slate-200 bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14">
-          <div>
-            <p className="eyebrow">Producto institucional</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Diseñado para ordenar operación, permisos y seguimiento académico dentro de una sola experiencia.
-            </h2>
+        <div className="relative z-10 w-full min-w-0 rounded-[18px] bg-surface p-4 shadow-card xl:mt-8">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="eyebrow">Periodo escolar</div>
+              <strong className="block truncate text-lg tracking-[-.03em]">Colegio Central · 2026</strong>
+            </div>
+            <span className="badge badge-success shrink-0">Abierto</span>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {systemPillars.map((pillar) => (
-              <div key={pillar} className="rounded-3xl border border-slate-200 bg-slate-50/80 p-5 text-sm leading-7 text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
-                {pillar}
+          <div className="grid gap-px overflow-hidden rounded-xl bg-border shadow-line">
+            {[
+              ['Matrícula institucional', 'Inicial, primaria y media', '642 estudiantes', 'badge'],
+              ['Equipo docente', 'Áreas académicas y coordinación', '58 docentes', 'badge'],
+              ['Atención a representantes', 'Solicitudes, seguimiento y consulta', 'Portal activo', 'badge badge-blue'],
+              ['Jornada académica', 'Registro diario de clases y asistencia', 'Operativa', 'badge badge-success'],
+            ].map(([title, description, value, badgeClass]) => (
+              <div key={title} className="grid grid-cols-1 gap-2 bg-surface p-3.5 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-3">
+                <div className="min-w-0">
+                  <strong className="text-sm">{title}</strong>
+                  <small className="mt-1 block text-muted">{description}</small>
+                </div>
+                <span className={`${badgeClass} shrink-0 justify-self-start sm:justify-self-end`}>{value}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="modulos" className="px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <p className="eyebrow">Módulos reales</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              La interfaz pública comunica exactamente lo que el sistema ya soporta en el panel interno.
-            </h2>
-            <p className="mt-4 text-base leading-8 text-slate-600">
-              No se muestran promesas vacías ni funciones inventadas. Cada bloque corresponde a capacidades ya presentes en rutas, permisos y flujos existentes del proyecto.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {productModules.map((module) => {
-              const Icon = module.icon;
-
-              return (
-                <article key={module.title} className="rounded-[1.8rem] border border-white bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-[0_14px_34px_rgba(15,23,42,0.18)]">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-5 text-xl font-semibold text-slate-950">{module.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{module.description}</p>
-                </article>
-              );
-            })}
-          </div>
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,5vw,56px)] py-9">
+        <div className="mb-5 max-w-[780px]">
+          <div className="eyebrow">Proyecto educativo</div>
+          <h2 className="text-[clamp(30px,4vw,48px)] font-[640] leading-[1.05] tracking-[-.035em]">Una comunidad escolar enfocada en continuidad, responsabilidad y acompañamiento.</h2>
+          <p className="mt-3 text-[17px] leading-[1.65] text-muted">El Colegio Central organiza su vida académica alrededor de procesos claros: inscripción, seguimiento docente, evaluación, asistencia y comunicación con representantes.</p>
+        </div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[
+            ['Formación integral', 'La institución articula áreas académicas, hábitos de estudio y acompañamiento cotidiano para sostener el avance de cada grupo.'],
+            ['Gestión responsable', 'Secretaría, coordinación y dirección mantienen registros claros de estudiantes, docentes, secciones, periodos y procesos escolares.'],
+            ['Vínculo con familias', 'Los representantes cuentan con canales de acceso para consultar información académica y dar seguimiento a sus solicitudes.'],
+          ].map(([title, description]) => (
+            <article key={title} className="rounded-xl bg-surface p-4 shadow-card">
+              <h3 className="text-[22px] font-[620] leading-[1.18] tracking-[-.025em]">{title}</h3>
+              <p className="mt-2 text-muted">{description}</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section id="flujos" className="bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">Flujos existentes</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Desde la capa pública hasta la operación interna, la experiencia responde a funcionalidades ya implementadas.
-            </h2>
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,5vw,56px)] py-9">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[.75fr_1.25fr] lg:items-start">
+          <div className="rounded-xl bg-surface p-5 shadow-card lg:sticky lg:top-24">
+            <div className="eyebrow">Vida institucional</div>
+            <h2 className="mt-2 text-[clamp(30px,4vw,48px)] font-[640] leading-[1.05] tracking-[-.035em]">Áreas que sostienen el trabajo académico del colegio.</h2>
+            <p className="mt-3 text-muted">La información pública presenta cómo se organiza la institución y orienta a estudiantes, docentes y representantes antes de ingresar al portal.</p>
           </div>
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {operatingFlows.map((flow) => (
-              <article key={flow.step} className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(2,6,23,0.22)]">
-                <p className="text-sm font-semibold tracking-[0.18em] text-sky-300">{flow.step}</p>
-                <h3 className="mt-4 text-xl font-semibold">{flow.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-white/72">{flow.description}</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {areas.map(([badge, title, description]) => (
+              <article key={title} className="rounded-xl bg-surface p-4 shadow-card">
+                <span className="badge">{badge}</span>
+                <h3 className="mt-3 text-[22px] font-[620] leading-[1.18] tracking-[-.025em]">{title}</h3>
+                <p className="mt-2 text-muted">{description}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="roles" className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <p className="eyebrow">Roles del sistema</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              La plataforma ya distingue responsabilidades reales según el tipo de usuario logueado.
-            </h2>
-          </div>
-
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-            {roles.map((role) => (
-              <article key={role.title} className="rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 shadow-[0_16px_44px_rgba(15,23,42,0.06)]">
-                <h3 className="text-lg font-semibold text-slate-950">{role.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{role.description}</p>
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,5vw,56px)] py-9">
+        <div className="mb-5">
+          <div className="eyebrow">Comunidad educativa</div>
+          <h2 className="text-[clamp(30px,4vw,48px)] font-[640] leading-[1.05] tracking-[-.035em]">Un portal institucional con accesos diferenciados para cada responsabilidad.</h2>
+        </div>
+        <div className="overflow-hidden rounded-xl bg-surface shadow-card">
+          <div className="grid grid-cols-1 divide-y divide-border md:grid-cols-5 md:divide-x md:divide-y-0">
+            {roles.map(([title, description]) => (
+              <article key={title} className="p-4">
+                <strong>{title}</strong>
+                <p className="mt-2 text-sm text-muted">{description}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="acceso" className="px-4 pb-16 pt-4 sm:px-6 lg:px-8 lg:pb-24">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-[2rem] border border-white bg-white p-7 shadow-[0_24px_70px_rgba(15,23,42,0.10)] sm:p-8">
-            <p className="eyebrow">Acceso y solicitudes</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              Un punto de entrada claro para el equipo institucional y para quien necesita contactar o solicitar acceso.
-            </h2>
-            <p className="mt-4 text-base leading-8 text-slate-600">
-              El proyecto ya separa el sitio público del sistema privado y dispone de páginas para autenticación,
-              recuperación y solicitudes de acceso, información o admisión.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Link href="/login" className="primary-button px-6 py-4">
-                Iniciar sesión
-              </Link>
-              <Link href="/registro?requestType=informacion&context=landing-final" className="secondary-button px-6 py-4">
-                Registrar solicitud
-              </Link>
-            </div>
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,5vw,56px)] py-9">
+        <div className="grid grid-cols-1 gap-4 rounded-[18px] bg-surface p-5 shadow-card lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <div className="eyebrow">Acceso institucional</div>
+            <h2 className="text-[clamp(30px,4vw,48px)] font-[640] leading-[1.05] tracking-[-.035em]">Ingreso ordenado para familias, estudiantes, docentes y administración.</h2>
+            <p className="mt-3 max-w-[70ch] text-muted">El portal público informa y recibe solicitudes. El acceso privado se reserva para la comunidad autorizada, con permisos según la responsabilidad de cada persona dentro del colegio.</p>
           </div>
-
-          <div className="rounded-[2rem] border border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#edf3f8_100%)] p-7 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Rutas visibles</p>
-            <div className="mt-5 space-y-3">
-              {[
-                ['/login', 'Acceso institucional protegido'],
-                ['/registro', 'Solicitud pública unificada'],
-                ['/sistema/panel', 'Panel principal por rol'],
-                ['/sistema/*', 'Módulos académicos y administrativos'],
-              ].map(([route, label]) => (
-                <div key={route} className="rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
-                  <code className="font-semibold text-slate-950">{route}</code>
-                  <span className="ml-2 text-slate-500">{label}</span>
-                </div>
-              ))}
-            </div>
+          <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[420px]">
+            {['1. Solicitud de acceso', '2. Validación institucional', '3. Consulta o gestión'].map((item) => (
+              <span key={item} className="rounded-xl bg-[oklch(98%_.002_250)] p-3 text-sm font-semibold shadow-line">{item}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-white px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-base font-semibold text-slate-950">Educa Plataforma</p>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-500">
-              Interfaz institucional para gestión educativa con módulos reales de usuarios, estructura académica,
-              matrícula, evaluación y seguimiento escolar.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-4 text-sm text-slate-500">
-            <Link href="/login" className="transition hover:text-slate-950">Acceso</Link>
-            <Link href="/registro?requestType=informacion&context=landing-footer" className="transition hover:text-slate-950">Solicitudes</Link>
-            <Link href="#modulos" className="transition hover:text-slate-950">Módulos</Link>
-          </div>
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,5vw,56px)] pb-14 pt-4">
+        <div className="flex flex-wrap gap-2" aria-label="Módulos conservados">
+          {modules.map((module) => <span key={module} className="badge">{module}</span>)}
         </div>
-        <div className="mx-auto mt-8 max-w-7xl border-t border-slate-200 pt-6 text-sm text-slate-400">
-          © {currentYear} Educa. Gestión institucional para instituciones educativas.
-        </div>
-      </footer>
+      </section>
     </main>
   );
 }
